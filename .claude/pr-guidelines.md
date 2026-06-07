@@ -25,8 +25,8 @@ Keep it under 72 characters.
 
 - One logical change per PR; split unrelated work into separate PRs
 - Rebase onto `main` before requesting review (no unnecessary merge commits)
-- All lint checks must pass: `{{LINT_CMD}}`
-- `{{BUILD_CMD}}` must succeed before marking the PR ready for review
+- All lint checks must pass: `cargo clippy --all-targets -- -D warnings`
+- `dx build --release` must succeed before marking the PR ready for review
 - Link to the relevant section in CLAUDE.md or a `.claude/` rule file if the PR establishes a new pattern
 
 ## Size guidance
@@ -39,4 +39,4 @@ Keep it under 72 characters.
 
 ## Draft PRs
 
-Use draft status for work-in-progress or when feedback is needed before the implementation is complete. Convert to ready only when `{{LINT_CMD}}` and `{{BUILD_CMD}}` both pass.
+Use draft status for work-in-progress or when feedback is needed before the implementation is complete. Convert to ready only when `cargo clippy --all-targets -- -D warnings` and `dx build --release` both pass.

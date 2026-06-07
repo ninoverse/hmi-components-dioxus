@@ -4,41 +4,68 @@
 
 | Path | Contents |
 |------|----------|
-| `src/components/` | Generated components |
-| `src/components/styled/` | Shared Styled Component definitions |
-| `src/configs/` | Global static config (color tokens, etc.) |
-| `src/models/` | Shared TypeScript interfaces/types |
-| `src/lib/` | Shared Utilities |
+| `src/main.rs` | App entry point: `dioxus::launch(App)` and the root `App` component |
+| `src/components/` | Dioxus components (one component per file) |
+| `src/components/mod.rs` | Module that re-exports each component (`pub use`) |
+| `src/models/` | Shared structs/enums and `Props` types used by 2+ components |
+| `src/lib.rs` | Optional: shared library surface if the crate is split into lib + bin |
 
-## Within each `src/<component>/` directory
+## Asset directories (`assets/`)
 
-| Folder | Contents |
-|--------|----------|
-| `src/components/styled/` | Styled Component definitions |
-| `src/configs/` | Static config (color tokens, etc.) |
-| `src/models/` | TypeScript interfaces/types |
-| `src/lib/` | Utilities |
+| Path | Contents |
+|------|----------|
+| `assets/main.css` | Global design tokens (`:root` custom properties) + reset |
+| `assets/styling/` | Per-component CSS (`<name>.css`) |
+| `assets/` | Images, fonts, icons referenced via `asset!()` |
 
 ## File naming conventions
 
-<!-- TODO: Verify these conventions match this project. Adjust the table or replace examples. -->
+| Item | Convention | Example |
+|------|-----------|---------|
+| Component file | `snake_case.rs` | `unordered_list.rs` |
+| Component identifier | `PascalCase` | `UnorderedList` |
+| Component CSS | `snake_case.css` in `assets/styling/` | `unordered_list.css` |
+| Module file | `mod.rs` inside the folder | `src/components/mod.rs` |
+| Shared types | `snake_case.rs` in `src/models/` | `src/models/user.rs` |
+| Functions / variables | `snake_case` | `format_date` |
+| Constants / statics | `SCREAMING_SNAKE_CASE` | `const MAIN_CSS: Asset` |
 
-| File type | Convention | Example |
-|-----------|-----------|---------|
-| Components | `camelCase.tsx` | `unorderedList.tsx` |
-| Component CSS (plain CSS, not a library) | `[name].styled.css` in `src/components/styled/` | `button.styled.css` |
-| Config objects | `camelCase.ts` | `socialIconsParallaxConfiguration.ts` |
-| TypeScript models | `[name].model.ts` / `[name].model.tsx` | `button.model.ts`, `button.model.tsx` |
-| Utilities | `[name].utility.ts` / `[name].utility.tsx` | `button.utility.ts`, `button.utility.tsx` |
+These follow standard Rust naming (`rustfmt` + clippy enforce most of them). The
+only project-specific rule is the one-component-per-file layout under
+`src/components/`.
 
-## CSS import pattern
+## Module re-export pattern
 
-Each component imports its own CSS as a side-effect at the top of the `.tsx` file:
+Rust has no barrel files. Instead, each folder's `mod.rs` declares its
+submodules and re-exports the public component(s). Keep `pub use` lines
+**alphabetical**:
 
-```tsx
-import './styled/button.styled.css';
+```rust
+// src/components/mod.rs
+mod hero;
+mod unordered_list;
+
+pub use hero::Hero;
+pub use unordered_list::UnorderedList;
 ```
 
-<!-- TODO: Delete this paragraph if the project does not use a design token system. -->
-CSS files live in `{{STYLED_DIR}}` and use {{DESIGN_TOKEN_SYSTEM}} custom properties
-(e.g. `var(--{{TOKEN_EXAMPLE}})`) exclusively. No hardcoded color values.
+The parent (`src/main.rs`) then writes `mod components;` and
+`use components::Hero;`.
+
+## CSS reference pattern
+
+Each component declares its CSS as an `Asset` const and injects it at the top of
+its `rsx!` via `document::Stylesheet`. The `asset!()` path is absolute from the
+crate root:
+
+```rust
+const HERO_CSS: Asset = asset!("/assets/styling/hero.css");
+// ...
+rsx! {
+    document::Stylesheet { href: HERO_CSS }
+    // markup
+}
+```
+
+Component CSS uses only design tokens (`var(--color-primary)`, …) — no hardcoded
+color, radius, or shadow values.

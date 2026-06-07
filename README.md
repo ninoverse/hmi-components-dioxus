@@ -1,98 +1,77 @@
-# Claude Code Template
+# Rust + Dioxus Template
 
-Reusable Claude Code configuration scaffolding. Copy `CLAUDE.md` and `.claude/`
-into the root of any new repository, then fill in the placeholders.
+A starter template for cross-platform [Dioxus 0.7](https://dioxuslabs.com) apps
+(web, desktop, mobile) wired up with Claude Code configuration and architectural
+rules. Clone it, rename the crate, and start building components.
 
-## Usage
+## What's inside
 
-1. Copy the template files into your repo root:
+```
+.
+├── Cargo.toml            # crate + per-platform feature flags (web/desktop/mobile)
+├── Dioxus.toml           # Dioxus app config
+├── src/
+│   ├── main.rs           # dioxus::launch(App) entry point
+│   └── components/
+│       ├── mod.rs        # re-exports each component (alphabetical)
+│       └── hero.rs       # example #[component]
+├── assets/
+│   ├── main.css          # design tokens (:root custom properties) + reset
+│   └── styling/
+│       └── hero.css      # per-component CSS
+├── CLAUDE.md             # architectural rules Claude Code must follow
+└── .claude/              # detailed rule files (see table below)
+```
 
-   ```bash
-   cp /path/to/claude-template/CLAUDE.md  /path/to/your-repo/
-   cp -r /path/to/claude-template/.claude /path/to/your-repo/
-   ```
+## Getting started
 
-2. Find every placeholder and replace it:
+```bash
+# One-time: install the Dioxus CLI (keep its major.minor matching the dioxus crate)
+cargo install dioxus-cli      # or: cargo binstall dioxus-cli
 
-   ```bash
-   grep -rn "{{" CLAUDE.md .claude/
-   grep -rn "<!-- TODO" CLAUDE.md .claude/
-   ```
+cargo fetch                   # fetch dependencies
+dx serve --platform web       # dev server with hot reload (try desktop|mobile too)
+```
 
-3. Delete sections that do not apply (for example, the Styling Conventions
-   block if you have no design system, or the execution-order phase table if
-   you don't run phased work).
+`web` is the default cargo feature, so plain `cargo build` and rust-analyzer
+target web. Select another renderer with `--platform desktop|mobile`.
 
-## What each rule file covers
+### Verify your work
+
+```bash
+cargo clippy --all-targets -- -D warnings   # lint (warnings are errors)
+dx check                                     # validate rsx! macros
+cargo test                                   # run tests
+dx build --release --platform web            # production build
+dx fmt && cargo fmt                          # format rsx! then Rust source
+```
+
+## Conventions at a glance
+
+- **Components** are `PascalCase` functions annotated with `#[component]`,
+  returning `Element` via `rsx!`, one per `snake_case.rs` file under
+  `src/components/`.
+- **Styling** uses CSS custom-property design tokens (`var(--color-primary)`),
+  loaded via `asset!()` + `document::Stylesheet`. No hardcoded colors, radii,
+  or shadows.
+- **Cross-platform**: no platform-specific code in shared components unless
+  gated behind `#[cfg(feature = "...")]`.
+
+## Rule files
 
 | File | Purpose |
 |------|---------|
-| `branch-naming.md` | Branch prefix and format conventions |
-| `commit-conventions.md` | Conventional Commits rules |
-| `pr-guidelines.md` | PR title, description template, size guidance |
-| `testing-requirements.md` | Manual and automated test gates |
-| `file-naming.md` | Directory layout and file naming conventions |
-| `code-review.md` | Review checklist (styling + code quality) |
-| `component-workflow.md` | Step-by-step procedure to add a component |
-| `execution-order.md` | Branching strategy and (optional) phased build order |
+| `CLAUDE.md` | Top-level commands, framework rules, styling conventions |
+| `.claude/branch-naming.md` | Branch prefix and format conventions |
+| `.claude/commit-conventions.md` | Conventional Commits rules |
+| `.claude/pr-guidelines.md` | PR title, description template, size guidance |
+| `.claude/testing-requirements.md` | Test + verification gates |
+| `.claude/file-naming.md` | Directory layout and Rust/Dioxus naming conventions |
+| `.claude/code-review.md` | Review checklist (styling + Rust code quality) |
+| `.claude/component-workflow.md` | Step-by-step procedure to add a component |
+| `.claude/execution-order.md` | Branching strategy and (optional) phased build order |
 
-## Placeholder Reference
+## Renaming the crate
 
-Fill in any of these that appear in the template files. Delete `{{...}}` and
-adjacent prose when a placeholder is irrelevant (for example, library-only
-placeholders in app projects).
-
-### Commands and tooling
-
-| Placeholder | Meaning | Example |
-|---|---|---|
-| `{{PROJECT_NAME}}` | Human-readable project name | `my-design-system` |
-| `{{PACKAGE_MANAGER}}` | Package manager binary | `pnpm`, `npm`, `yarn`, `bun` |
-| `{{INSTALL_CMD}}` | Install dependencies | `pnpm install` |
-| `{{DEV_CMD}}` | Start dev server | `pnpm dev` |
-| `{{BUILD_CMD}}` | Production build | `pnpm build` |
-| `{{LINT_CMD}}` | Lint check | `pnpm lint` |
-| `{{FORMAT_CMD}}` | Format with auto-write | `pnpm format` |
-| `{{TEST_CMD}}` | Run tests | `pnpm test` |
-| `{{LINTER}}` | Linter name | `Biome`, `ESLint` |
-| `{{FRAMEWORK}}` | Primary framework | `React 19`, `Vue 3`, `SvelteKit` |
-| `{{DEV_PORT}}` | Local dev server port | `5173`, `3000` |
-
-### Design system
-
-| Placeholder | Meaning | Example |
-|---|---|---|
-| `{{DESIGN_TOKEN_SYSTEM}}` | Token system name | `Material Design 3`, `Tailwind`, `custom` |
-| `{{DESIGN_TOKEN_PREFIX}}` | Token naming pattern | `MD3 short-name` |
-| `{{TOKEN_EXAMPLE}}` | Example token | `primary`, `color-bg-primary` |
-| `{{SHAPE_TOKENS}}` | Shape / radii token list | `` `var(--corner-tl)`, `var(--corner-tr)` `` |
-| `{{ELEVATION_TOKENS}}` | Elevation token list | `` `var(--elevation-N)` `` |
-| `{{FONT_TOKENS}}` | Font CSS variable list | `--font-inter`, `--font-mono` |
-| `{{BASE_FONT_SIZE}}` | Root font-size for rem | `8px`, `16px` |
-| `{{SIZE_UNIT}}` | Preferred sizing unit | `rem`, `px` |
-| `{{THEME_CSS_PATH}}` | Where theme CSS lives | `public/css/themes/` |
-
-### File layout
-
-| Placeholder | Meaning | Example |
-|---|---|---|
-| `{{COMPONENT_DIR}}` | Folder for components | `src/components` |
-| `{{STYLED_DIR}}` | Folder for component styles | `src/components/styled` |
-| `{{STYLED_FILE_EXAMPLE}}` | Example styled file path | `src/components/styled/button.styled.css` |
-| `{{MODELS_DIR}}` | Folder for shared types | `src/models` |
-| `{{COMPONENT_EXT}}` | Component file extension | `tsx`, `vue`, `svelte` |
-| `{{FILENAME_CONVENTION}}` | Filename casing rule | `camelCase.tsx` |
-| `{{COMPONENT_NAMING}}` | Component identifier casing | `PascalCase name` |
-| `{{INDEX_FILE}}` | Barrel export entry | `src/index.ts` |
-| `{{BUILD_CONFIG_FILE}}` | Build config path | `vite.config.ts`, `rollup.config.ts` |
-| `{{APP_ENTRY_FILE}}` | Demo / host app file | `src/App.tsx` |
-| `{{DIST_DIR}}` | Build output directory | `dist` |
-
-### Testing and phases
-
-| Placeholder | Meaning | Example |
-|---|---|---|
-| `{{UNIT_TEST_FRAMEWORK}}` | Unit test framework | `Vitest`, `Jest` |
-| `{{E2E_TEST_FRAMEWORK}}` | E2E framework | `Playwright`, `Cypress` |
-| `{{PHASE_N_CATEGORY}}` (numbered per row, e.g. `{{PHASE_1_CATEGORY}}`) | Phase row category | `Layout`, `Form primitives` |
-| `{{PHASE_N_COMPONENTS}}` (numbered per row, e.g. `{{PHASE_1_COMPONENTS}}`) | Phase row components | `box, flex, grid` |
+Change `name` in `Cargo.toml` and `[application].name` in `Dioxus.toml` to your
+project name, then update the `title` under `[web.app]` in `Dioxus.toml`.

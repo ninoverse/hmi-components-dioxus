@@ -20,13 +20,13 @@ See `.claude/branch-naming.md` for the branch name format.
 
 **Draft PR rule:** open a draft PR at the group's **first commit**. Push every
 subsequent component commit to that same PR. Mark ready for review only when
-`{{LINT_CMD}}` and `{{BUILD_CMD}}` both pass cleanly.
+`cargo clippy --all-targets -- -D warnings` and `dx build --release` both pass cleanly.
 
 ---
 
-<!-- TODO: If this project plans phased builds, populate the phase table below.
+<!-- If this project plans phased builds, populate the phase table below.
      Otherwise delete this entire "Phase execution order" section and the
-     "Current gap list" section that follows. -->
+     "Current gap list" section that follows. The rows below are an example. -->
 
 ## Phase execution order
 
@@ -36,8 +36,8 @@ phases are merged to `main`.
 | Phase | Category | Components | Dependency |
 |-------|----------|-----------|------------|
 | 0 | Reconciliation | Renames, moves, structural fixes | Do first — before any new builds |
-| 1 | {{PHASE_1_CATEGORY}} | {{PHASE_1_COMPONENTS}} | Foundational |
-| 2 | {{PHASE_2_CATEGORY}} | {{PHASE_2_COMPONENTS}} | After Phase 1 |
+| 1 | Layout primitives | container, stack, grid | Foundational |
+| 2 | Interactive | button, input, select | After Phase 1 |
 
 ### Within each phase
 
@@ -50,8 +50,8 @@ phases are merged to `main`.
 ### Audit-pass checklist (existing components)
 
 1. Open the component source file — check for hardcoded colors, radii, or shadows.
-2. Confirm the component is imported and rendered in `{{APP_ENTRY_FILE}}`.
-3. Take a screenshot (`{{DEV_CMD}}` + screenshot method in `component-workflow.md`).
+2. Confirm the component is imported and rendered in `src/main.rs`.
+3. Take a screenshot (`dx serve` + screenshot method in `component-workflow.md`).
 4. Surface anything broken. Only commit if a fix is needed; use an isolated commit.
 
 ---

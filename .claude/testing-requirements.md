@@ -1,16 +1,33 @@
 # Testing Requirements
 
-There is currently no test suite configured in this repository. Until one is added, the following manual verification steps apply.
-
 ## Before merging any change
 
-- [ ] `{{BUILD_CMD}}` succeeds (catches import boundary violations at compile time)
+- [ ] `cargo clippy --all-targets -- -D warnings` is clean (warnings are errors)
+- [ ] `dx check` passes (catches `rsx!` macro errors)
+- [ ] `cargo test` passes
+- [ ] `dx build --release --platform web` succeeds (catches asset/compile failures)
+- [ ] For UI changes: verified visually via `dx serve` (screenshot in the PR)
 
-## If/when a test framework is added
+## Writing tests
 
-<!-- TODO: Pick a test stack. -->
-Recommended stack: **{{UNIT_TEST_FRAMEWORK}}** (unit) + **{{E2E_TEST_FRAMEWORK}}** (e2e).
+`cargo test` is the test runner; no extra framework is required.
 
-- Unit tests belong in a `__tests__/` sibling to the file under test, or colocated as `*.test.ts`
-- E2e tests go in `e2e/`
-<!-- TODO: Document auth / integration testing strategy if applicable. -->
+- **Unit tests** for pure logic (utilities, model methods) go in a `#[cfg(test)] mod tests`
+  block at the bottom of the file under test.
+- **Integration tests** that exercise the public crate surface go in a top-level
+  `tests/` directory, one file per area.
+
+```rust
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn formats_empty_input() {
+        assert_eq!(format_label(""), "—");
+    }
+}
+```
+
+Component render/interaction testing is not wired up in this template; rely on
+`dx check` + the manual visual check until a renderer-level harness is added.

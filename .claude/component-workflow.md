@@ -1,6 +1,6 @@
 # Component Workflow
 
-The exact procedure for building or modifying a single component.
+The exact procedure for building or modifying a single Dioxus component.
 Follow every step in order; do not skip or reorder.
 
 ---
@@ -14,89 +14,66 @@ Before writing any code:
 
 2. **Check if the file already exists:**
    ```bash
-   ls {{COMPONENT_DIR}}/<name>.{{COMPONENT_EXT}} 2>/dev/null && echo EXISTS || echo MISSING
+   ls src/components/<name>.rs 2>/dev/null && echo EXISTS || echo MISSING
    ```
    If it exists, report the finding and ask: skip / overwrite / modify.
    Never silently overwrite.
 
 ---
 
-## 9-step checklist (one component, one commit)
+## 6-step checklist (one component, one commit)
 
-Complete all nine steps before committing. Never commit a partial component.
+Complete all six steps before committing. Never commit a partial component.
 
-### 1. `{{COMPONENT_DIR}}/<name>.{{COMPONENT_EXT}}`
+### 1. `src/components/<name>.rs`
 
-- Filename: `{{FILENAME_CONVENTION}}`.
-- Export a **named** function component ({{COMPONENT_NAMING}}).
-- Props type: define in the same file; move to `{{MODELS_DIR}}/<name>.model.ts` only
-  if the type is shared across multiple components.
-- First import: side-effect CSS — `import './styled/<name>.styled.css';`  <!-- TODO: adapt or delete if the project uses CSS-in-JS / no CSS files. -->
-- All values via design tokens (`var(--{{TOKEN_EXAMPLE}})`) — no hardcoded colors, radii, or shadows.
-- Sizing: `{{SIZE_UNIT}}` units. Remember `1{{SIZE_UNIT}} = {{BASE_FONT_SIZE}}` at the project base.
+- Filename: `snake_case.rs`.
+- Define a `PascalCase` function annotated with `#[component]`, returning
+  `Element` via `rsx!`. Mark it `pub`.
+- Props: declare inline as function arguments. Move a `Props` struct to
+  `src/models/<name>.rs` only if the type is shared across multiple components.
+- Component-scoped CSS: declare `const <NAME>_CSS: Asset = asset!("/assets/styling/<name>.css");`
+  and inject `document::Stylesheet { href: <NAME>_CSS }` as the first node in `rsx!`.
+- All values via design tokens (`var(--color-primary)`) — no hardcoded colors, radii, or shadows.
+- Sizing: `rem` units. Remember `1rem = 16px` at the project base.
 
-### 2. `{{STYLED_DIR}}/<name>.styled.css`
+### 2. `assets/styling/<name>.css`
 
-<!-- TODO: Adapt token names to this project's design system, or delete if no design system. -->
-- Use only project design tokens (`var(--{{TOKEN_EXAMPLE}})`, …).
-- Shape tokens: {{SHAPE_TOKENS}}.
-- Elevation tokens: {{ELEVATION_TOKENS}}.
+- Use only project design tokens (`var(--color-*)`, `var(--radius-*)`, `var(--elevation-*)`).
+- Shape tokens: `var(--radius-sm|md|lg)` — never hardcoded radii.
+- Elevation tokens: `var(--elevation-1|2)` — never hardcoded box-shadows.
 - Class names: BEM-style, scoped to the component:
   `.<name>`, `.<name>__part`, `.<name>--modifier`.
 
-### 3. `{{INDEX_FILE}}`
+### 3. `src/components/mod.rs`
 
-Add a named re-export. Keep exports **alphabetical**.
+Add `mod <name>;` and a `pub use <name>::<ComponentName>;` re-export.
+Keep both lists **alphabetical**.
 
-<!-- TODO: Delete this entire step if the project is not a library / has no build entry map. -->
-### 4. `{{BUILD_CONFIG_FILE}}`
+### 4. `src/main.rs`
 
-Add the component to the build entry map. Keep entries **alphabetical**.
+Render the component in `App` (or the relevant parent) with **at least one
+variant per meaningful prop combination**. Every prop that changes visual
+output must be exercised — type errors and render failures surface at
+`cargo check` / `dx serve`.
 
-```ts
-<name>: resolve(dirname, '{{COMPONENT_DIR}}/<name>.{{COMPONENT_EXT}}'),
+```rust
+Hero { title: "Primary", subtitle: "Default state" }
 ```
 
-<!-- TODO: Delete this entire step if the project is not published as a library. -->
-### 5. `package.json` — `"exports"`
+### 5. Visual check
 
-Add a subpath entry. Key: kebab-case. Keep entries **alphabetical**.
+Start the dev server (`dx serve --platform web`) and confirm the component
+renders correctly. Take a screenshot using the method below and present it for
+review before committing. For desktop/mobile, swap `--platform`.
 
-```json
-"./<kebab-name>": {
-    "types": "./{{DIST_DIR}}/<name>.d.ts",
-    "import": "./{{DIST_DIR}}/<name>.js"
-}
-```
-
-### 6. `{{APP_ENTRY_FILE}}`
-
-Import the component from `'./index'` and render **at least one variant per
-meaningful prop combination**. Every prop that changes visual output must be
-exercised — type errors, missing CSS, and render failures surface here.
-
-```tsx
-import { ExampleComponent } from './index';
-// inside return:
-<ExampleComponent variant="primary">Primary</ExampleComponent>
-<ExampleComponent variant="ghost" size="small">Ghost SM</ExampleComponent>
-```
-
-### 7. Visual check
-
-Start the dev server (`{{DEV_CMD}}`) and confirm the component renders correctly in
-the browser. Take a screenshot using the method below. Present it for review
-before committing.
-
-### 8. Commit
+### 6. Commit, push, PR
 
 ```
 feat(ui): add <ComponentName> component
 ```
 
 One commit per component. Never batch multiple components in one commit.
-
-### 9. Push + PR
 
 - Push the commit to the current group branch.
 - If this is the **group's first commit**: open a draft PR immediately.
@@ -110,26 +87,19 @@ One commit per component. Never batch multiple components in one commit.
 Run before marking any group PR ready for review:
 
 ```bash
-{{LINT_CMD}}    # zero warnings, zero errors
-{{BUILD_CMD}}   # build emits all new entries; no stale references
+cargo clippy --all-targets -- -D warnings   # zero warnings, zero errors
+dx check                                     # rsx! macros validate
+dx build --release --platform web            # production build succeeds
 ```
 
-<!-- TODO: Delete this dist spot-check if not a library build. -->
-Spot-check `{{DIST_DIR}}/` for every component added in the group:
-
-```bash
-ls {{DIST_DIR}}/<name>.js {{DIST_DIR}}/<name>.d.ts
-```
-
-Confirm that `{{INDEX_FILE}}` re-exports, `{{BUILD_CONFIG_FILE}}` entries, and
-`package.json` exports are all **alphabetically sorted and consistent** with each
-other.
+Confirm that `src/components/mod.rs` `mod` and `pub use` lines are
+**alphabetically sorted and consistent** with the files on disk.
 
 ---
 
 ## Screenshot method
 
-<!-- TODO: Replace or delete this entire "Screenshot method" section to match your environment. The block below is one working example for sandboxed Linux containers. -->
+<!-- One working example for sandboxed Linux containers. Adapt to your environment. -->
 
 Works without widening the container's egress policy. `/tmp` is wiped on
 container reset — re-run the install at the start of each session.
@@ -153,10 +123,10 @@ const puppeteer = require('puppeteer-core');
         defaultViewport: { width: 1400, height: 1000, deviceScaleFactor: 2 },
     });
     const page = await browser.newPage();
-    await page.goto('http://localhost:{{DEV_PORT}}/', { waitUntil: 'networkidle0' });
+    await page.goto('http://localhost:8080/', { waitUntil: 'networkidle0' });
     await page.screenshot({ path: 'out.png', fullPage: true });
     await browser.close();
 })();
 ```
 
-With `{{DEV_CMD}}` running: `node /tmp/shot/shot.js`
+With `dx serve --platform web` running: `node /tmp/shot/shot.js`
