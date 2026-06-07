@@ -4,6 +4,11 @@ mod components;
 use components::Hero;
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
+// Theme tokens must load before the component CSS that consumes them:
+// constants → color → structure → components.
+const HMI_CONSTANTS_CSS: Asset = asset!("/assets/vendor/hmi-constants.css");
+const HMI_COLOR_CSS: Asset = asset!("/assets/vendor/hmi-color-default.css");
+const HMI_STRUCTURE_CSS: Asset = asset!("/assets/vendor/hmi-structure-default.css");
 const HMI_CSS: Asset = asset!("/assets/vendor/hmi-components.css");
 const HMI_JS: Asset = asset!("/assets/vendor/hmi-components.iife.js");
 
@@ -15,6 +20,9 @@ fn main() {
 fn App() -> Element {
     rsx! {
         document::Stylesheet { href: MAIN_CSS }
+        document::Stylesheet { href: HMI_CONSTANTS_CSS }
+        document::Stylesheet { href: HMI_COLOR_CSS }
+        document::Stylesheet { href: HMI_STRUCTURE_CSS }
         document::Stylesheet { href: HMI_CSS }
         document::Script { src: HMI_JS }
         Hero { title: "Rust + Dioxus", subtitle: "Cross-platform app template" }
