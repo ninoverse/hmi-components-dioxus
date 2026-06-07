@@ -16,9 +16,6 @@ fn main() {
 fn App() -> Element {
     rsx! {
         document::Stylesheet { href: MAIN_CSS }
-        Hero {
-            title: "Rust + Dioxus",
-            subtitle: "Cross-platform app template",
-        }
+        Hero { title: "Rust + Dioxus", subtitle: "Cross-platform app template" }
     }
 }
