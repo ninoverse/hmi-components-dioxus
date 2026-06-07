@@ -6,15 +6,27 @@ const PACKAGE: &str = "@ninoverse/hmi-components";
 const VERSION: &str = "3.1.2";
 const TARBALL: &str = "ninoverse-hmi-components-3.1.2.tgz";
 
+// (path inside the tarball after `package/dist/`, vendored output name).
+// The component CSS only consumes design tokens (var(--background), …); the
+// theme files below define them, so all four must be vendored together.
+const FILES: &[(&str, &str)] = &[
+    ("hmi-components.iife.js", "hmi-components.iife.js"),
+    ("hmi-components.css", "hmi-components.css"),
+    ("themes/constants.css", "hmi-constants.css"),
+    ("themes/color/default.css", "hmi-color-default.css"),
+    ("themes/structure/default.css", "hmi-structure-default.css"),
+];
+
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
-    println!("cargo:rerun-if-changed=assets/vendor/hmi-components.iife.js");
-    println!("cargo:rerun-if-changed=assets/vendor/hmi-components.css");
+    for (_, out) in FILES {
+        println!("cargo:rerun-if-changed=assets/vendor/{out}");
+    }
 
-    let out_js = Path::new("assets/vendor/hmi-components.iife.js");
-    let out_css = Path::new("assets/vendor/hmi-components.css");
-
-    if out_js.exists() && out_css.exists() {
+    if FILES
+        .iter()
+        .all(|(_, out)| Path::new("assets/vendor").join(out).exists())
+    {
         return;
     }
 
@@ -30,22 +42,25 @@ fn main() {
         .expect("npm not found — install Node.js to fetch hmi-components");
     assert!(status.success(), "npm pack failed");
 
+    let mut tar_args = vec![
+        "xzf".to_string(),
+        tmp.join(TARBALL).to_str().unwrap().to_string(),
+        "-C".to_string(),
+        tmp.to_str().unwrap().to_string(),
+        "--strip-components=2".to_string(),
+    ];
+    tar_args.extend(FILES.iter().map(|(src, _)| format!("package/dist/{src}")));
+
     let status = Command::new("tar")
-        .args([
-            "xzf",
-            tmp.join(TARBALL).to_str().unwrap(),
-            "-C",
-            tmp.to_str().unwrap(),
-            "--strip-components=2",
-            "package/dist/hmi-components.iife.js",
-            "package/dist/hmi-components.css",
-        ])
+        .args(&tar_args)
         .status()
         .expect("tar not found");
     assert!(status.success(), "tar extraction failed");
 
-    fs::copy(tmp.join("hmi-components.iife.js"), out_js).expect("failed to copy iife.js");
-    fs::copy(tmp.join("hmi-components.css"), out_css).expect("failed to copy css");
+    for (src, out) in FILES {
+        fs::copy(tmp.join(src), Path::new("assets/vendor").join(out))
+            .unwrap_or_else(|e| panic!("failed to copy {src}: {e}"));
+    }
 
     fs::remove_dir_all(&tmp).ok();
 }
