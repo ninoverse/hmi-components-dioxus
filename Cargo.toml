@@ -1,0 +1,20 @@
+[package]
+name = "dioxus-app"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+dioxus = { version = "0.7" }
+
+# `dx serve --platform <p>` builds with `--no-default-features --features <p>`.
+# One platform stays `default` so plain `cargo` / rust-analyzer have a target.
+[features]
+default = ["web"]
+web = ["dioxus/web"]
+desktop = ["dioxus/desktop"]
+mobile = ["dioxus/mobile"]
+
+[profile.release]
+opt-level = "z"
+lto = true
+strip = true

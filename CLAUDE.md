@@ -4,29 +4,34 @@ This file provides strict guidance and architectural rules for Claude Code (clau
 
 ## Commands & Tooling
 
-- **Package Manager:** You MUST strictly use `{{PACKAGE_MANAGER}}`. Never use other package managers in this repo.
-- **Maintain the Build:** Never leave the codebase in a state where build or linting fails. Run the relevant commands below to verify your work before concluding a task.
+- **Toolchain:** You MUST use `cargo` for the Rust crate and the Dioxus CLI (`dx`) for serving, building, and formatting. Never introduce a JavaScript package manager (npm/pnpm/yarn) for app code.
+- **Dioxus CLI:** Install once with `cargo install dioxus-cli` (or `cargo binstall dioxus-cli`). Keep the `dx` and `dioxus` crate versions on the same `major.minor`.
+- **Platform selection:** This is a cross-platform app. Pass `--platform web|desktop|mobile` to `dx serve`/`dx build`. `web` is the `default` cargo feature, so plain `cargo` and rust-analyzer target web.
+- **Maintain the Build:** Never leave the codebase in a state where the build, clippy, or `dx check` fails. Run the relevant commands below to verify your work before concluding a task.
 
-<!-- TODO: Replace this code block with the commands actually used in this repo. -->
 ```bash
-{{INSTALL_CMD}}     # Install dependencies
-{{DEV_CMD}}         # Start dev server
-{{BUILD_CMD}}       # Production build
-{{LINT_CMD}}        # Lint check
-{{FORMAT_CMD}}      # Format with auto-write
-{{TEST_CMD}}        # Run tests (delete this line if not applicable)
+cargo fetch                              # Fetch dependencies
+dx serve --platform web                  # Start dev server (hot reload); swap in desktop|mobile
+dx build --release --platform web        # Production build
+cargo clippy --all-targets -- -D warnings # Lint check (warnings are errors)
+dx fmt && cargo fmt                      # Format rsx! macros, then Rust source
+cargo test                               # Run tests
 ```
 
 ## Architecture & Framework Rules
 
-<!-- TODO: Describe the framework / runtime constraints for this project. -->
-**Framework:** This project strictly uses {{FRAMEWORK}}.
+**Framework:** This project strictly uses **Dioxus 0.7 (Rust)**, targeting web, desktop, and mobile from a single codebase.
 
-<!-- TODO: Delete this whole "Styling Conventions" block if the project has no design system. -->
+- **Components are functions** annotated with `#[component]`, named in `PascalCase`, returning `Element` via the `rsx!` macro. See `.claude/component-workflow.md`.
+- **Entry point:** `src/main.rs` calls `dioxus::launch(App)`. The active cargo feature selects the renderer — never hardcode a platform.
+- **Assets** (CSS, images, fonts) are referenced through the `asset!()` macro so the CLI can fingerprint and bundle them. Inject CSS with `document::Stylesheet { href: ... }`.
+- **No platform-specific code** in shared components unless gated behind `#[cfg(feature = "...")]`.
+
 ### Styling Conventions
 
-- **Design Tokens:** CSS custom properties follow the `{{DESIGN_TOKEN_PREFIX}}` naming scheme (e.g. `var(--{{TOKEN_EXAMPLE}})`). Active theme CSS lives in `{{THEME_CSS_PATH}}`.
-- **Typography & Scaling:** Base font size is `{{BASE_FONT_SIZE}}`; `rem` units scale from this base. Available font tokens: {{FONT_TOKENS}}.
+- **Design Tokens:** CSS custom properties are the single source of truth for theme values (e.g. `var(--color-primary)`). Global tokens live in `assets/main.css`; per-component CSS lives in `assets/styling/`.
+- **Typography & Scaling:** Base font size is `16px`; `rem` units scale from this base. Available font tokens: `var(--font-sans)`, `var(--font-mono)`.
+- **No hardcoded values:** colors, radii (`var(--radius-*)`), and shadows (`var(--elevation-*)`) must come from tokens — never literal hex/px in component CSS.
 
 ## Behavioral Guidelines
 
