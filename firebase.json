@@ -1,0 +1,7 @@
+{
+  "hosting": {
+    "target": "demo",
+    "public": "target/dx/dioxus-app/release/web/public",
+    "ignore": ["**/.*"]
+  }
+}

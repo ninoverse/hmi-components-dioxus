@@ -1,0 +1,8 @@
+{
+  "projects": { "default": "<PROJECT_ID>" },
+  "targets": {
+    "<PROJECT_ID>": {
+      "hosting": { "demo": ["<DEMO_SITE_ID>"] }
+    }
+  }
+}
