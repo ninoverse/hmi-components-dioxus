@@ -36,7 +36,7 @@ fn App() -> Element {
                     <hmi-spinner size="small"></hmi-spinner>
                 </div>
                 <div style="margin-top:1rem;">
-                    <hmi-alert variant="info" title="hmi-components 3.1.2">Web components loaded from the Rust build pipeline.</hmi-alert>
+                    <hmi-alert variant="info" title='"hmi-components 3.1.2"'>Web components loaded from the Rust build pipeline.</hmi-alert>
                 </div>
             "#
         }
