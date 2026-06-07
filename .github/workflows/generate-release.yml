@@ -1,0 +1,87 @@
+name: Generate Release on Tag Push
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      deploy_tarball:
+        description: 'Attach web bundle tarball to GitHub Release'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve deploy targets
+        id: targets
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "deploy_tarball=true"  >> $GITHUB_OUTPUT
+          else
+            echo "deploy_tarball=${{ inputs.deploy_tarball }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Validate tag format
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          if [[ ! "${{ github.ref_name }}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Ref '${{ github.ref_name }}' is not a valid vX.Y.Z tag. Run this workflow from a version tag."
+            exit 1
+          fi
+
+      - name: Generate Token from GitHub App
+        id: get_workflow_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.get_workflow_token.outputs.token }}
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Cache cargo build
+        uses: Swatinem/rust-cache@v2
+
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@main
+
+      - name: Install Dioxus CLI
+        run: cargo binstall --no-confirm 'dioxus-cli@^0.7'
+
+      - name: Build
+        run: dx build --release --platform web
+
+      - name: Pack web bundle tarball
+        if: steps.targets.outputs.deploy_tarball == 'true'
+        run: |
+          tar -czf dioxus-app-${{ github.ref_name }}-web.tar.gz \
+            -C target/dx/dioxus-app/release/web public
+
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
+        run: |
+          if [[ "${{ steps.targets.outputs.deploy_tarball }}" == "true" ]]; then
+            gh release create "${{ github.ref_name }}" \
+              --title "Release ${{ github.ref_name }}" \
+              --generate-notes \
+              *.tar.gz
+          else
+            gh release create "${{ github.ref_name }}" \
+              --title "Release ${{ github.ref_name }}" \
+              --generate-notes
+          fi
