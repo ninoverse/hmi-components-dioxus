@@ -1,0 +1,61 @@
+/* Ninoverse theme constants — tokens that never vary across color or structural
+   themes. Color roles live in color/*.css ([data-theme]); shape, density, motion
+   and typography live in structure/*.css ([data-structure]). Load this file
+   first, then one color theme and one structure theme. */
+
+:root {
+    /* Typography — font family definitions (Google Fonts loaded in index.html).
+       Which family is the active UI / display font is chosen per structural
+       theme via --font-default / --font-display. */
+    --font-quicksand: 'Quicksand', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-oxanium: 'Oxanium', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-rubik-glitch: 'Rubik Glitch', ui-serif, serif;
+    --font-press-start-2p: 'Press Start 2P', ui-monospace, 'SF Mono', Menlo, monospace;
+    --font-pixelify-sans: 'Pixelify Sans', ui-sans-serif, system-ui, sans-serif;
+
+    /* State-layer opacities (MD3 standard) */
+    --state-hover-opacity: 0.08;
+    --state-focus-opacity: 0.12;
+    --state-pressed-opacity: 0.12;
+    --state-dragged-opacity: 0.16;
+    --state-disabled-opacity: 0.38;
+    --state-disabled-container-opacity: 0.12;
+
+    /* Elevation — shadow per level */
+    --elevation-0: none;
+    --elevation-1:
+        0 0.125rem 0.25rem 0 rgba(43, 38, 32, 0.1),
+        0 0.125rem 0.375rem 0.125rem rgba(43, 38, 32, 0.06);
+    --elevation-2:
+        0 0.125rem 0.25rem 0 rgba(43, 38, 32, 0.1),
+        0 0.25rem 0.75rem 0.25rem rgba(43, 38, 32, 0.08);
+    --elevation-3:
+        0 0.125rem 0.375rem 0 rgba(43, 38, 32, 0.12),
+        0 0.5rem 1rem 0.375rem rgba(43, 38, 32, 0.1);
+    --elevation-4:
+        0 0.25rem 0.375rem 0 rgba(43, 38, 32, 0.12),
+        0 0.75rem 1.25rem 0.5rem rgba(43, 38, 32, 0.1);
+    --elevation-5:
+        0 0.5rem 0.5rem 0 rgba(43, 38, 32, 0.12),
+        0 1rem 1.5rem 0.75rem rgba(43, 38, 32, 0.12);
+
+    /* Legacy spacing aliases — map the published --spacing-0..9 names onto the
+       active dense --space-* scale (defined per structure) so older consumers
+       keep working and gain density theming too. */
+    --spacing-0: var(--space-0);
+    --spacing-1: var(--space-2);
+    --spacing-2: var(--space-4);
+    --spacing-3: var(--space-6);
+    --spacing-4: var(--space-8);
+    --spacing-5: var(--space-10);
+    --spacing-6: var(--space-11);
+    --spacing-7: var(--space-12);
+    --spacing-8: var(--space-13);
+    --spacing-9: var(--space-14);
+
+    /* Focus ring (derived from the active --primary) */
+    --ring: color-mix(in oklab, var(--primary) 50%, transparent);
+
+    /* Let native UI (form controls, scrollbars) follow the OS color scheme */
+    color-scheme: light dark;
+}

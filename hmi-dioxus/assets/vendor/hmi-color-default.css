@@ -1,0 +1,142 @@
+/* Default color theme — warm coral/orange on a soft neutral palette.
+   Light by default; dark variant resolved automatically via prefers-color-scheme.
+   The :where(:root) fallback (specificity 0,0,0) makes this theme apply when no
+   [data-theme] is set, while any explicit [data-theme] overrides it regardless
+   of stylesheet order. */
+
+:where(:root),
+[data-theme='default'] {
+    /* Reference palette (tonal source colors) */
+    --ref-primary-40: #c25636;
+    --ref-primary-50: #e87a5d;
+    --ref-primary-80: #f5b5a0;
+    --ref-primary-90: #fbe4db;
+    --ref-primary-95: #fdf0ea;
+
+    --ref-neutral-10: #2b2520;
+    --ref-neutral-20: #4a413a;
+    --ref-neutral-40: #7a6f64;
+    --ref-neutral-60: #a89c8e;
+    --ref-neutral-80: #ddd0b9;
+    --ref-neutral-90: #ece2d1;
+    --ref-neutral-95: #f4ede1;
+    --ref-neutral-98: #fbf6ee;
+    --ref-neutral-100: #ffffff;
+
+    /* System color roles (light) */
+    --primary: #e87a5d;
+    --on-primary: #ffffff;
+    --primary-container: #fbe4db;
+    --on-primary-container: #8c3a20;
+
+    --secondary: #7a6f64;
+    --on-secondary: #ffffff;
+    --secondary-container: #f4ede1;
+    --on-secondary-container: #4a413a;
+
+    --tertiary: #6b86b3;
+    --on-tertiary: #ffffff;
+    --tertiary-container: #dee5f2;
+    --on-tertiary-container: #2e446b;
+
+    --error: #c0524c;
+    --on-error: #ffffff;
+    --error-container: #f4dad6;
+    --on-error-container: #7a2a26;
+
+    --background: #fbf6ee;
+    --on-background: #2b2520;
+
+    --surface: #fbf6ee;
+    --on-surface: #2b2520;
+    --surface-variant: #ece2d1;
+    --on-surface-variant: #7a6f64;
+
+    --surface-container-lowest: #ffffff;
+    --surface-container-low: #fbf6ee;
+    --surface-container: #f7f0e4;
+    --surface-container-high: #f4ede1;
+    --surface-container-highest: #ece2d1;
+
+    --outline: #a89c8e;
+    --outline-variant: #ece2d1;
+
+    --shadow: #000000;
+    --scrim: rgba(43, 38, 32, 0.32);
+
+    --inverse-surface: #2b2520;
+    --inverse-on-surface: #fbf6ee;
+    --inverse-primary: #f5b5a0;
+
+    --success: #5c9a6a;
+    --on-success: #ffffff;
+    --success-container: #dfeedd;
+    --on-success-container: #2c5b36;
+    --warning: #d49a3f;
+    --on-warning: #ffffff;
+    --warning-container: #f7e9c8;
+    --on-warning-container: #6f4e13;
+}
+
+@media (prefers-color-scheme: dark) {
+    :where(:root),
+    [data-theme='default'] {
+        /* Consumed reference tones, adjusted for dark surfaces */
+        --ref-primary-40: #e89a82;
+        --ref-neutral-60: #a89c8e;
+
+        /* System color roles (dark) */
+        --primary: #f5b5a0;
+        --on-primary: #5a1c08;
+        --primary-container: #8c3a20;
+        --on-primary-container: #fbe4db;
+
+        --secondary: #ddd0b9;
+        --on-secondary: #2b2520;
+        --secondary-container: #4a413a;
+        --on-secondary-container: #ece2d1;
+
+        --tertiary: #aac0e6;
+        --on-tertiary: #16263f;
+        --tertiary-container: #2e446b;
+        --on-tertiary-container: #dee5f2;
+
+        --error: #e89a93;
+        --on-error: #5a1410;
+        --error-container: #7a2a26;
+        --on-error-container: #f4dad6;
+
+        --background: #1a1714;
+        --on-background: #ece2d1;
+
+        --surface: #1a1714;
+        --on-surface: #ece2d1;
+        --surface-variant: #4a413a;
+        --on-surface-variant: #ddd0b9;
+
+        --surface-container-lowest: #141110;
+        --surface-container-low: #1f1b17;
+        --surface-container: #232019;
+        --surface-container-high: #2b2520;
+        --surface-container-highest: #36302a;
+
+        --outline: #a89c8e;
+        --outline-variant: #4a413a;
+
+        --shadow: #000000;
+        --scrim: rgba(0, 0, 0, 0.6);
+
+        --inverse-surface: #ece2d1;
+        --inverse-on-surface: #2b2520;
+        --inverse-primary: #c25636;
+
+        --success: #8fcf9b;
+        --on-success: #0e3a1a;
+        --success-container: #2c5b36;
+        --on-success-container: #dfeedd;
+        --warning: #e8c07a;
+        --on-warning: #3d2c08;
+        --warning-container: #6f4e13;
+        --on-warning-container: #f7e9c8;
+    }
+}
