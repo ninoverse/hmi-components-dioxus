@@ -1,6 +1,10 @@
-//! Component module. Re-export each component here so call sites can write
-//! `use components::Name`. Keep the `pub use` lines alphabetical.
+//! Typed wrappers for the hmi-components custom elements. One component per
+//! file; keep the `mod` and `pub use` lines alphabetical.
 
-mod hero;
+mod badge;
+mod button;
+mod chip;
 
-pub use hero::Hero;
+pub use badge::{BadgeVariant, HmiBadge};
+pub use button::{ButtonSize, ButtonType, ButtonVariant, HmiButton};
+pub use chip::HmiChip;

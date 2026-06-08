@@ -1,5 +1,14 @@
+//! Maintainer task: refresh the vendored `@ninoverse/hmi-components` assets.
+//!
+//! Unlike a build script, this runs only when a maintainer bumps the upstream
+//! JS version. It downloads the npm package with `npm pack`, extracts the five
+//! files the crate ships, and writes them into the crate's `assets/vendor/`,
+//! which is committed so downstream builds (and docs.rs) need no network or npm.
+//!
+//! Run with: `cargo run -p xtask`
+
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 const PACKAGE: &str = "@ninoverse/hmi-components";
@@ -17,20 +26,18 @@ const FILES: &[(&str, &str)] = &[
     ("themes/structure/default.css", "hmi-structure-default.css"),
 ];
 
+fn vendor_dir() -> PathBuf {
+    // CARGO_MANIFEST_DIR = .../xtask; the vendored assets live one level up in
+    // the library crate root (the workspace root), so cwd does not matter.
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .expect("xtask manifest dir has a parent")
+        .join("assets/vendor")
+}
+
 fn main() {
-    println!("cargo:rerun-if-changed=build.rs");
-    for (_, out) in FILES {
-        println!("cargo:rerun-if-changed=assets/vendor/{out}");
-    }
-
-    if FILES
-        .iter()
-        .all(|(_, out)| Path::new("assets/vendor").join(out).exists())
-    {
-        return;
-    }
-
-    fs::create_dir_all("assets/vendor").expect("failed to create assets/vendor");
+    let out = vendor_dir();
+    fs::create_dir_all(&out).expect("failed to create assets/vendor");
 
     let tmp = std::env::temp_dir().join("hmi-components-fetch");
     fs::create_dir_all(&tmp).expect("failed to create temp dir");
@@ -57,10 +64,12 @@ fn main() {
         .expect("tar not found");
     assert!(status.success(), "tar extraction failed");
 
-    for (src, out) in FILES {
-        fs::copy(tmp.join(src), Path::new("assets/vendor").join(out))
+    for (src, name) in FILES {
+        fs::copy(tmp.join(src), out.join(name))
             .unwrap_or_else(|e| panic!("failed to copy {src}: {e}"));
+        println!("vendored {name}");
     }
 
     fs::remove_dir_all(&tmp).ok();
+    println!("done → {}", out.display());
 }

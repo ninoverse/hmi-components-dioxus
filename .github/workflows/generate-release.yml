@@ -63,13 +63,14 @@ jobs:
         run: cargo binstall --no-confirm 'dioxus-cli@^0.7'
 
       - name: Build
+        working-directory: demo
         run: dx build --release --platform web
 
       - name: Pack web bundle tarball
         if: steps.targets.outputs.deploy_tarball == 'true'
         run: |
-          tar -czf dioxus-app-${{ github.ref_name }}-web.tar.gz \
-            -C target/dx/dioxus-app/release/web public
+          tar -czf hmi-dioxus-demo-${{ github.ref_name }}-web.tar.gz \
+            -C target/dx/hmi-dioxus-demo/release/web public
 
       - name: Create GitHub Release
         env:

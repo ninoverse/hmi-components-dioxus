@@ -1,5 +1,0 @@
-[application]
-name = "dioxus-app"
-
-[web.app]
-title = "Dioxus App"
