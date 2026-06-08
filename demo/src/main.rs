@@ -6,9 +6,6 @@ use hmi_dioxus::{
     TextTone, TextWeight,
 };
 
-mod components;
-use components::Hero;
-
 const MAIN_CSS: Asset = asset!("/assets/main.css");
 
 fn main() {
@@ -22,9 +19,9 @@ fn App() -> Element {
         // Injects the hmi-components stylesheets + the custom-element registration
         // script. Render once, above any `Hmi*` wrapper.
         HmiAssets {}
-        Hero {
-            title: "hmi-dioxus",
-            subtitle: "Typed Dioxus wrappers for @ninoverse/hmi-components",
+        HmiHeading { level: 1, size: HeadingSize::Xlarge, "hmi-dioxus" }
+        HmiText { tone: TextTone::Muted,
+            "Typed Dioxus wrappers for @ninoverse/hmi-components"
         }
         div { style: "display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-top:2rem;",
             HmiBadge { variant: BadgeVariant::Success, "Active" }
