@@ -2,8 +2,8 @@ use dioxus::prelude::*;
 use hmi_dioxus::{
     AvatarSize, AvatarStatus, BadgeVariant, ButtonVariant, CardVariant, DividerAlign,
     DividerOrientation, HeadingSize, HeadingTone, HmiAssets, HmiAvatar, HmiBadge, HmiButton,
-    HmiCard, HmiChip, HmiDivider, HmiHeading, HmiSpinner, HmiText, SpinnerSize, TextTone,
-    TextWeight,
+    HmiCard, HmiChip, HmiDivider, HmiHeading, HmiProgress, HmiSpinner, HmiText, SpinnerSize,
+    TextTone, TextWeight,
 };
 
 mod components;
@@ -79,6 +79,11 @@ fn App() -> Element {
             HmiSpinner { size: SpinnerSize::Small }
             HmiSpinner {}
             HmiSpinner { size: SpinnerSize::Large, label: "Fetching data" }
+        }
+        div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
+            HmiProgress { value: 25.0, label: "25 percent" }
+            HmiProgress { value: 70.0, label: "70 percent" }
+            HmiProgress { indeterminate: true, label: "Working" }
         }
     }
 }

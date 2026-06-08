@@ -8,6 +8,7 @@ mod card;
 mod chip;
 mod divider;
 mod heading;
+mod progress;
 mod spinner;
 mod text;
 
@@ -18,5 +19,6 @@ pub use card::{CardVariant, HmiCard};
 pub use chip::HmiChip;
 pub use divider::{DividerAlign, DividerOrientation, HmiDivider};
 pub use heading::{HeadingSize, HeadingTone, HmiHeading};
+pub use progress::HmiProgress;
 pub use spinner::{HmiSpinner, SpinnerSize};
 pub use text::{HmiText, TextAlign, TextSize, TextTone, TextWeight};
