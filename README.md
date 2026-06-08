@@ -63,6 +63,12 @@ cd demo && dx build --release --platform web  # production build of the demo
 cargo fmt                                     # format Rust; `dx fmt` formats rsx! per-crate
 ```
 
+## Compatibility
+
+- **Dioxus:** `0.7.x` (the crate depends on `dioxus` with `default-features = false,
+  features = ["lib"]`, so the consuming binary brings its own renderer).
+- **MSRV:** Rust `1.83`, matching the Dioxus 0.7 toolchain floor.
+
 ## Versioning
 
 Both publishable crates share one repo-owned version via `[workspace.package].version`
@@ -80,3 +86,12 @@ version. CI bumps the shared version on merge to `main`.
   behind `#[cfg(feature = "...")]`.
 
 See `CLAUDE.md` and `.claude/` for the full architectural rules.
+
+## License
+
+`hmi-dioxus` is licensed under the [MIT License](LICENSE).
+
+The crate vendors and redistributes the upstream `@ninoverse/hmi-components` bundle
+(JS + theme CSS) under `assets/vendor/`. That bundle is also MIT-licensed; see
+[`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md) for the attribution and full
+license text.

@@ -6,13 +6,34 @@ resolver = "2"
 # kept deliberately independent of the wrapped npm package version.
 [workspace.package]
 version = "0.3.4"
+# MSRV: matches the Dioxus 0.7 toolchain floor (dioxus declares rust-version 1.83).
+rust-version = "1.83"
 
 [package]
 name = "hmi-dioxus"
 version.workspace = true
+rust-version.workspace = true
 edition = "2021"
 license = "MIT"
 description = "Typed Dioxus 0.7 wrappers for the @ninoverse/hmi-components web components"
+repository = "https://github.com/ninoverse/hmi-components-dioxus"
+documentation = "https://docs.rs/hmi-dioxus"
+readme = "README.md"
+keywords = ["dioxus", "web-components", "ui", "components", "wasm"]
+categories = ["gui", "web-programming", "wasm"]
+# The published .crate ships only the library + vendored bundle; dev-only and
+# sibling-crate paths are dropped so docs.rs and `cargo add` stay lean.
+exclude = [
+    "/demo",
+    "/xtask",
+    "/docs",
+    "/.claude",
+    "/.github",
+    "/.firebaserc",
+    "/firebase.json",
+    "/CLAUDE.md",
+    "/TODO.md",
+]
 
 # Renderer-agnostic: the `lib` feature pulls in the core (macros, rsx/html,
 # signals, hooks, document, asset) without any platform renderer or `launch`.

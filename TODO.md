@@ -90,14 +90,17 @@ Rough grouping, to suggest order (**3 / 85 wrapped**):
 
 ## Before publishing — Phase 0 (blocking)
 
-- [ ] **Confirm the upstream license.** A public crate redistributes
-      `hmi-components.iife.js` + the theme CSS inside the published `.crate`; this
-      is only legal if `@ninoverse/hmi-components`'s license permits redistribution
-      and is compatible with this crate's MIT. **Owner must confirm/set it — not
-      verifiable from the repo.**
-- [ ] Document the supported Dioxus range (`0.7`) and the MSRV.
-- [ ] Fill publish metadata in the root `Cargo.toml`: `repository`, `keywords`,
-      `categories`, `readme` (and re-confirm `license`, `description`).
+- [x] **Confirm the upstream license.** `@ninoverse/hmi-components` is **MIT**
+      (same author/copyright as this crate: "Copyright (c) 2026 Nicola"), so
+      redistributing `hmi-components.iife.js` + the theme CSS inside the published
+      `.crate` is permitted and MIT-compatible. Attribution + full upstream license
+      text recorded in `THIRD-PARTY-NOTICES.md` and linked from the README.
+- [x] Document the supported Dioxus range (`0.7`) and the MSRV (`1.83`, the Dioxus
+      0.7 toolchain floor) — `rust-version` in `Cargo.toml` + a Compatibility
+      section in the README.
+- [x] Fill publish metadata in the root `Cargo.toml`: `repository`, `documentation`,
+      `keywords`, `categories`, `readme`, and an `exclude` list that drops dev-only
+      / sibling-crate paths (`license` + `description` were already set).
 
 ## Publish
 
