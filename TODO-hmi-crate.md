@@ -11,6 +11,33 @@ single self-injecting assets component.
 
 ---
 
+## Scope note — web components vs. React-only (added during implementation)
+
+Inspecting the published `hmi-components.iife.js` shows that although the package
+README advertises ~90 components, only **54 are registered as web components**
+(`customElements.define` via the internal `tt("name", …)` helper). The crate can
+only wrap these 54 — the rest are **React-only** (they have `.d.ts` types and
+subpath exports but are never registered as custom elements, so they cannot be
+rendered from Dioxus without a React/JS runtime).
+
+**Skipped for now (React-only, ~31):** aspect-ratio, scroll-area,
+visually-hidden, number-input, password-input, search-input, multi-input,
+radio-group, color-picker, date-picker, file-upload, form-control,
+segmented-control, value-scale-selector, avatar-stack, empty-state,
+confirm-dialog, hover-card, context-menu, command-palette, area-chart, bar-chart,
+bullet-chart, cartesian-grid, chart-tooltip, donut-chart, funnel-chart,
+line-chart, radar-chart, responsive-container, scatter-plot.
+
+Revisit if upstream registers these as custom elements (or to expose them via a
+different mechanism).
+
+Note: variant/size value sets differ per component (e.g. `BadgeVariant` has
+`default`/`warning`; `ButtonVariant` has `ghost`/`soft`/`link`), so enums are
+defined **per component** mirroring the upstream `.d.ts` type aliases, rather than
+a single shared `Variant`.
+
+---
+
 ## Phase 0 — Prerequisites (blocking for a public publish)
 
 - [ ] **Confirm the license of `@ninoverse/hmi-components`.** A public crate
