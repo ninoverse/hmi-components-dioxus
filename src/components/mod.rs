@@ -7,6 +7,7 @@ mod card;
 mod chip;
 mod divider;
 mod heading;
+mod text;
 
 pub use badge::{BadgeVariant, HmiBadge};
 pub use button::{ButtonSize, ButtonType, ButtonVariant, HmiButton};
@@ -14,3 +15,4 @@ pub use card::{CardVariant, HmiCard};
 pub use chip::HmiChip;
 pub use divider::{DividerAlign, DividerOrientation, HmiDivider};
 pub use heading::{HeadingSize, HeadingTone, HmiHeading};
+pub use text::{HmiText, TextAlign, TextSize, TextTone, TextWeight};

@@ -1,7 +1,8 @@
 use dioxus::prelude::*;
 use hmi_dioxus::{
     BadgeVariant, ButtonVariant, CardVariant, DividerAlign, DividerOrientation, HeadingSize,
-    HeadingTone, HmiAssets, HmiBadge, HmiButton, HmiCard, HmiChip, HmiDivider, HmiHeading,
+    HeadingTone, HmiAssets, HmiBadge, HmiButton, HmiCard, HmiChip, HmiDivider, HmiHeading, HmiText,
+    TextTone, TextWeight,
 };
 
 mod components;
@@ -56,6 +57,15 @@ fn App() -> Element {
             HmiHeading { level: 5, size: HeadingSize::Small, truncate: true,
                 "A very long truncated heading that should be clipped with an ellipsis when it overflows its container"
             }
+        }
+        div { style: "margin-top:2rem;max-width:30rem;",
+            HmiText { "Default paragraph text." }
+            HmiText { weight: TextWeight::Bold, "Bold weight text." }
+            HmiText { weight: TextWeight::Semibold, "Semibold weight text." }
+            HmiText { tone: TextTone::Muted, "Muted tone text." }
+            HmiText { tone: TextTone::Primary, "Primary tone text." }
+            HmiText { tone: TextTone::Error, "Error tone text." }
+            HmiText { tag: "span", "Rendered as a span." }
         }
     }
 }
