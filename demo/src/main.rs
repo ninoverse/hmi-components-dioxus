@@ -1,8 +1,8 @@
 use dioxus::prelude::*;
 use hmi_dioxus::{
-    BadgeVariant, ButtonVariant, CardVariant, DividerAlign, DividerOrientation, HeadingSize,
-    HeadingTone, HmiAssets, HmiBadge, HmiButton, HmiCard, HmiChip, HmiDivider, HmiHeading, HmiText,
-    TextTone, TextWeight,
+    AvatarSize, AvatarStatus, BadgeVariant, ButtonVariant, CardVariant, DividerAlign,
+    DividerOrientation, HeadingSize, HeadingTone, HmiAssets, HmiAvatar, HmiBadge, HmiButton,
+    HmiCard, HmiChip, HmiDivider, HmiHeading, HmiText, TextTone, TextWeight,
 };
 
 mod components;
@@ -66,6 +66,13 @@ fn App() -> Element {
             HmiText { tone: TextTone::Primary, "Primary tone text." }
             HmiText { tone: TextTone::Error, "Error tone text." }
             HmiText { tag: "span", "Rendered as a span." }
+        }
+        div { style: "display:flex;gap:1rem;align-items:center;margin-top:2rem;",
+            HmiAvatar { name: "Ada Lovelace", size: AvatarSize::Small }
+            HmiAvatar { name: "Grace Hopper" }
+            HmiAvatar { name: "Alan Turing", size: AvatarSize::Large, status: AvatarStatus::Online }
+            HmiAvatar { name: "Linus Torvalds", size: AvatarSize::Xlarge, status: AvatarStatus::Away }
+            HmiAvatar { name: "Margaret Hamilton", status: AvatarStatus::Offline }
         }
     }
 }
