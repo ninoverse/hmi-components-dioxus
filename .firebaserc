@@ -1,8 +1,8 @@
 {
-  "projects": { "default": "<PROJECT_ID>" },
+  "projects": { "default": "ninoverse-misc" },
   "targets": {
-    "<PROJECT_ID>": {
-      "hosting": { "demo": ["<DEMO_SITE_ID>"] }
+    "ninoverse-misc": {
+      "hosting": { "demo": ["ninoverse-hmi-components-dioxus-demo"] }
     }
   }
 }
