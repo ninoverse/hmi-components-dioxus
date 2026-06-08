@@ -5,7 +5,7 @@ resolver = "2"
 # Both publishable crates share one repo-owned version (the demo inherits it too),
 # kept deliberately independent of the wrapped npm package version.
 [workspace.package]
-version = "0.3.3"
+version = "0.3.4"
 
 [package]
 name = "hmi-dioxus"
