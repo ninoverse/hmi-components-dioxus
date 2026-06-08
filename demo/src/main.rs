@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 use hmi_dioxus::{
-    BadgeVariant, ButtonVariant, CardVariant, DividerAlign, DividerOrientation, HmiAssets, HmiBadge,
-    HmiButton, HmiCard, HmiChip, HmiDivider,
+    BadgeVariant, ButtonVariant, CardVariant, DividerAlign, DividerOrientation, HeadingSize,
+    HeadingTone, HmiAssets, HmiBadge, HmiButton, HmiCard, HmiChip, HmiDivider, HmiHeading,
 };
 
 mod components;
@@ -46,6 +46,15 @@ fn App() -> Element {
                 "Left"
                 HmiDivider { orientation: DividerOrientation::Vertical }
                 "Right"
+            }
+        }
+        div { style: "margin-top:2rem;",
+            HmiHeading { level: 1, size: HeadingSize::Xlarge, "Xlarge heading" }
+            HmiHeading { level: 2, "Default level-2 heading" }
+            HmiHeading { level: 3, tone: HeadingTone::Primary, "Primary tone heading" }
+            HmiHeading { level: 4, tone: HeadingTone::Muted, "Muted tone heading" }
+            HmiHeading { level: 5, size: HeadingSize::Small, truncate: true,
+                "A very long truncated heading that should be clipped with an ellipsis when it overflows its container"
             }
         }
     }

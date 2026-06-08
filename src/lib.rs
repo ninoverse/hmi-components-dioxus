@@ -12,5 +12,6 @@ mod components;
 pub use assets::HmiAssets;
 pub use components::{
     BadgeVariant, ButtonSize, ButtonType, ButtonVariant, CardVariant, DividerAlign,
-    DividerOrientation, HmiBadge, HmiButton, HmiCard, HmiChip, HmiDivider,
+    DividerOrientation, HeadingSize, HeadingTone, HmiBadge, HmiButton, HmiCard, HmiChip, HmiDivider,
+    HmiHeading,
 };
