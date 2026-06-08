@@ -1,77 +1,80 @@
-# Rust + Dioxus Template
+# hmi-dioxus
 
-A starter template for cross-platform [Dioxus 0.7](https://dioxuslabs.com) apps
-(web, desktop, mobile) wired up with Claude Code configuration and architectural
-rules. Clone it, rename the crate, and start building components.
+Typed [Dioxus 0.7](https://dioxuslabs.com) wrappers for the
+[`@ninoverse/hmi-components`](https://www.npmjs.com/package/@ninoverse/hmi-components)
+web components (custom elements), usable from web, desktop, and mobile.
 
-## What's inside
+The crate vendors the upstream component bundle (JS + theme CSS) and exposes it as
+ordinary Dioxus components with typed props/enums, plus a single self-injecting
+`HmiAssets` component. No JavaScript toolchain is needed to consume it.
+
+## Layout
 
 ```
-.
-├── Cargo.toml            # crate + per-platform feature flags (web/desktop/mobile)
-├── Dioxus.toml           # Dioxus app config
-├── src/
-│   ├── main.rs           # dioxus::launch(App) entry point
-│   └── components/
-│       ├── mod.rs        # re-exports each component (alphabetical)
-│       └── hero.rs       # example #[component]
-├── assets/
-│   ├── main.css          # design tokens (:root custom properties) + reset
-│   └── styling/
-│       └── hero.css      # per-component CSS
-├── CLAUDE.md             # architectural rules Claude Code must follow
-└── .claude/              # detailed rule files (see table below)
+.                    # the `hmi-dioxus` library crate (workspace root)
+├── src/             # lib.rs, assets.rs, components/ (one wrapper per file)
+├── assets/vendor/   # committed @ninoverse/hmi-components bundle (JS + theme CSS)
+├── xtask/           # `cargo run -p xtask` re-vendors the bundle
+└── demo/            # `hmi-dioxus-demo`: a small app that consumes the library
 ```
 
-## Getting started
+## Using the library
+
+Add the crate (path/git for now — not yet on crates.io), render `HmiAssets` once
+near the root of your app, then use the `Hmi*` wrappers anywhere in the tree:
+
+```rust
+use dioxus::prelude::*;
+use hmi_dioxus::{BadgeVariant, ButtonVariant, HmiAssets, HmiBadge, HmiButton};
+
+#[component]
+fn App() -> Element {
+    rsx! {
+        HmiAssets {}                                   // inject styles + register elements (once)
+        HmiBadge { variant: BadgeVariant::Success, "Active" }
+        HmiButton { variant: ButtonVariant::Primary, "Click me" }
+    }
+}
+```
+
+Wrapped so far: `HmiBadge`, `HmiButton`, `HmiChip` (with their `*Variant`/`*Size`/
+`*Type` enums). See `TODO.md` for scope and the path to a crates.io release.
+
+## Running the demo
 
 ```bash
-# One-time: install the Dioxus CLI (keep its major.minor matching the dioxus crate)
-cargo install dioxus-cli      # or: cargo binstall dioxus-cli
-
-cargo fetch                   # fetch dependencies
-dx serve --platform web       # dev server with hot reload (try desktop|mobile too)
+cargo install dioxus-cli            # one-time; keep dx's major.minor matching the dioxus crate
+cd demo
+dx serve --platform web             # hot-reload dev server (try desktop|mobile too)
 ```
 
-`web` is the default cargo feature, so plain `cargo build` and rust-analyzer
-target web. Select another renderer with `--platform desktop|mobile`.
+`web` is the demo's default cargo feature, so plain `cargo build` and rust-analyzer
+target web.
 
-### Verify your work
+## Verifying
 
 ```bash
-cargo clippy --all-targets -- -D warnings   # lint (warnings are errors)
-dx check                                     # validate rsx! macros
-cargo test                                   # run tests
-dx build --release --platform web            # production build
-dx fmt && cargo fmt                          # format rsx! then Rust source
+cargo clippy --all-targets -- -D warnings    # lint the workspace (warnings are errors)
+cargo test                                    # library unit tests
+cd demo && dx check                           # validate rsx! macros
+cd demo && dx build --release --platform web  # production build of the demo
+cargo fmt                                     # format Rust; `dx fmt` formats rsx! per-crate
 ```
 
-## Conventions at a glance
+## Versioning
 
-- **Components** are `PascalCase` functions annotated with `#[component]`,
-  returning `Element` via `rsx!`, one per `snake_case.rs` file under
-  `src/components/`.
+Both publishable crates share one repo-owned version via `[workspace.package].version`
+(the demo inherits it), kept **independent of** the wrapped npm package. The
+`@ninoverse/hmi-components` `3.1.2` pin lives only in `xtask`, not in the crate
+version. CI bumps the shared version on merge to `main`.
+
+## Conventions
+
+- **Components** are `PascalCase` `#[component]` functions returning `Element` via
+  `rsx!`, one per `snake_case.rs` file under a crate's `src/components/`.
 - **Styling** uses CSS custom-property design tokens (`var(--color-primary)`),
-  loaded via `asset!()` + `document::Stylesheet`. No hardcoded colors, radii,
-  or shadows.
-- **Cross-platform**: no platform-specific code in shared components unless
-  gated behind `#[cfg(feature = "...")]`.
+  loaded via `asset!()` + `document::Stylesheet`; no hardcoded colors/radii/shadows.
+- **Cross-platform**: no platform-specific code in shared components unless gated
+  behind `#[cfg(feature = "...")]`.
 
-## Rule files
-
-| File | Purpose |
-|------|---------|
-| `CLAUDE.md` | Top-level commands, framework rules, styling conventions |
-| `.claude/branch-naming.md` | Branch prefix and format conventions |
-| `.claude/commit-conventions.md` | Conventional Commits rules |
-| `.claude/pr-guidelines.md` | PR title, description template, size guidance |
-| `.claude/testing-requirements.md` | Test + verification gates |
-| `.claude/file-naming.md` | Directory layout and Rust/Dioxus naming conventions |
-| `.claude/code-review.md` | Review checklist (styling + Rust code quality) |
-| `.claude/component-workflow.md` | Step-by-step procedure to add a component |
-| `.claude/execution-order.md` | Branching strategy and (optional) phased build order |
-
-## Renaming the crate
-
-Change `name` in `Cargo.toml` and `[application].name` in `Dioxus.toml` to your
-project name, then update the `title` under `[web.app]` in `Dioxus.toml`.
+See `CLAUDE.md` and `.claude/` for the full architectural rules.

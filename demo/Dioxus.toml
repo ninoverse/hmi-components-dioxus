@@ -1,0 +1,5 @@
+[application]
+name = "hmi-dioxus-demo"
+
+[web.app]
+title = "hmi-dioxus demo"

@@ -33,6 +33,7 @@ jobs:
         run: cargo binstall --no-confirm 'dioxus-cli@^0.7'
 
       - name: Build
+        working-directory: demo
         run: dx build --release --platform web
 
       - uses: FirebaseExtended/action-hosting-deploy@v0

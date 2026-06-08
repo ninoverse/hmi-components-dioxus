@@ -1,22 +1,24 @@
 [workspace]
-members = [".", "hmi-dioxus", "hmi-dioxus/xtask"]
+members = ["demo", "xtask"]
 resolver = "2"
 
-[package]
-name = "dioxus-app"
+# Both publishable crates share one repo-owned version (the demo inherits it too),
+# kept deliberately independent of the wrapped npm package version.
+[workspace.package]
 version = "0.3.0"
+
+[package]
+name = "hmi-dioxus"
+version.workspace = true
 edition = "2021"
+license = "MIT"
+description = "Typed Dioxus 0.7 wrappers for the @ninoverse/hmi-components web components"
 
+# Renderer-agnostic: the `lib` feature pulls in the core (macros, rsx/html,
+# signals, hooks, document, asset) without any platform renderer or `launch`.
+# The consuming binary (web/desktop/mobile) brings its own renderer.
 [dependencies]
-dioxus = { version = "0.7" }
-
-# `dx serve --platform <p>` builds with `--no-default-features --features <p>`.
-# One platform stays `default` so plain `cargo` / rust-analyzer have a target.
-[features]
-default = ["web"]
-web = ["dioxus/web"]
-desktop = ["dioxus/desktop"]
-mobile = ["dioxus/mobile"]
+dioxus = { version = "0.7", default-features = false, features = ["lib"] }
 
 [profile.release]
 opt-level = "z"

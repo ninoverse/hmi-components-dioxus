@@ -2,6 +2,10 @@
 
 ## Source directories (`src/`)
 
+> Layout note: the workspace root `src/` is the **library** crate (`src/lib.rs`, no
+> `main`). The demo **app** lives in `demo/src/` (`demo/src/main.rs`). The
+> conventions below apply within each crate's own `src/`.
+
 | Path | Contents |
 |------|----------|
 | `src/main.rs` | App entry point: `dioxus::launch(App)` and the root `App` component |

@@ -1,7 +1,7 @@
 {
   "hosting": {
     "target": "demo",
-    "public": "target/dx/dioxus-app/release/web/public",
+    "public": "target/dx/hmi-dioxus-demo/release/web/public",
     "ignore": ["**/.*"]
   }
 }

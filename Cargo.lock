@@ -908,13 +908,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "dioxus-app"
-version = "0.3.0"
-dependencies = [
- "dioxus",
-]
-
-[[package]]
 name = "dioxus-asset-resolver"
 version = "0.7.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2250,9 +2243,17 @@ checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
 
 [[package]]
 name = "hmi-dioxus"
-version = "3.2.0"
+version = "0.3.0"
 dependencies = [
  "dioxus",
+]
+
+[[package]]
+name = "hmi-dioxus-demo"
+version = "0.3.0"
+dependencies = [
+ "dioxus",
+ "hmi-dioxus",
 ]
 
 [[package]]
@@ -6394,7 +6395,7 @@ checksum = "b9cc00251562a284751c9973bace760d86c0276c471b4be569fe6b068ee97a56"
 
 [[package]]
 name = "xtask"
-version = "0.1.0"
+version = "0.0.0"
 
 [[package]]
 name = "xxhash-rust"

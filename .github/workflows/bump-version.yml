@@ -75,8 +75,10 @@ jobs:
         if: steps.pkg.outputs.skip == 'false' && steps.bump.outputs.type != 'skip'
         run: |
           cargo binstall --no-confirm cargo-edit
-          cargo set-version --bump ${{ steps.bump.outputs.type }}
-          new_version=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')
+          # Bump the shared [workspace.package].version; the demo inherits it, so
+          # both publishable crates move in lockstep (xtask keeps its own version).
+          cargo set-version --bump ${{ steps.bump.outputs.type }} -p hmi-dioxus
+          new_version=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name=="hmi-dioxus") | .version')
           echo "version=$new_version" >> "$GITHUB_OUTPUT"
 
       - name: Commit, Tag, and Push
