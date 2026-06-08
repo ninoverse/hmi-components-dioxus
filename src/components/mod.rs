@@ -8,6 +8,7 @@ mod card;
 mod chip;
 mod divider;
 mod heading;
+mod spinner;
 mod text;
 
 pub use avatar::{AvatarSize, AvatarStatus, HmiAvatar};
@@ -17,4 +18,5 @@ pub use card::{CardVariant, HmiCard};
 pub use chip::HmiChip;
 pub use divider::{DividerAlign, DividerOrientation, HmiDivider};
 pub use heading::{HeadingSize, HeadingTone, HmiHeading};
+pub use spinner::{HmiSpinner, SpinnerSize};
 pub use text::{HmiText, TextAlign, TextSize, TextTone, TextWeight};

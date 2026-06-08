@@ -2,7 +2,8 @@ use dioxus::prelude::*;
 use hmi_dioxus::{
     AvatarSize, AvatarStatus, BadgeVariant, ButtonVariant, CardVariant, DividerAlign,
     DividerOrientation, HeadingSize, HeadingTone, HmiAssets, HmiAvatar, HmiBadge, HmiButton,
-    HmiCard, HmiChip, HmiDivider, HmiHeading, HmiText, TextTone, TextWeight,
+    HmiCard, HmiChip, HmiDivider, HmiHeading, HmiSpinner, HmiText, SpinnerSize, TextTone,
+    TextWeight,
 };
 
 mod components;
@@ -73,6 +74,11 @@ fn App() -> Element {
             HmiAvatar { name: "Alan Turing", size: AvatarSize::Large, status: AvatarStatus::Online }
             HmiAvatar { name: "Linus Torvalds", size: AvatarSize::Xlarge, status: AvatarStatus::Away }
             HmiAvatar { name: "Margaret Hamilton", status: AvatarStatus::Offline }
+        }
+        div { style: "display:flex;gap:1.5rem;align-items:center;margin-top:2rem;",
+            HmiSpinner { size: SpinnerSize::Small }
+            HmiSpinner {}
+            HmiSpinner { size: SpinnerSize::Large, label: "Fetching data" }
         }
     }
 }
