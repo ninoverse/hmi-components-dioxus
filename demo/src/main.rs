@@ -2,8 +2,8 @@ use dioxus::prelude::*;
 use hmi_dioxus::{
     AvatarSize, AvatarStatus, BadgeVariant, ButtonVariant, CardVariant, DividerAlign,
     DividerOrientation, HeadingSize, HeadingTone, HmiAssets, HmiAvatar, HmiBadge, HmiButton,
-    HmiCard, HmiChip, HmiDivider, HmiHeading, HmiProgress, HmiSpinner, HmiText, SpinnerSize,
-    TextTone, TextWeight,
+    HmiCard, HmiChip, HmiDivider, HmiHeading, HmiInput, HmiProgress, HmiSpinner, HmiText,
+    SpinnerSize, TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -14,6 +14,8 @@ fn main() {
 
 #[component]
 fn App() -> Element {
+    // Single source of truth for the bound input below; fed back into `value`.
+    let mut text = use_signal(String::new);
     rsx! {
         document::Stylesheet { href: MAIN_CSS }
         // Injects the hmi-components stylesheets + the custom-element registration
@@ -81,6 +83,18 @@ fn App() -> Element {
             HmiProgress { value: 25.0, label: "25 percent" }
             HmiProgress { value: 70.0, label: "70 percent" }
             HmiProgress { indeterminate: true, label: "Working" }
+        }
+        div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
+            HmiInput {
+                value: "{text}",
+                placeholder: "Type something",
+                on_change: move |v| text.set(v),
+            }
+            HmiInput { error: true, value: "invalid", placeholder: "Error state" }
+            HmiInput { disabled: true, placeholder: "Disabled" }
+            // Live readout in a native element: the hmi-* elements snapshot their
+            // slot content at mount, so dynamic text must live outside them.
+            div { "You typed: {text}" }
         }
     }
 }
