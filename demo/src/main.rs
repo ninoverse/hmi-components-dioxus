@@ -1,6 +1,7 @@
 use dioxus::prelude::*;
 use hmi_dioxus::{
-    BadgeVariant, ButtonVariant, CardVariant, HmiAssets, HmiBadge, HmiButton, HmiCard, HmiChip,
+    BadgeVariant, ButtonVariant, CardVariant, DividerAlign, DividerOrientation, HmiAssets, HmiBadge,
+    HmiButton, HmiCard, HmiChip, HmiDivider,
 };
 
 mod components;
@@ -35,6 +36,17 @@ fn App() -> Element {
             HmiCard { variant: CardVariant::Flat, "Flat card" }
             HmiCard { variant: CardVariant::Ink, "Ink card" }
             HmiCard { variant: CardVariant::Accent, "Accent card" }
+        }
+        div { style: "margin-top:2rem;",
+            HmiDivider {}
+            HmiDivider { align: DividerAlign::Start, "Start label" }
+            HmiDivider { align: DividerAlign::Center, "Center label" }
+            HmiDivider { align: DividerAlign::End, "End label" }
+            div { style: "display:flex;gap:1rem;align-items:center;height:3rem;",
+                "Left"
+                HmiDivider { orientation: DividerOrientation::Vertical }
+                "Right"
+            }
         }
     }
 }
