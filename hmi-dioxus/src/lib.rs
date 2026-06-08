@@ -10,4 +10,6 @@ mod assets;
 mod components;
 
 pub use assets::HmiAssets;
-pub use components::{BadgeVariant, HmiBadge};
+pub use components::{
+    BadgeVariant, ButtonSize, ButtonType, ButtonVariant, HmiBadge, HmiButton, HmiChip,
+};
