@@ -11,5 +11,6 @@ mod components;
 
 pub use assets::HmiAssets;
 pub use components::{
-    BadgeVariant, ButtonSize, ButtonType, ButtonVariant, HmiBadge, HmiButton, HmiChip,
+    BadgeVariant, ButtonSize, ButtonType, ButtonVariant, CardVariant, HmiBadge, HmiButton, HmiCard,
+    HmiChip,
 };

@@ -3,8 +3,10 @@
 
 mod badge;
 mod button;
+mod card;
 mod chip;
 
 pub use badge::{BadgeVariant, HmiBadge};
 pub use button::{ButtonSize, ButtonType, ButtonVariant, HmiButton};
+pub use card::{CardVariant, HmiCard};
 pub use chip::HmiChip;

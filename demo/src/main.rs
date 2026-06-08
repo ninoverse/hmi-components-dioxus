@@ -1,5 +1,7 @@
 use dioxus::prelude::*;
-use hmi_dioxus::{BadgeVariant, ButtonVariant, HmiAssets, HmiBadge, HmiButton, HmiChip};
+use hmi_dioxus::{
+    BadgeVariant, ButtonVariant, CardVariant, HmiAssets, HmiBadge, HmiButton, HmiCard, HmiChip,
+};
 
 mod components;
 use components::Hero;
@@ -27,6 +29,12 @@ fn App() -> Element {
             HmiButton { variant: ButtonVariant::Primary, "Primary" }
             HmiButton { variant: ButtonVariant::Secondary, "Secondary" }
             HmiChip { "Example chip" }
+        }
+        div { style: "display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem;",
+            HmiCard { variant: CardVariant::Default, "Default card" }
+            HmiCard { variant: CardVariant::Flat, "Flat card" }
+            HmiCard { variant: CardVariant::Ink, "Ink card" }
+            HmiCard { variant: CardVariant::Accent, "Accent card" }
         }
     }
 }
