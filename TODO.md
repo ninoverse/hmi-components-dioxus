@@ -109,11 +109,18 @@ Rough grouping, to suggest order (**3 / 85 wrapped**):
 
 ## Open questions
 
-- [ ] An ergonomic pattern for component **event callbacks** (`onSelect`, `onClose`,
-      …) and two-way value binding before wrapping the interactive set en masse —
-      current wrappers omit callbacks and lean on raw DOM handlers.
-- [ ] Do the **data-viz** elements render acceptably as standalone custom elements,
-      or do they need a React / `responsive-container` context? Spike one before
-      committing to wrap the group.
+- [x] **Event callbacks & two-way value binding** — *answered (design recorded in
+      [`docs/event-binding-and-dataviz.md`](docs/event-binding-and-dataviz.md);
+      implementation is a follow-up).* The components dispatch DOM `CustomEvent`s
+      (`onXxx` → event `xxx`, `event.detail` = the payload). Dioxus 0.7 can't name a
+      custom event in `rsx!`, so wire it in `onmounted` via `web_sys`
+      `add_event_listener_with_callback`, behind an optional `web` feature; expose
+      callbacks as `EventHandler<T>` and bind values via the `value` attribute (in)
+      + the `change` event (out).
+- [x] **Data-viz standalone render** — *answered (see the same doc).* Charts are
+      plain custom elements taking JSON props + explicit `width`/`height`; they need
+      no React context. `hmi-responsive-container` is an optional ResizeObserver
+      wrapper for fluid width only. The group can be wrapped with the existing
+      attribute-only idiom.
 - [ ] Once published, does the `demo/` stay in this repo (current plan) or move to
       a separate example, to keep library release history clean?

@@ -38,7 +38,9 @@ fn App() -> Element {
 ```
 
 Wrapped so far: `HmiBadge`, `HmiButton`, `HmiChip` (with their `*Variant`/`*Size`/
-`*Type` enums). See `TODO.md` for scope and the path to a crates.io release.
+`*Type` enums). See `TODO.md` for scope and the path to a crates.io release, and
+[`docs/event-binding-and-dataviz.md`](docs/event-binding-and-dataviz.md) for the
+planned event-callback / two-way-binding pattern and data-viz findings.
 
 ## Running the demo
 
