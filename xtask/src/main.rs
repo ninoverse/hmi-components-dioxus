@@ -12,8 +12,8 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 const PACKAGE: &str = "@ninoverse/hmi-components";
-const VERSION: &str = "3.1.2";
-const TARBALL: &str = "ninoverse-hmi-components-3.1.2.tgz";
+const VERSION: &str = "4.2.0";
+const TARBALL: &str = "ninoverse-hmi-components-4.2.0.tgz";
 
 // (path inside the tarball after `package/dist/`, vendored output name).
 // The component CSS only consumes design tokens (var(--background), …); the
