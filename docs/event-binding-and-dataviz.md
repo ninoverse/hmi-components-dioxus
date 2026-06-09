@@ -126,12 +126,11 @@ web-sys = { version = "0.3", optional = true, features = [
 
 The demo forwards it: `web = ["dioxus/web", "hmi-dioxus/web"]`.
 
-### 3.2 `src/event.rs` — the interop helpers
+### 3.2 `src/event.rs` — the one interop helper
 
-All are `#[cfg]`-gated with no-op off-web bodies so wrapper code is identical
-across renderers.
-
-**`on_input_event`** — attach a listener and forward decoded values out:
+`on_input_event` is `#[cfg]`-gated with a no-op off-web body so wrapper code is
+identical across renderers. It **only reads values out** — the wrappers are
+uncontrolled (§3.4), so there is nothing to push in.
 
 - Downcasts the `onmounted` `MountedData` to `web_sys::Element` (the dioxus-web
   backing type) and attaches a listener for the bridge's `change` `CustomEvent`
@@ -143,12 +142,6 @@ across renderers.
   leak); the wrapper stores it in a `use_signal` for the component's lifetime.
 - `decode: fn(&EventValue) -> Option<T>` reads `event.detail`, e.g. `|d|
   d.string()` (input) or `|d| d.bool()` (switch/checkbox).
-
-**`ElementHandle`** (+ `host_element(&MountedData)`) — push values in:
-
-- `set_attr(name, Option<&str>)` — sets `value`/`checked` as an *attribute*, not
-  the property Dioxus would set (which the custom element ignores). The same
-  call serves both controls now that switch/checkbox are controlled (see §3.4).
 
 ### 3.3 Wrapper shape
 
@@ -163,23 +156,16 @@ pub fn HmiSwitch(
     #[props(default)] on_change: EventHandler<bool>,
 ) -> Element {
     let mut listener = use_signal(|| Option::<ListenerGuard>::None);
-    let mut host = use_signal(|| Option::<ElementHandle>::None);
-
-    // Push `checked` to the host as an attribute whenever it (or the host) changes.
-    use_effect(move || {
-        if let Some(h) = host.read().as_ref() {
-            h.set_attr("checked", checked.then_some("true"));
-        }
-    });
 
     rsx! {
         hmi-switch {
+            // Seed the initial state; the control is uncontrolled thereafter.
+            "default-checked": if checked { "true" } else { "false" },
             "label": label.as_deref().map(json_string), // JSON-encoded text
             "disabled": if disabled { "true" },
             "name": name,
             "value": value,
             onmounted: move |m| {
-                host.set(host_element(&m));
                 listener.set(on_input_event(&m, "change", on_change, |d| d.bool()));
             },
         }
@@ -187,18 +173,32 @@ pub fn HmiSwitch(
 }
 ```
 
-`HmiInput` is the same shape with `on_input_event(&m, "change", …, |d| d.string())`
-and `host.set_attr("value", Some(&value))` in its effect. Callbacks use
+`HmiInput` is the same shape with `"default-value": if !value.is_empty() { value }`
+and `on_input_event(&m, "change", …, |d| d.string())`. Callbacks use
 `EventHandler<T>` (Copy, default no-op) so omitting them keeps call sites working.
 
-### 3.4 Controlled binding (uniform across the three)
+### 3.4 Uncontrolled binding (uniform across the three)
 
-All three are bound **controlled**: `value`/`checked` is pushed in as an
-attribute and read back out of the `change` `CustomEvent`'s `detail`. Because
-4.2.0 wires an `onChange` into each control, React accepts the controlled prop
-without reverting user input, so the same shape works for text and toggles
-alike — the pre-4.2.0 need to keep switch/checkbox React-*uncontrolled* (driving
-the inner `checked` property across animation frames) is gone.
+All three are **uncontrolled**: `value`/`checked` seed the initial state via the
+upstream `default-value` / `default-checked` attributes (new in 4.2.0), and edits
+are read back out of the `change` `CustomEvent`'s `detail`. The DOM owns the live
+value, so the user can type and toggle freely with no React revert and nothing to
+push back in.
+
+> **Why not controlled?** Two-way controlled binding doesn't work cleanly here.
+> Dioxus' `use_effect` re-runs on *signal* reads inside its closure, not on
+> *prop* changes, so an effect that pushes `value`/`checked` back never re-fires
+> when the prop updates (verified in-browser: the host attribute stays at its
+> mount value). On top of that the bridge's `attributeChangedCallback` ignores
+> attribute *removals* and empty values (`(newValue || type==="method")`), so a
+> controlled checkbox can't be set back to `false` and a controlled input can't
+> be cleared. Uncontrolled sidesteps both — and matches how the pre-4.2.0 code
+> actually behaved at runtime.
+
+This implementation was verified end-to-end with headless Chromium
+(`.claude/component-workflow.md` screenshot method): typing into the input,
+toggling the switch both directions, and checking the box all update their
+signal readouts and the live DOM state.
 
 ---
 
@@ -206,8 +206,9 @@ the inner `checked` property across animation frames) is gone.
 
 Still live:
 
-- **`value`/`checked` are properties, not attributes, in Dioxus** → they never
-  reach a custom element through `rsx!`. Sync them with `web-sys` `set_attr`.
+- **Uncontrolled, not two-way.** `value`/`checked` are *initial* state only;
+  changing the prop after mount does **not** update the control (React ignores
+  `defaultValue`/`defaultChecked` changes). Drive UI from `on_change` instead.
 - **Runtime + scheduler.** A raw `web-sys` callback fires outside the runtime →
   re-enter it (`Runtime::wrap_closure`) and call `schedule_update()`; otherwise
   the handler/signal write no-ops or never re-renders.
@@ -221,8 +222,9 @@ Still live:
 
 Retired by 4.2.0 (kept for history): the `detail`-vs-`target` split (all
 controls now carry `detail`), the *capture-phase* read to beat React's revert
-(an `onChange` means there's nothing to beat), and the uncontrolled-checkbox
-inner-`checked`-property + animation-frame retry dance.
+(an `onChange` means there's nothing to beat), the inner-`checked`-property +
+animation-frame retry dance, and the imperative `value`/`checked` push-in
+(`ElementHandle`/`set_attr`) — uncontrolled binding needs none of it.
 
 ---
 
@@ -265,9 +267,10 @@ JSON prop/`detail` shapes against the upstream `.d.ts`.
 
 ## 6. Status & follow-ups
 
-- **Shipped:** `web` feature + `src/event.rs`; `HmiInput` (two-way `value` +
-  `on_change`), `HmiSwitch` and `HmiCheckbox` (`checked` + `on_change`); demo
-  binds all three to signals with native readouts.
+- **Shipped & runtime-verified (headless Chromium):** `web` feature +
+  `src/event.rs`; `HmiInput`, `HmiSwitch`, `HmiCheckbox` (initial `value`/
+  `checked` + `on_change`, uncontrolled); demo binds all three to signals with
+  native readouts.
 - **Not done:** `HmiChip` `on_select`/`on_close` — now a one-liner, since
   `on_input_event` already decodes `CustomEvent` `detail` (just pass `"select"`
   / `"close"`); other `change`-emitting controls (textarea, select/combobox,

@@ -123,16 +123,17 @@ Rough grouping, to suggest order (**13 / 85 wrapped**):
 
 ## Open questions
 
-- [x] **Event callbacks & two-way value binding** — *implemented for
+- [x] **Event callbacks & value binding** — *implemented for
       input/switch/checkbox; see
       [`docs/event-binding-and-dataviz.md`](docs/event-binding-and-dataviz.md).*
       As of upstream `4.2.0` the form controls expose `onChange`, which the
       bridge turns into a bubbling `change` `CustomEvent` carrying the value in
-      `detail`, plus controlled `value`/`checked`. The wrapper reads `detail` via
-      a `web-sys` listener (re-entering the Dioxus runtime and waking the
-      scheduler) and pushes `value`/`checked` in as attributes — Dioxus routes
-      those to properties a custom element ignores, so the `web` feature stays
-      (see the proposal doc §6). Callbacks are `EventHandler<T>`.
+      `detail`, plus `defaultValue`/`defaultChecked`. The wrappers render
+      **uncontrolled** — seeding the initial state via `default-value`/
+      `default-checked` and reading edits from `detail` via a `web-sys` listener
+      (re-entering the Dioxus runtime and waking the scheduler). The `web`
+      feature stays only for that read (proposal doc §6). Verified end-to-end in
+      headless Chromium. Callbacks are `EventHandler<T>`.
 - [x] **Data-viz standalone render** — *answered (see the same doc).* Charts are
       plain custom elements taking JSON props + explicit `width`/`height`; they need
       no React context. `hmi-responsive-container` is an optional ResizeObserver

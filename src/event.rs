@@ -1,26 +1,21 @@
-//! Interop for the form components' value binding and `change` events.
+//! Interop for reading the form components' `change` events.
 //!
 //! As of `@ninoverse/hmi-components` 4.2.0 the input/switch/checkbox elements
 //! expose an `onChange` prop, which the React→web-component bridge turns into a
 //! **bubbling `change` `CustomEvent`** whose `detail` carries the value
-//! (`string` for input, `bool` for switch/checkbox). They also accept `value` /
-//! `checked` as controlled props alongside `onChange`, so the user's edits are
-//! no longer reverted.
+//! (`string` for input, `bool` for switch/checkbox). They also accept
+//! `defaultValue` / `defaultChecked`, so the wrappers render them **uncontrolled**
+//! (the DOM owns the live value) and seed only the initial state through `rsx!`.
+//! That leaves a single interop concern: reading the value back out.
 //!
-//! Two helpers remain:
+//! Dioxus' delegated dispatch can't see these events (the host carries no
+//! `data-dioxus-id` for a custom event), and a raw `web-sys` listener fires
+//! outside the Dioxus runtime — so [`on_input_event`] attaches a listener on the
+//! mounted host, reads `event.detail`, re-enters the runtime captured at mount,
+//! and wakes the scheduler explicitly.
 //!
-//! * Reading values out — a `web-sys` listener on the mounted host reads
-//!   `event.detail` ([`on_input_event`]). Dioxus' delegated dispatch can't see
-//!   these (the host carries no `data-dioxus-id` for a custom event), and a raw
-//!   listener fires outside the Dioxus runtime, so the handler re-enters the
-//!   runtime captured at mount and wakes the scheduler explicitly.
-//! * Pushing values in — Dioxus routes `value`/`checked` to DOM *properties* a
-//!   custom element ignores, so they're set as *attributes* via web-sys
-//!   ([`ElementHandle::set_attr`]).
-//!
-//! Wrappers call these unconditionally; their bodies are real under the `web`
-//! feature and no-ops otherwise, so wrapper code stays identical across
-//! renderers.
+//! Wrappers call this unconditionally; the body is real under the `web` feature
+//! and a no-op otherwise, so wrapper code stays identical across renderers.
 
 use dioxus::prelude::*;
 
@@ -61,57 +56,6 @@ impl EventValue {
     }
 }
 
-/// Handle to the mounted host element for imperative attribute syncing, used to
-/// set `value`/`checked` as attributes (Dioxus would set a property the custom
-/// element ignores). Cheap to clone (a reference-counted JS handle).
-#[cfg(feature = "web")]
-#[derive(Clone)]
-pub(crate) struct ElementHandle(web_sys::Element);
-
-/// Off-web placeholder so wrappers can name the handle type unconditionally.
-#[cfg(not(feature = "web"))]
-#[derive(Clone)]
-pub(crate) struct ElementHandle;
-
-#[cfg(feature = "web")]
-impl ElementHandle {
-    /// Set the attribute to `value` when `Some`, or remove it when `None`.
-    ///
-    /// Used for the controlled `value`/`checked` state: an *attribute* (which
-    /// the bridge forwards to React), not the property Dioxus would set. With
-    /// `onChange` present the React control accepts these without reverting, so
-    /// the inner input toggles/edits freely and settles on the synced value.
-    pub(crate) fn set_attr(&self, name: &str, value: Option<&str>) {
-        match value {
-            Some(v) => {
-                let _ = self.0.set_attribute(name, v);
-            }
-            None => {
-                let _ = self.0.remove_attribute(name);
-            }
-        }
-    }
-}
-
-#[cfg(not(feature = "web"))]
-impl ElementHandle {
-    pub(crate) fn set_attr(&self, _name: &str, _value: Option<&str>) {}
-}
-
-/// Grab the host element from `onmounted` so the wrapper can sync attributes to
-/// it. Returns `None` off the web renderer.
-#[cfg(feature = "web")]
-pub(crate) fn host_element(mounted: &MountedData) -> Option<ElementHandle> {
-    Some(ElementHandle(
-        mounted.downcast::<web_sys::Element>()?.clone(),
-    ))
-}
-
-#[cfg(not(feature = "web"))]
-pub(crate) fn host_element(_mounted: &MountedData) -> Option<ElementHandle> {
-    None
-}
-
 /// Keeps a DOM listener alive and removes it on drop.
 #[cfg(feature = "web")]
 pub(crate) struct ListenerGuard {
@@ -126,9 +70,10 @@ pub(crate) struct ListenerGuard {
 impl Drop for ListenerGuard {
     fn drop(&mut self) {
         use wasm_bindgen::JsCast;
-        let _ = self
-            .target
-            .remove_event_listener_with_callback(self.event_name, self._closure.as_ref().unchecked_ref());
+        let _ = self.target.remove_event_listener_with_callback(
+            self.event_name,
+            self._closure.as_ref().unchecked_ref(),
+        );
     }
 }
 

@@ -39,8 +39,8 @@ fn App() -> Element {
 
 Wrapped so far (13): presentational — `HmiAvatar`, `HmiBadge`, `HmiButton`,
 `HmiCard`, `HmiChip`, `HmiDivider`, `HmiHeading`, `HmiProgress`, `HmiSpinner`,
-`HmiText` — and interactive — `HmiInput`, `HmiSwitch`, `HmiCheckbox` (`value`/
-`checked` + `on_change`, behind the `web` feature). Each ships its own
+`HmiText` — and interactive — `HmiInput`, `HmiSwitch`, `HmiCheckbox` (initial
+`value`/`checked` + `on_change`, behind the `web` feature). Each ships its own
 `*Variant`/`*Size`/`*Tone` enums. See `TODO.md` for scope and the path to a
 crates.io release, and
 [`docs/event-binding-and-dataviz.md`](docs/event-binding-and-dataviz.md) for the
