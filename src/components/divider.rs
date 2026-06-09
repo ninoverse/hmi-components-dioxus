@@ -76,7 +76,10 @@ mod tests {
 
     #[test]
     fn defaults_match_upstream() {
-        assert_eq!(DividerOrientation::default(), DividerOrientation::Horizontal);
+        assert_eq!(
+            DividerOrientation::default(),
+            DividerOrientation::Horizontal
+        );
         assert_eq!(DividerAlign::default(), DividerAlign::Center);
     }
 }

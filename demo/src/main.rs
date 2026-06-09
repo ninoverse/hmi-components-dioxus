@@ -2,8 +2,8 @@ use dioxus::prelude::*;
 use hmi_dioxus::{
     AvatarSize, AvatarStatus, BadgeVariant, ButtonVariant, CardVariant, DividerAlign,
     DividerOrientation, HeadingSize, HeadingTone, HmiAssets, HmiAvatar, HmiBadge, HmiButton,
-    HmiCard, HmiChip, HmiDivider, HmiHeading, HmiInput, HmiProgress, HmiSpinner, HmiText,
-    SpinnerSize, TextTone, TextWeight,
+    HmiCard, HmiCheckbox, HmiChip, HmiDivider, HmiHeading, HmiInput, HmiProgress, HmiSpinner,
+    HmiSwitch, HmiText, SpinnerSize, TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -16,6 +16,8 @@ fn main() {
 fn App() -> Element {
     // Single source of truth for the bound input below; fed back into `value`.
     let mut text = use_signal(String::new);
+    let mut notifications = use_signal(|| true);
+    let mut accepted = use_signal(|| false);
     rsx! {
         document::Stylesheet { href: MAIN_CSS }
         // Injects the hmi-components stylesheets + the custom-element registration
@@ -95,6 +97,21 @@ fn App() -> Element {
             // Live readout in a native element: the hmi-* elements snapshot their
             // slot content at mount, so dynamic text must live outside them.
             div { "You typed: {text}" }
+        }
+        div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
+            HmiSwitch {
+                checked: notifications(),
+                label: "Enable notifications",
+                on_change: move |c| notifications.set(c),
+            }
+            HmiSwitch { disabled: true, label: "Disabled switch" }
+            HmiCheckbox {
+                checked: accepted(),
+                label: "Accept terms",
+                on_change: move |c| accepted.set(c),
+            }
+            HmiCheckbox { disabled: true, label: "Disabled checkbox" }
+            div { "notifications: {notifications} · accepted: {accepted}" }
         }
     }
 }

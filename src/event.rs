@@ -1,18 +1,25 @@
-//! Interop for the form components' native DOM events.
+//! Interop for the form components' native DOM events and value binding.
 //!
 //! The `@ninoverse/hmi-components` input/switch/checkbox elements render a
 //! plain inner `<input>` and spread attributes onto it — they do **not**
 //! dispatch a custom `change` event carrying the value in `detail`. The value
-//! therefore lives on the event's target (`event.target.value` /
-//! `event.target.checked`), and the native `input`/`change` events bubble up
-//! through the host element.
+//! lives on the event target (`event.target.value` / `.checked`), and the
+//! native `input`/`change` events bubble through the host.
 //!
-//! Dioxus 0.7's `rsx!` can't name these events on a custom element, so the
-//! listener is attached on the just-mounted host via `web-sys` in `onmounted`.
-//! Wrappers call [`on_input_event`] unconditionally; its body is real under the
-//! `web` feature and a no-op otherwise, so wrapper code stays identical across
-//! renderers. The returned [`ListenerGuard`] removes the listener (and frees
-//! the closure) on drop — store it for the component's lifetime.
+//! Two quirks shape this module:
+//!
+//! * Dioxus special-cases `value`/`checked` as DOM *properties*, which a custom
+//!   element never observes, so those must be pushed as *attributes* via
+//!   `web-sys` ([`ElementHandle`]) instead of through `rsx!`.
+//! * The bridge passes those attributes to React as controlled props with no
+//!   `onChange`, so React reverts user edits. The listener is therefore
+//!   attached in the **capture** phase ([`on_input_event`]) to read the
+//!   user-intended value before React reverts it; a `use_effect` then pushes
+//!   that value back to the attribute so the controlled input settles.
+//!
+//! Wrappers call these helpers unconditionally; their bodies are real under the
+//! `web` feature and no-ops otherwise, so wrapper code stays identical across
+//! renderers.
 
 use dioxus::prelude::*;
 
@@ -41,6 +48,101 @@ impl InputTarget {
     }
 }
 
+/// Handle to the mounted host element for imperative attribute syncing, used to
+/// set `value`/`checked` as attributes (Dioxus would set a property the custom
+/// element ignores). Cheap to clone (a reference-counted JS handle).
+#[cfg(feature = "web")]
+#[derive(Clone)]
+pub(crate) struct ElementHandle(web_sys::Element);
+
+/// Off-web placeholder so wrappers can name the handle type unconditionally.
+#[cfg(not(feature = "web"))]
+#[derive(Clone)]
+pub(crate) struct ElementHandle;
+
+#[cfg(feature = "web")]
+impl ElementHandle {
+    /// Set the attribute to `value` when `Some`, or remove it when `None`.
+    pub(crate) fn set_attr(&self, name: &str, value: Option<&str>) {
+        match value {
+            Some(v) => {
+                let _ = self.0.set_attribute(name, v);
+            }
+            None => {
+                let _ = self.0.remove_attribute(name);
+            }
+        }
+    }
+
+    /// Set the inner `<input>`'s `checked` *property* directly.
+    ///
+    /// Switch/checkbox must stay React-*uncontrolled* (a controlled checkbox
+    /// with no `onChange` can't be toggled by the user), so the state is driven
+    /// via the DOM property rather than the `checked` attribute (which the
+    /// bridge would forward to React as a controlled prop).
+    ///
+    /// The inner input is rendered asynchronously after the host mounts, so on
+    /// the first call (e.g. applying the initial state) it may not exist yet;
+    /// in that case retry on the next animation frame, by when React has
+    /// rendered it.
+    pub(crate) fn set_inner_checked(&self, on: bool) {
+        sync_checked(self.0.clone(), on, 0);
+    }
+}
+
+/// Set the inner `<input>`'s `checked` property; returns whether the input was
+/// found.
+#[cfg(feature = "web")]
+fn set_checked_now(host: &web_sys::Element, on: bool) -> bool {
+    use wasm_bindgen::JsCast;
+    if let Some(input) = host
+        .query_selector("input")
+        .ok()
+        .flatten()
+        .and_then(|e| e.dyn_into::<web_sys::HtmlInputElement>().ok())
+    {
+        input.set_checked(on);
+        true
+    } else {
+        false
+    }
+}
+
+/// Apply `checked` to the inner input, retrying on subsequent animation frames
+/// until the React-rendered input exists (capped so a missing input can't loop
+/// forever).
+#[cfg(feature = "web")]
+fn sync_checked(host: web_sys::Element, on: bool, attempt: u32) {
+    use wasm_bindgen::{closure::Closure, JsCast};
+    if set_checked_now(&host, on) || attempt >= 60 {
+        return;
+    }
+    let cb = Closure::once_into_js(move || sync_checked(host, on, attempt + 1));
+    if let Some(w) = web_sys::window() {
+        let _ = w.request_animation_frame(cb.unchecked_ref());
+    }
+}
+
+#[cfg(not(feature = "web"))]
+impl ElementHandle {
+    pub(crate) fn set_attr(&self, _name: &str, _value: Option<&str>) {}
+    pub(crate) fn set_inner_checked(&self, _on: bool) {}
+}
+
+/// Grab the host element from `onmounted` so the wrapper can sync attributes to
+/// it. Returns `None` off the web renderer.
+#[cfg(feature = "web")]
+pub(crate) fn host_element(mounted: &MountedData) -> Option<ElementHandle> {
+    Some(ElementHandle(
+        mounted.downcast::<web_sys::Element>()?.clone(),
+    ))
+}
+
+#[cfg(not(feature = "web"))]
+pub(crate) fn host_element(_mounted: &MountedData) -> Option<ElementHandle> {
+    None
+}
+
 /// Keeps a DOM listener alive and removes it on drop.
 #[cfg(feature = "web")]
 pub(crate) struct ListenerGuard {
@@ -55,9 +157,11 @@ pub(crate) struct ListenerGuard {
 impl Drop for ListenerGuard {
     fn drop(&mut self) {
         use wasm_bindgen::JsCast;
-        let _ = self.target.remove_event_listener_with_callback(
+        // Must match the capture flag used when adding the listener.
+        let _ = self.target.remove_event_listener_with_callback_and_bool(
             self.event_name,
             self._closure.as_ref().unchecked_ref(),
+            true,
         );
     }
 }
@@ -66,9 +170,9 @@ impl Drop for ListenerGuard {
 #[cfg(not(feature = "web"))]
 pub(crate) struct ListenerGuard;
 
-/// Attach a listener for `event_name` on the just-mounted host element, decode
-/// the value from the originating `<input>` via `decode`, and forward it to
-/// `handler`.
+/// Attach a capture-phase listener for `event_name` on the just-mounted host
+/// element, decode the value from the originating `<input>` via `decode`, and
+/// forward it to `handler`.
 ///
 /// Returns a [`ListenerGuard`] to store for the component's lifetime, or `None`
 /// if the element isn't a web element. No-op (returns `None`) off the web
@@ -103,8 +207,13 @@ pub(crate) fn on_input_event<T: 'static>(
         }
     });
     let closure = Closure::<dyn Fn(web_sys::Event)>::new(invoke);
+    // Capture phase: run before React's bubble-phase listener reverts the value.
     target
-        .add_event_listener_with_callback(event_name, closure.as_ref().unchecked_ref())
+        .add_event_listener_with_callback_and_bool(
+            event_name,
+            closure.as_ref().unchecked_ref(),
+            true,
+        )
         .ok()?;
     Some(ListenerGuard {
         target,
