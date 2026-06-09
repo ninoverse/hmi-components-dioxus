@@ -194,3 +194,11 @@ The realistic near-term win is **breadth**, not dep removal: `textarea`, `radio`
 `password-input` and `search-input` now expose the same
 `onChange`/`defaultValue` surface and can be wrapped by reusing `on_input_event`
 unchanged.
+
+## 7. Next request: controlled binding
+
+The shipped binding is **uncontrolled** (initial state + `on_change`). To support
+**controlled** two-way binding — where the host owns the value and can clear or
+reset it — the web components need two small behaviour fixes (honour empty/`false`
+updates; keep the property path reliable through upgrade). The required behaviour
+is specified in [`controlled-form-controls.md`](controlled-form-controls.md).
