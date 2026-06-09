@@ -1,50 +1,63 @@
-//! Interop for the form components' native DOM events and value binding.
+//! Interop for the form components' value binding and `change` events.
 //!
-//! The `@ninoverse/hmi-components` input/switch/checkbox elements render a
-//! plain inner `<input>` and spread attributes onto it — they do **not**
-//! dispatch a custom `change` event carrying the value in `detail`. The value
-//! lives on the event target (`event.target.value` / `.checked`), and the
-//! native `input`/`change` events bubble through the host.
+//! As of `@ninoverse/hmi-components` 4.2.0 the input/switch/checkbox elements
+//! expose an `onChange` prop, which the React→web-component bridge turns into a
+//! **bubbling `change` `CustomEvent`** whose `detail` carries the value
+//! (`string` for input, `bool` for switch/checkbox). They also accept `value` /
+//! `checked` as controlled props alongside `onChange`, so the user's edits are
+//! no longer reverted.
 //!
-//! Two quirks shape this module:
+//! Two helpers remain:
 //!
-//! * Dioxus special-cases `value`/`checked` as DOM *properties*, which a custom
-//!   element never observes, so those must be pushed as *attributes* via
-//!   `web-sys` ([`ElementHandle`]) instead of through `rsx!`.
-//! * The bridge passes those attributes to React as controlled props with no
-//!   `onChange`, so React reverts user edits. The listener is therefore
-//!   attached in the **capture** phase ([`on_input_event`]) to read the
-//!   user-intended value before React reverts it; a `use_effect` then pushes
-//!   that value back to the attribute so the controlled input settles.
+//! * Reading values out — a `web-sys` listener on the mounted host reads
+//!   `event.detail` ([`on_input_event`]). Dioxus' delegated dispatch can't see
+//!   these (the host carries no `data-dioxus-id` for a custom event), and a raw
+//!   listener fires outside the Dioxus runtime, so the handler re-enters the
+//!   runtime captured at mount and wakes the scheduler explicitly.
+//! * Pushing values in — Dioxus routes `value`/`checked` to DOM *properties* a
+//!   custom element ignores, so they're set as *attributes* via web-sys
+//!   ([`ElementHandle::set_attr`]).
 //!
-//! Wrappers call these helpers unconditionally; their bodies are real under the
-//! `web` feature and no-ops otherwise, so wrapper code stays identical across
+//! Wrappers call these unconditionally; their bodies are real under the `web`
+//! feature and no-ops otherwise, so wrapper code stays identical across
 //! renderers.
 
 use dioxus::prelude::*;
 
-/// The inner `<input>` element a wrapper's `decode` closure reads from.
+/// The decoded `detail` of a `change` `CustomEvent`, read by a wrapper's
+/// `decode` closure.
 ///
-/// Under the `web` feature this is the real `HtmlInputElement` (so `.value()`
-/// and `.checked()` resolve to the DOM accessors); off the web renderer it's a
-/// stub that exists only so `decode` closures type-check.
+/// Under the `web` feature this wraps the real `detail` `JsValue`; off the web
+/// renderer it's a stub that exists only so `decode` closures type-check (the
+/// off-web [`on_input_event`] never calls them).
 #[cfg(feature = "web")]
-pub(crate) type InputTarget = web_sys::HtmlInputElement;
+pub(crate) struct EventValue(wasm_bindgen::JsValue);
 
-/// Off-web stub for the event target. The accessors mirror the
-/// `HtmlInputElement` API used by `decode` closures; they're never actually
-/// called because the off-web [`on_input_event`] is a no-op.
+/// Off-web stub for the event detail. The accessors mirror the web API used by
+/// `decode` closures; they're never actually called.
 #[cfg(not(feature = "web"))]
-pub(crate) struct InputTarget;
+pub(crate) struct EventValue;
+
+#[cfg(feature = "web")]
+impl EventValue {
+    /// The detail as a string (input's value), or `None` if it isn't one.
+    pub(crate) fn string(&self) -> Option<String> {
+        self.0.as_string()
+    }
+    /// The detail as a bool (switch/checkbox's checked), or `None` otherwise.
+    pub(crate) fn bool(&self) -> Option<bool> {
+        self.0.as_bool()
+    }
+}
 
 #[cfg(not(feature = "web"))]
 #[allow(dead_code)]
-impl InputTarget {
-    pub(crate) fn value(&self) -> String {
-        String::new()
+impl EventValue {
+    pub(crate) fn string(&self) -> Option<String> {
+        None
     }
-    pub(crate) fn checked(&self) -> bool {
-        false
+    pub(crate) fn bool(&self) -> Option<bool> {
+        None
     }
 }
 
@@ -63,6 +76,11 @@ pub(crate) struct ElementHandle;
 #[cfg(feature = "web")]
 impl ElementHandle {
     /// Set the attribute to `value` when `Some`, or remove it when `None`.
+    ///
+    /// Used for the controlled `value`/`checked` state: an *attribute* (which
+    /// the bridge forwards to React), not the property Dioxus would set. With
+    /// `onChange` present the React control accepts these without reverting, so
+    /// the inner input toggles/edits freely and settles on the synced value.
     pub(crate) fn set_attr(&self, name: &str, value: Option<&str>) {
         match value {
             Some(v) => {
@@ -73,60 +91,11 @@ impl ElementHandle {
             }
         }
     }
-
-    /// Set the inner `<input>`'s `checked` *property* directly.
-    ///
-    /// Switch/checkbox must stay React-*uncontrolled* (a controlled checkbox
-    /// with no `onChange` can't be toggled by the user), so the state is driven
-    /// via the DOM property rather than the `checked` attribute (which the
-    /// bridge would forward to React as a controlled prop).
-    ///
-    /// The inner input is rendered asynchronously after the host mounts, so on
-    /// the first call (e.g. applying the initial state) it may not exist yet;
-    /// in that case retry on the next animation frame, by when React has
-    /// rendered it.
-    pub(crate) fn set_inner_checked(&self, on: bool) {
-        sync_checked(self.0.clone(), on, 0);
-    }
-}
-
-/// Set the inner `<input>`'s `checked` property; returns whether the input was
-/// found.
-#[cfg(feature = "web")]
-fn set_checked_now(host: &web_sys::Element, on: bool) -> bool {
-    use wasm_bindgen::JsCast;
-    if let Some(input) = host
-        .query_selector("input")
-        .ok()
-        .flatten()
-        .and_then(|e| e.dyn_into::<web_sys::HtmlInputElement>().ok())
-    {
-        input.set_checked(on);
-        true
-    } else {
-        false
-    }
-}
-
-/// Apply `checked` to the inner input, retrying on subsequent animation frames
-/// until the React-rendered input exists (capped so a missing input can't loop
-/// forever).
-#[cfg(feature = "web")]
-fn sync_checked(host: web_sys::Element, on: bool, attempt: u32) {
-    use wasm_bindgen::{closure::Closure, JsCast};
-    if set_checked_now(&host, on) || attempt >= 60 {
-        return;
-    }
-    let cb = Closure::once_into_js(move || sync_checked(host, on, attempt + 1));
-    if let Some(w) = web_sys::window() {
-        let _ = w.request_animation_frame(cb.unchecked_ref());
-    }
 }
 
 #[cfg(not(feature = "web"))]
 impl ElementHandle {
     pub(crate) fn set_attr(&self, _name: &str, _value: Option<&str>) {}
-    pub(crate) fn set_inner_checked(&self, _on: bool) {}
 }
 
 /// Grab the host element from `onmounted` so the wrapper can sync attributes to
@@ -157,12 +126,9 @@ pub(crate) struct ListenerGuard {
 impl Drop for ListenerGuard {
     fn drop(&mut self) {
         use wasm_bindgen::JsCast;
-        // Must match the capture flag used when adding the listener.
-        let _ = self.target.remove_event_listener_with_callback_and_bool(
-            self.event_name,
-            self._closure.as_ref().unchecked_ref(),
-            true,
-        );
+        let _ = self
+            .target
+            .remove_event_listener_with_callback(self.event_name, self._closure.as_ref().unchecked_ref());
     }
 }
 
@@ -170,9 +136,9 @@ impl Drop for ListenerGuard {
 #[cfg(not(feature = "web"))]
 pub(crate) struct ListenerGuard;
 
-/// Attach a capture-phase listener for `event_name` on the just-mounted host
-/// element, decode the value from the originating `<input>` via `decode`, and
-/// forward it to `handler`.
+/// Attach a listener for `event_name` (a bridge `CustomEvent`) on the
+/// just-mounted host element, decode its `detail` via `decode`, and forward the
+/// value to `handler`.
 ///
 /// Returns a [`ListenerGuard`] to store for the component's lifetime, or `None`
 /// if the element isn't a web element. No-op (returns `None`) off the web
@@ -182,7 +148,7 @@ pub(crate) fn on_input_event<T: 'static>(
     mounted: &MountedData,
     event_name: &'static str,
     handler: EventHandler<T>,
-    decode: fn(&InputTarget) -> Option<T>,
+    decode: fn(&EventValue) -> Option<T>,
 ) -> Option<ListenerGuard> {
     use dioxus::core::{schedule_update, Runtime};
     use wasm_bindgen::{closure::Closure, JsCast};
@@ -195,25 +161,17 @@ pub(crate) fn on_input_event<T: 'static>(
     // we also wake the scheduler explicitly once the handler has run.
     let schedule = schedule_update();
     let invoke = Runtime::wrap_closure(move |e: web_sys::Event| {
-        let Some(input) = e
-            .target()
-            .and_then(|t| t.dyn_into::<web_sys::HtmlInputElement>().ok())
-        else {
+        let Some(custom) = e.dyn_ref::<web_sys::CustomEvent>() else {
             return;
         };
-        if let Some(value) = decode(&input) {
+        if let Some(value) = decode(&EventValue(custom.detail())) {
             handler.call(value);
             schedule();
         }
     });
     let closure = Closure::<dyn Fn(web_sys::Event)>::new(invoke);
-    // Capture phase: run before React's bubble-phase listener reverts the value.
     target
-        .add_event_listener_with_callback_and_bool(
-            event_name,
-            closure.as_ref().unchecked_ref(),
-            true,
-        )
+        .add_event_listener_with_callback(event_name, closure.as_ref().unchecked_ref())
         .ok()?;
     Some(ListenerGuard {
         target,
@@ -227,7 +185,7 @@ pub(crate) fn on_input_event<T: 'static>(
     _mounted: &MountedData,
     _event_name: &'static str,
     _handler: EventHandler<T>,
-    _decode: fn(&InputTarget) -> Option<T>,
+    _decode: fn(&EventValue) -> Option<T>,
 ) -> Option<ListenerGuard> {
     None
 }

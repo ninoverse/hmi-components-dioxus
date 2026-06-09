@@ -1,5 +1,13 @@
 # Upstream changes that would simplify this crate
 
+> **✅ Resolved in upstream 4.2.0.** All three proposals below shipped: `input`,
+> `switch`, `checkbox` (and `textarea`/`radio`/`password-input`/`search-input`)
+> now expose `onChange` wired onto the inner `<input>` (§3.1), `defaultValue` /
+> `defaultChecked` (§3.2), and register their callback with `{bubbles: true}`
+> (§3.3). This crate was simplified accordingly — see the "after" column in §4
+> and the updated [`event-binding-and-dataviz.md`](event-binding-and-dataviz.md).
+> The original proposal is kept below as the record of why.
+
 > **Audience:** maintainers of **`@ninoverse/hmi-components`** (the upstream npm
 > package) and of this crate. This is a review of the event-binding approach in
 > `src/event.rs` and a proposal for small upstream changes that would let us

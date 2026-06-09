@@ -21,11 +21,12 @@ pub fn HmiSwitch(
     // Holds the DOM listener for this component's lifetime; dropped on unmount.
     let mut listener = use_signal(|| Option::<ListenerGuard>::None);
     let mut host = use_signal(|| Option::<ElementHandle>::None);
-    // Drive the inner input's `checked` property whenever it (or the host)
-    // changes; the element stays React-uncontrolled so the user can toggle it.
+    // Push `checked` to the host as an attribute whenever it (or the host)
+    // changes; with `onChange` present the React control accepts it and still
+    // toggles on user input.
     use_effect(move || {
         if let Some(h) = host.read().as_ref() {
-            h.set_inner_checked(checked);
+            h.set_attr("checked", checked.then_some("true"));
         }
     });
     rsx! {
@@ -36,7 +37,7 @@ pub fn HmiSwitch(
             "value": value,
             onmounted: move |m| {
                 host.set(host_element(&m));
-                listener.set(on_input_event(&m, "change", on_change, |el| Some(el.checked())));
+                listener.set(on_input_event(&m, "change", on_change, |d| d.bool()));
             },
         }
     }

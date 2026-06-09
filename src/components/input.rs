@@ -40,7 +40,7 @@ pub fn HmiInput(
             "name": name,
             onmounted: move |m| {
                 host.set(host_element(&m));
-                listener.set(on_input_event(&m, "input", on_change, |el| Some(el.value())));
+                listener.set(on_input_event(&m, "change", on_change, |d| d.string()));
             },
         }
     }
