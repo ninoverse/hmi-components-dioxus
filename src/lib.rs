@@ -8,11 +8,12 @@
 
 mod assets;
 mod components;
+mod event;
 
 pub use assets::HmiAssets;
 pub use components::{
     AvatarSize, AvatarStatus, BadgeVariant, ButtonSize, ButtonType, ButtonVariant, CardVariant,
     DividerAlign, DividerOrientation, HeadingSize, HeadingTone, HmiAvatar, HmiBadge, HmiButton,
-    HmiCard, HmiChip, HmiDivider, HmiHeading, HmiProgress, HmiSpinner, HmiText, SpinnerSize,
-    TextAlign, TextSize, TextTone, TextWeight,
+    HmiCard, HmiCheckbox, HmiChip, HmiDivider, HmiHeading, HmiInput, HmiProgress, HmiSpinner,
+    HmiSwitch, HmiText, SpinnerSize, TextAlign, TextSize, TextTone, TextWeight,
 };

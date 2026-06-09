@@ -35,11 +35,25 @@ exclude = [
     "/TODO.md",
 ]
 
+# Renderer-agnostic by default; the optional `web` feature pulls the web-only
+# deps needed to wire DOM CustomEvent listeners for interactive components. The
+# crate must still build with the feature off (docs.rs, non-web renderers).
+[features]
+web = ["dep:web-sys", "dep:wasm-bindgen"]
+
 # Renderer-agnostic: the `lib` feature pulls in the core (macros, rsx/html,
 # signals, hooks, document, asset) without any platform renderer or `launch`.
 # The consuming binary (web/desktop/mobile) brings its own renderer.
 [dependencies]
 dioxus = { version = "0.7", default-features = false, features = ["lib"] }
+wasm-bindgen = { version = "0.2", optional = true }
+web-sys = { version = "0.3", optional = true, features = [
+    "Element",
+    "EventTarget",
+    "Event",
+    "HtmlInputElement",
+    "Window",
+] }
 
 [profile.release]
 opt-level = "z"

@@ -24,10 +24,7 @@ impl CardVariant {
 
 /// Typed wrapper for the `<hmi-card>` web component.
 #[component]
-pub fn HmiCard(
-    #[props(default)] variant: CardVariant,
-    children: Element,
-) -> Element {
+pub fn HmiCard(#[props(default)] variant: CardVariant, children: Element) -> Element {
     rsx! {
         hmi-card { "variant": variant.as_str(), {children} }
     }

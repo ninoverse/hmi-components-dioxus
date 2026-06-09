@@ -25,10 +25,7 @@ impl SpinnerSize {
 /// `label` sets the accessible status text; the upstream defaults to
 /// `"Loading"` when omitted.
 #[component]
-pub fn HmiSpinner(
-    #[props(default)] size: SpinnerSize,
-    label: Option<String>,
-) -> Element {
+pub fn HmiSpinner(#[props(default)] size: SpinnerSize, label: Option<String>) -> Element {
     rsx! {
         hmi-spinner { "size": size.as_str(), "label": label }
     }

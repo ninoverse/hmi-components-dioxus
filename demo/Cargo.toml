@@ -10,8 +10,10 @@ hmi-dioxus = { path = ".." }
 
 # `dx serve --platform <p>` builds with `--no-default-features --features <p>`.
 # One platform stays `default` so plain `cargo` / rust-analyzer have a target.
+# The web platform forwards the library's `web` feature so interactive
+# components can attach their DOM event listeners.
 [features]
 default = ["web"]
-web = ["dioxus/web"]
+web = ["dioxus/web", "hmi-dioxus/web"]
 desktop = ["dioxus/desktop"]
 mobile = ["dioxus/mobile"]
