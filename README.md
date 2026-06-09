@@ -40,7 +40,7 @@ fn App() -> Element {
 Wrapped so far: `HmiBadge`, `HmiButton`, `HmiChip` (with their `*Variant`/`*Size`/
 `*Type` enums). See `TODO.md` for scope and the path to a crates.io release, and
 [`docs/event-binding-and-dataviz.md`](docs/event-binding-and-dataviz.md) for the
-planned event-callback / two-way-binding pattern and data-viz findings.
+event-callback / two-way-binding pattern and data-viz findings.
 
 ## Running the demo
 
@@ -73,7 +73,7 @@ cargo fmt                                     # format Rust; `dx fmt` formats rs
 
 Both publishable crates share one repo-owned version via `[workspace.package].version`
 (the demo inherits it), kept **independent of** the wrapped npm package. The
-`@ninoverse/hmi-components` `3.1.2` pin lives only in `xtask`, not in the crate
+`@ninoverse/hmi-components` `4.2.0` pin lives only in `xtask`, not in the crate
 version. CI bumps the shared version on merge to `main`.
 
 ## Conventions

@@ -150,9 +150,8 @@ listener reading `detail` is far simpler than today.)
 | Per-wrapper `host`/`listener` signals + `use_effect` push-in | wrappers just forward `on_change` |
 | Controlled-vs-uncontrolled workaround prose in the design doc | a single sentence: "these emit `change` like everything else" |
 
-The `web` cargo feature and its `web-sys`/`wasm-bindgen` deps could likely be
-dropped, making the crate renderer-agnostic again and un-blocking `textarea`,
-`radio`, `password-input` and `search-input` with the plain attribute idiom.
+The `web` cargo feature and its `web-sys`/`wasm-bindgen` deps were expected to
+become droppable. **In practice (4.2.0) they did not** — see §6.
 
 ## 5. If upstream can't change
 
@@ -162,3 +161,38 @@ changes is to fold `chip`'s (already-correct) `detail`-based callback and the
 form controls behind a single helper module — but the form controls still need
 the capture-phase/property machinery described in §2, so the saving is modest.
 The high-leverage fix is the upstream prop additions in §3.
+
+## 6. After 4.2.0: what the `web` feature still needs
+
+4.2.0 shipped §3.1–§3.3 and the crate was simplified accordingly (the
+controlled, `detail`-reading implementation in
+[`event-binding-and-dataviz.md`](event-binding-and-dataviz.md) §3). But the
+optimistic §4 prediction that the `web` feature could be **dropped** turned out
+to be wrong — `web-sys`/`wasm-bindgen` are still required, for two reasons:
+
+1. **Reading the value still needs `web-sys`.** The bubbling `change` event
+   (§3.3) lets Dioxus's delegated `onchange` *fire*, but it hands the wrapper an
+   `Event<FormData>` whose value is derived from the host's `value` **property**,
+   not the user's just-emitted `detail`. Getting `detail` means downcasting to
+   `web_sys::CustomEvent`, so binding from `rsx!` saves nothing.
+2. **Writing `value`/`checked` still needs `web-sys`.** Dioxus special-cases
+   these as DOM *properties*; setting them from `rsx!` only reaches the bridge if
+   the custom element happens to be upgraded first (timing-dependent) and
+   otherwise shadows the accessor. The deterministic path is still
+   `setAttribute` via `ElementHandle::set_attr`.
+
+**Follow-up for a future upstream version** — to let this crate drop the `web`
+feature entirely, *both* would have to hold:
+
+- the control **reflects** the live value to a place Dioxus's typed events
+  already read — e.g. keeping the host's `value`/`checked` property in sync with
+  the inner input so `onchange`'s `FormData` (or `onchange`'s target) yields the
+  user value without touching `detail`; **and**
+- Dioxus reliably reflects `value`/`checked` to a custom element (an upstream
+  *Dioxus* change, or a control that observes a non-special-cased attribute name
+  for its controlled value).
+
+Neither holds today, so the `web` feature stays. The realistic near-term win is
+**breadth**, not dep removal: `textarea`, `radio`, `password-input` and
+`search-input` now expose the same `onChange`/`defaultValue` surface and can be
+wrapped by reusing `on_input_event` unchanged.

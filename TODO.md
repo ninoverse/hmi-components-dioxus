@@ -45,19 +45,19 @@ and the actual `cargo publish` (the license + metadata prerequisites are done).
       `dx build --release --platform web`.
 - [x] **Repo restructured around the library**: `hmi-dioxus` at the workspace
       root, demo moved to `demo/`. Both crates share one repo-owned version via
-      `[workspace.package].version`, deliberately decoupled from npm `3.1.2`
+      `[workspace.package].version`, deliberately decoupled from npm `4.2.0`
       (which is pinned only in `xtask`).
 
 ---
 
-## Component surface (verified against vendored 3.1.2)
+## Component surface (verified against vendored 4.2.0)
 
 The bundle registers **85 custom elements** through a single helper
 `tt("name", …)` that defines `hmi-<name>` — `customElements.define` is called in
 exactly one place (inside `tt`), and `tt` is invoked for 85 distinct names.
 
 > An earlier draft here split these into "54 web components / 31 React-only"; that
-> does **not** hold for 3.1.2 — every name below is registered as a custom element.
+> does **not** hold for 4.2.0 — every name below is registered as a custom element.
 > Caveat: chart/data-heavy elements (and some inputs) likely need JSON/data props,
 > or a surrounding context, to render usefully — so wrap the simple presentational
 > ones first and confirm each renders standalone before wrapping it.
@@ -124,15 +124,15 @@ Rough grouping, to suggest order (**13 / 85 wrapped**):
 ## Open questions
 
 - [x] **Event callbacks & two-way value binding** — *implemented for
-      input/switch/checkbox; design corrected in
+      input/switch/checkbox; see
       [`docs/event-binding-and-dataviz.md`](docs/event-binding-and-dataviz.md).*
-      The original `detail`-based `CustomEvent` model held only for `chip`; the
-      form controls have no callback props — they emit native bubbling
-      `input`/`change` events with the value on `event.target`. Wired in
-      `onmounted` via `web-sys` behind the optional `web` feature, re-entering
-      the Dioxus runtime and waking the scheduler; `value`/`checked` are synced
-      imperatively since Dioxus routes them to properties custom elements
-      ignore. Callbacks are `EventHandler<T>`.
+      As of upstream `4.2.0` the form controls expose `onChange`, which the
+      bridge turns into a bubbling `change` `CustomEvent` carrying the value in
+      `detail`, plus controlled `value`/`checked`. The wrapper reads `detail` via
+      a `web-sys` listener (re-entering the Dioxus runtime and waking the
+      scheduler) and pushes `value`/`checked` in as attributes — Dioxus routes
+      those to properties a custom element ignores, so the `web` feature stays
+      (see the proposal doc §6). Callbacks are `EventHandler<T>`.
 - [x] **Data-viz standalone render** — *answered (see the same doc).* Charts are
       plain custom elements taking JSON props + explicit `width`/`height`; they need
       no React context. `hmi-responsive-container` is an optional ResizeObserver
