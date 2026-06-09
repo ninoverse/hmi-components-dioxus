@@ -5,10 +5,13 @@
 `cargo add hmi-dioxus`. The crate is the workspace root of this repo; the `demo/`
 app (`publish = false`) is its first consumer and stays in-repo.
 
-**Where things stand:** the crate is built, wired, and verified locally. Three
-wrappers ship (`HmiBadge`, `HmiButton`, `HmiChip`) plus the self-injecting
-`HmiAssets`. What's left is breadth (more wrappers) and the publish prerequisites
-— chiefly an upstream license confirmation.
+**Where things stand:** the crate is built, wired, and verified locally.
+Thirteen wrappers ship — `HmiBadge`/`HmiButton`/`HmiChip`, seven more
+presentational (`HmiCard`, `HmiDivider`, `HmiHeading`, `HmiText`, `HmiAvatar`,
+`HmiSpinner`, `HmiProgress`), and three interactive (`HmiInput`, `HmiSwitch`,
+`HmiCheckbox`) — plus the self-injecting `HmiAssets` and an optional `web`
+feature that powers DOM event binding. What's left is breadth (more wrappers)
+and the actual `cargo publish` (the license + metadata prerequisites are done).
 
 ---
 
@@ -28,6 +31,14 @@ wrappers ship (`HmiBadge`, `HmiButton`, `HmiChip`) plus the self-injecting
   - [x] `HmiButton` — `ButtonVariant` / `ButtonSize` / `ButtonType`, `disabled`,
         `as_icon`, JSON `left_icon` / `right_icon`
   - [x] `HmiChip` — `selected`, JSON `icon`
+  - [x] `HmiCard` (`CardVariant`) · `HmiDivider` (`DividerOrientation`/`DividerAlign`)
+        · `HmiHeading` (`level`, `HeadingSize`/`HeadingTone`, `truncate`)
+        · `HmiText` (`tag`, `TextSize`/`TextWeight`/`TextTone`/`TextAlign`, `truncate`)
+        · `HmiAvatar` (`AvatarSize`/`AvatarStatus`) · `HmiSpinner` (`SpinnerSize`)
+        · `HmiProgress` (`value`, `indeterminate`)
+  - [x] **Interactive** (behind the optional `web` feature, events wired via
+        `src/event.rs`): `HmiInput` (two-way `value` + `on_change`), `HmiSwitch`
+        and `HmiCheckbox` (`checked` + `on_change`)
 - [x] **Demo consumes the crate**: `demo/src/main.rs` uses `HmiAssets` + the typed
       wrappers (no more `dangerous_inner_html`). Verified with `cargo test`,
       `cargo clippy --workspace --all-targets -- -D warnings`, `dx check`, and
@@ -57,18 +68,18 @@ expressible as attributes — attach standard DOM event handlers to the rendered
 element instead. Re-vendor with `cargo run -p xtask` and re-extract this list when
 bumping the upstream version.
 
-Rough grouping, to suggest order (**3 / 85 wrapped**):
+Rough grouping, to suggest order (**13 / 85 wrapped**):
 
 **Presentational / leaf — wrap first**
 - [x] badge · [x] button · [x] chip
-- [ ] alert · [ ] avatar · [ ] banner · [ ] blockquote · [ ] box · [ ] breadcrumbs
-- [ ] card · [ ] code · [ ] divider · [ ] flex · [ ] grid · [ ] heading · [ ] image
-- [ ] kbd · [ ] link · [ ] list · [ ] meter · [ ] progress · [ ] skeleton · [ ] spacer
-- [ ] spinner · [ ] stat · [ ] text · [ ] tooltip
+- [ ] alert · [x] avatar · [ ] banner · [ ] blockquote · [ ] box · [ ] breadcrumbs
+- [x] card · [ ] code · [x] divider · [ ] flex · [ ] grid · [x] heading · [ ] image
+- [ ] kbd · [ ] link · [ ] list · [ ] meter · [x] progress · [ ] skeleton · [ ] spacer
+- [x] spinner · [ ] stat · [x] text · [ ] tooltip
 
 **Inputs / form (verify standalone; need value/event plumbing)**
-- [ ] checkbox · [ ] combobox · [ ] input · [ ] radio · [ ] select · [ ] slider
-- [ ] stepper · [ ] switch · [ ] tabs · [ ] textarea · [ ] form-control
+- [x] checkbox · [ ] combobox · [x] input · [ ] radio · [ ] select · [ ] slider
+- [ ] stepper · [x] switch · [ ] tabs · [ ] textarea · [ ] form-control
 - [ ] color-picker · [ ] date-picker · [ ] file-upload · [ ] multi-input
 - [ ] number-input · [ ] password-input · [ ] radio-group · [ ] search-input
 - [ ] segmented-control · [ ] value-scale-selector
@@ -112,14 +123,16 @@ Rough grouping, to suggest order (**3 / 85 wrapped**):
 
 ## Open questions
 
-- [x] **Event callbacks & two-way value binding** — *answered (design recorded in
-      [`docs/event-binding-and-dataviz.md`](docs/event-binding-and-dataviz.md);
-      implementation is a follow-up).* The components dispatch DOM `CustomEvent`s
-      (`onXxx` → event `xxx`, `event.detail` = the payload). Dioxus 0.7 can't name a
-      custom event in `rsx!`, so wire it in `onmounted` via `web_sys`
-      `add_event_listener_with_callback`, behind an optional `web` feature; expose
-      callbacks as `EventHandler<T>` and bind values via the `value` attribute (in)
-      + the `change` event (out).
+- [x] **Event callbacks & two-way value binding** — *implemented for
+      input/switch/checkbox; design corrected in
+      [`docs/event-binding-and-dataviz.md`](docs/event-binding-and-dataviz.md).*
+      The original `detail`-based `CustomEvent` model held only for `chip`; the
+      form controls have no callback props — they emit native bubbling
+      `input`/`change` events with the value on `event.target`. Wired in
+      `onmounted` via `web-sys` behind the optional `web` feature, re-entering
+      the Dioxus runtime and waking the scheduler; `value`/`checked` are synced
+      imperatively since Dioxus routes them to properties custom elements
+      ignore. Callbacks are `EventHandler<T>`.
 - [x] **Data-viz standalone render** — *answered (see the same doc).* Charts are
       plain custom elements taking JSON props + explicit `width`/`height`; they need
       no React context. `hmi-responsive-container` is an optional ResizeObserver
