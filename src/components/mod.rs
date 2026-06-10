@@ -23,6 +23,8 @@ fn json_string(s: &str) -> String {
 
 mod avatar;
 mod badge;
+#[path = "box.rs"]
+mod box_;
 mod button;
 mod card;
 mod checkbox;
@@ -43,6 +45,7 @@ mod text;
 
 pub use avatar::{AvatarSize, AvatarStatus, HmiAvatar};
 pub use badge::{BadgeVariant, HmiBadge};
+pub use box_::{BoxBackground, BoxPadding, BoxRadius, HmiBox};
 pub use button::{ButtonSize, ButtonType, ButtonVariant, HmiButton};
 pub use card::{CardVariant, HmiCard};
 pub use checkbox::HmiCheckbox;
