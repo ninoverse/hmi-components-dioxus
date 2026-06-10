@@ -68,13 +68,13 @@ expressible as attributes — attach standard DOM event handlers to the rendered
 element instead. Re-vendor with `cargo run -p xtask` and re-extract this list when
 bumping the upstream version.
 
-Rough grouping, to suggest order (**15 / 85 wrapped**):
+Rough grouping, to suggest order (**16 / 85 wrapped**):
 
 **Presentational / leaf — wrap first**
 - [x] badge · [x] button · [x] chip
 - [ ] alert · [x] avatar · [ ] banner · [ ] blockquote · [ ] box · [ ] breadcrumbs
 - [x] card · [x] code · [x] divider · [ ] flex · [ ] grid · [x] heading · [ ] image
-- [x] kbd · [ ] link · [ ] list · [ ] meter · [x] progress · [ ] skeleton · [ ] spacer
+- [x] kbd · [ ] link · [ ] list · [ ] meter · [x] progress · [ ] skeleton · [x] spacer
 - [x] spinner · [ ] stat · [x] text · [ ] tooltip
 
 **Inputs / form (verify standalone; need value/event plumbing)**
