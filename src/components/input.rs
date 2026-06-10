@@ -1,16 +1,14 @@
 use dioxus::prelude::*;
 
-use crate::event::{host_element, on_input_event, ElementHandle, ListenerGuard};
+use crate::event::{on_input_event, ListenerGuard};
 
 /// Typed wrapper for the `<hmi-input>` web component.
 ///
-/// Two-way binding: push a value in via `value`, read edits out via
-/// `on_change`, which fires on every keystroke with the current text. `value`
-/// is synced as an attribute imperatively (Dioxus would set a property the
-/// custom element ignores) — see [`crate::event`] for the full story.
-/// `input_type` maps to the upstream `type` attribute (renamed because `type`
-/// is a Rust keyword). The upstream `leftIcon`/`rightIcon` JSON descriptors are
-/// omitted for now.
+/// Binding: `value` seeds the initial text; the control is then **uncontrolled**
+/// (the DOM owns the live value) and reports edits through `on_change`, which
+/// fires on every keystroke with the current text. `input_type` maps to the
+/// upstream `type` attribute (renamed because `type` is a Rust keyword). The
+/// upstream `leftIcon`/`rightIcon` JSON descriptors are omitted for now.
 #[component]
 pub fn HmiInput(
     #[props(default)] value: String,
@@ -24,23 +22,16 @@ pub fn HmiInput(
 ) -> Element {
     // Holds the DOM listener for this component's lifetime; dropped on unmount.
     let mut listener = use_signal(|| Option::<ListenerGuard>::None);
-    let mut host = use_signal(|| Option::<ElementHandle>::None);
-    // Push `value` to the host as an attribute whenever it (or the host) changes.
-    use_effect(move || {
-        if let Some(h) = host.read().as_ref() {
-            h.set_attr("value", Some(&value));
-        }
-    });
     rsx! {
         hmi-input {
+            "default-value": if !value.is_empty() { value },
             "placeholder": placeholder,
             "type": input_type,
             "disabled": if disabled { "true" },
             "error": if error { "true" },
             "name": name,
             onmounted: move |m| {
-                host.set(host_element(&m));
-                listener.set(on_input_event(&m, "input", on_change, |el| Some(el.value())));
+                listener.set(on_input_event(&m, "change", on_change, |d| d.string()));
             },
         }
     }
