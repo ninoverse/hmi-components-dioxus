@@ -1,12 +1,15 @@
 //! Interop for reading the form components' `change` events.
 //!
-//! As of `@ninoverse/hmi-components` 4.2.0 the input/switch/checkbox elements
-//! expose an `onChange` prop, which the React→web-component bridge turns into a
-//! **bubbling `change` `CustomEvent`** whose `detail` carries the value
-//! (`string` for input, `bool` for switch/checkbox). They also accept
-//! `defaultValue` / `defaultChecked`, so the wrappers render them **uncontrolled**
-//! (the DOM owns the live value) and seed only the initial state through `rsx!`.
-//! That leaves a single interop concern: reading the value back out.
+//! As of `@ninoverse/hmi-components` 5.0.0 the input/switch/checkbox elements
+//! are controlled-ready: `value`/`checked` writes always apply — including
+//! empty/`false` and DOM-*property* writes, which is how Dioxus sets these
+//! fields — and the React→web-component bridge turns the `onChange` prop into
+//! a **bubbling `change` `CustomEvent`** whose `detail` carries the value the
+//! user asked for (`string` for input, `bool` for switch/checkbox). The
+//! wrappers render the controls **controlled** when given `value`/`checked`:
+//! the control always displays the prop, and an edit only takes effect once
+//! the caller feeds it back in through `rsx!`. That leaves a single interop
+//! concern: reading the requested value out.
 //!
 //! Dioxus' delegated dispatch can't see these events (the host carries no
 //! `data-dioxus-id` for a custom event), and a raw `web-sys` listener fires

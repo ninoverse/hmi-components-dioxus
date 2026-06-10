@@ -49,11 +49,7 @@ pub fn HmiDivider(
     children: Element,
 ) -> Element {
     rsx! {
-        hmi-divider {
-            "orientation": orientation.as_str(),
-            "align": align.as_str(),
-            {children}
-        }
+        hmi-divider { "orientation": orientation.as_str(), "align": align.as_str(), {children} }
     }
 }
 

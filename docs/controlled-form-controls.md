@@ -1,5 +1,11 @@
 # Controlled form controls — required behaviour
 
+> **✅ Resolved in upstream 5.0.0.** Both missing pieces shipped: empty/`false`
+> updates (and attribute removal) now apply, and properties set before the
+> element upgrades are re-applied at `connectedCallback`. The wrappers now bind
+> `value`/`checked` controlled and have dropped the `default-*` workaround;
+> the current pattern is documented in `event-binding-and-dataviz.md` §3.
+
 A spec for **`@ninoverse/hmi-components`**: how `<hmi-input>`, `<hmi-switch>`,
 `<hmi-checkbox>` (and the other text/toggle controls — `textarea`, `radio`,
 `password-input`, `search-input`) must behave so a host framework can bind them
@@ -86,7 +92,7 @@ today). The host picks the mode by choosing which prop it sets — controlled
 
 ---
 
-## What 4.2.0 already does, and what's left
+## What 4.2.0 already does, and what's left (both ❌ fixed in 5.0.0)
 
 - ✅ Fires a bubbling `change` event with the value in `detail` (rule 3).
 - ✅ Has both `value`/`checked` and `default-value`/`default-checked` (rule 4).

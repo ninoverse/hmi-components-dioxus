@@ -4,14 +4,17 @@ use crate::event::{on_input_event, ListenerGuard};
 
 /// Typed wrapper for the `<hmi-input>` web component.
 ///
-/// Binding: `value` seeds the initial text; the control is then **uncontrolled**
-/// (the DOM owns the live value) and reports edits through `on_change`, which
-/// fires on every keystroke with the current text. `input_type` maps to the
-/// upstream `type` attribute (renamed because `type` is a Rust keyword). The
-/// upstream `leftIcon`/`rightIcon` JSON descriptors are omitted for now.
+/// Binding: pass `value` to render **controlled** — the input always displays
+/// exactly `value`, and a keystroke only *requests* an edit through
+/// `on_change` (fired with the full requested text); the edit appears when
+/// the caller feeds it back into `value`. Omit `value` for an uncontrolled
+/// input that owns its own text. `input_type` maps to the upstream `type`
+/// attribute (renamed because `type` is a Rust keyword). The upstream
+/// `leftIcon`/`rightIcon` JSON descriptors are omitted for now.
 #[component]
 pub fn HmiInput(
-    #[props(default)] value: String,
+    /// Controlled text: the input always shows exactly this value.
+    value: Option<String>,
     placeholder: Option<String>,
     /// Maps to the upstream `type` attribute (e.g. `"email"`, `"password"`).
     input_type: Option<String>,
@@ -24,7 +27,10 @@ pub fn HmiInput(
     let mut listener = use_signal(|| Option::<ListenerGuard>::None);
     rsx! {
         hmi-input {
-            "default-value": if !value.is_empty() { value },
+            // Dioxus special-cases `value` as a DOM *property* write; the 5.0.0
+            // host forwards property writes to the React `value` prop, even
+            // when they land before the element upgrades.
+            "value": value,
             "placeholder": placeholder,
             "type": input_type,
             "disabled": if disabled { "true" },

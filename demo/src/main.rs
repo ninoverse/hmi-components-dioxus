@@ -24,9 +24,7 @@ fn App() -> Element {
         // script. Render once, above any `Hmi*` wrapper.
         HmiAssets {}
         HmiHeading { level: 1, size: HeadingSize::Xlarge, "hmi-dioxus" }
-        HmiText { tone: TextTone::Muted,
-            "Typed Dioxus wrappers for @ninoverse/hmi-components"
-        }
+        HmiText { tone: TextTone::Muted, "Typed Dioxus wrappers for @ninoverse/hmi-components" }
         div { style: "display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-top:2rem;",
             HmiBadge { variant: BadgeVariant::Success, "Active" }
             HmiBadge { variant: BadgeVariant::Danger, "Error" }
@@ -72,8 +70,16 @@ fn App() -> Element {
         div { style: "display:flex;gap:1rem;align-items:center;margin-top:2rem;",
             HmiAvatar { name: "Ada Lovelace", size: AvatarSize::Small }
             HmiAvatar { name: "Grace Hopper" }
-            HmiAvatar { name: "Alan Turing", size: AvatarSize::Large, status: AvatarStatus::Online }
-            HmiAvatar { name: "Linus Torvalds", size: AvatarSize::Xlarge, status: AvatarStatus::Away }
+            HmiAvatar {
+                name: "Alan Turing",
+                size: AvatarSize::Large,
+                status: AvatarStatus::Online,
+            }
+            HmiAvatar {
+                name: "Linus Torvalds",
+                size: AvatarSize::Xlarge,
+                status: AvatarStatus::Away,
+            }
             HmiAvatar { name: "Margaret Hamilton", status: AvatarStatus::Offline }
         }
         div { style: "display:flex;gap:1.5rem;align-items:center;margin-top:2rem;",
@@ -112,6 +118,16 @@ fn App() -> Element {
             }
             HmiCheckbox { disabled: true, label: "Disabled checkbox" }
             div { "notifications: {notifications} · accepted: {accepted}" }
+            // Exercises controlled push-in: the host overwrites the live
+            // controls, proving value/checked drive the DOM after mount.
+            button {
+                onclick: move |_| {
+                    text.set(String::new());
+                    notifications.set(true);
+                    accepted.set(false);
+                },
+                "Reset form state"
+            }
         }
     }
 }
