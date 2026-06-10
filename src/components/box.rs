@@ -81,7 +81,10 @@ pub fn HmiBox(
     children: Element,
 ) -> Element {
     rsx! {
-        hmi-box {
+        // `hmibox` resolves through the local `dioxus_elements` shim below to the
+        // literal `hmi-box` tag — see that module for why the hyphenated form
+        // cannot be used here.
+        hmibox {
             "as": tag,
             "background": background.map(BoxBackground::as_str),
             "padding": padding.map(BoxPadding::as_str),
@@ -90,6 +93,26 @@ pub fn HmiBox(
             {children}
         }
     }
+}
+
+/// Shim that lets `box.rs` emit the literal `hmi-box` custom-element tag.
+///
+/// Writing `hmi-box { .. }` in `rsx!` does not work: the macro parses the
+/// hyphenated name as raw identifiers and joins their `to_string()` values, so
+/// the `box` keyword segment becomes `r#box` and the rendered tag is the
+/// unregistered `hmi-r#box`. `rsx!` only trusts an explicit `TAG_NAME` for a
+/// single-identifier element resolved through `dioxus_elements`, so this module
+/// shadows that path (a local item shadows the `dioxus::prelude::*` glob) and
+/// maps the non-keyword identifier `hmibox` to the correct tag.
+mod dioxus_elements {
+    pub mod elements {
+        pub mod hmibox {
+            pub const TAG_NAME: &str = "hmi-box";
+            pub const NAME_SPACE: Option<&'static str> = None;
+        }
+    }
+    // `rsx!` reads the namespace as `dioxus_elements::hmibox::NAME_SPACE`.
+    pub use elements::*;
 }
 
 #[cfg(test)]
