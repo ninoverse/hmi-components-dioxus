@@ -10,43 +10,9 @@ Thirteen wrappers ship — `HmiBadge`/`HmiButton`/`HmiChip`, seven more
 presentational (`HmiCard`, `HmiDivider`, `HmiHeading`, `HmiText`, `HmiAvatar`,
 `HmiSpinner`, `HmiProgress`), and three interactive (`HmiInput`, `HmiSwitch`,
 `HmiCheckbox`) — plus the self-injecting `HmiAssets` and an optional `web`
-feature that powers DOM event binding. What's left is breadth (more wrappers)
-and the actual `cargo publish` (the license + metadata prerequisites are done).
-
----
-
-## Done
-
-- [x] **Scaffolded** the crate (`src/lib.rs`, `src/assets.rs`, `src/components/`),
-      versioned independently of the npm package.
-- [x] **Self-contained**: the upstream bundle (`hmi-components.iife.js` + the four
-      theme CSS files) is **committed** under `assets/vendor/`, so docs.rs and
-      offline CI build with no network/npm. Refresh with `cargo run -p xtask`
-      (the old `build.rs` `npm pack` path is gone).
-- [x] **`HmiAssets`** injects the four theme stylesheets + components CSS + the
-      IIFE registration script via `asset!()` — render once at app root.
-- [x] **Typed wrappers**, with per-component enums (no shared `Variant` — value
-      sets differ per element, mirroring the upstream `.d.ts` type aliases):
-  - [x] `HmiBadge` — `BadgeVariant`, `dot`
-  - [x] `HmiButton` — `ButtonVariant` / `ButtonSize` / `ButtonType`, `disabled`,
-        `as_icon`, JSON `left_icon` / `right_icon`
-  - [x] `HmiChip` — `selected`, JSON `icon`
-  - [x] `HmiCard` (`CardVariant`) · `HmiDivider` (`DividerOrientation`/`DividerAlign`)
-        · `HmiHeading` (`level`, `HeadingSize`/`HeadingTone`, `truncate`)
-        · `HmiText` (`tag`, `TextSize`/`TextWeight`/`TextTone`/`TextAlign`, `truncate`)
-        · `HmiAvatar` (`AvatarSize`/`AvatarStatus`) · `HmiSpinner` (`SpinnerSize`)
-        · `HmiProgress` (`value`, `indeterminate`)
-  - [x] **Interactive** (behind the optional `web` feature, events wired via
-        `src/event.rs`): `HmiInput` (two-way `value` + `on_change`), `HmiSwitch`
-        and `HmiCheckbox` (`checked` + `on_change`)
-- [x] **Demo consumes the crate**: `demo/src/main.rs` uses `HmiAssets` + the typed
-      wrappers (no more `dangerous_inner_html`). Verified with `cargo test`,
-      `cargo clippy --workspace --all-targets -- -D warnings`, `dx check`, and
-      `dx build --release --platform web`.
-- [x] **Repo restructured around the library**: `hmi-dioxus` at the workspace
-      root, demo moved to `demo/`. Both crates share one repo-owned version via
-      `[workspace.package].version`, deliberately decoupled from npm `5.0.1`
-      (which is pinned only in `xtask`).
+feature that powers DOM event binding. The license + publish-metadata
+prerequisites are done; what's left is breadth (more wrappers) and the actual
+`cargo publish`.
 
 ---
 
@@ -99,20 +65,6 @@ Rough grouping, to suggest order (**13 / 85 wrapped**):
 
 ---
 
-## Before publishing — Phase 0 (blocking)
-
-- [x] **Confirm the upstream license.** `@ninoverse/hmi-components` is **MIT**
-      (same author/copyright as this crate: "Copyright (c) 2026 Nicola"), so
-      redistributing `hmi-components.iife.js` + the theme CSS inside the published
-      `.crate` is permitted and MIT-compatible. Attribution + full upstream license
-      text recorded in `THIRD-PARTY-NOTICES.md` and linked from the README.
-- [x] Document the supported Dioxus range (`0.7`) and the MSRV (`1.83`, the Dioxus
-      0.7 toolchain floor) — `rust-version` in `Cargo.toml` + a Compatibility
-      section in the README.
-- [x] Fill publish metadata in the root `Cargo.toml`: `repository`, `documentation`,
-      `keywords`, `categories`, `readme`, and an `exclude` list that drops dev-only
-      / sibling-crate paths (`license` + `description` were already set).
-
 ## Publish
 
 - [ ] `cargo publish -p hmi-dioxus --dry-run`; confirm the packaged `.crate`
@@ -121,23 +73,9 @@ Rough grouping, to suggest order (**13 / 85 wrapped**):
 
 ---
 
-## Open questions
+## Future / low priority
 
-- [x] **Event callbacks & value binding** — *implemented for
-      input/switch/checkbox; see
-      [`docs/event-binding-and-dataviz.md`](docs/event-binding-and-dataviz.md).*
-      As of upstream `4.2.0` the form controls expose `onChange`, which the
-      bridge turns into a bubbling `change` `CustomEvent` carrying the value in
-      `detail`, plus `defaultValue`/`defaultChecked`. The wrappers render
-      **uncontrolled** — seeding the initial state via `default-value`/
-      `default-checked` and reading edits from `detail` via a `web-sys` listener
-      (re-entering the Dioxus runtime and waking the scheduler). The `web`
-      feature stays only for that read (proposal doc §6). Verified end-to-end in
-      headless Chromium. Callbacks are `EventHandler<T>`.
-- [x] **Data-viz standalone render** — *answered (see the same doc).* Charts are
-      plain custom elements taking JSON props + explicit `width`/`height`; they need
-      no React context. `hmi-responsive-container` is an optional ResizeObserver
-      wrapper for fluid width only. The group can be wrapped with the existing
-      attribute-only idiom.
-- [ ] Once published, does the `demo/` stay in this repo (current plan) or move to
-      a separate example, to keep library release history clean?
+- [ ] Publish the crate to a Cargo repository on **Google Cloud Artifact
+      Registry** as an additional/private distribution channel alongside
+      crates.io (configure the registry in `.cargo/config.toml`, authenticate
+      with the GCP credential helper, then `cargo publish --registry <name>`).
