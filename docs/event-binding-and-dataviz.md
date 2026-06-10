@@ -15,7 +15,7 @@
 > **Re-verified against upstream 5.0.0** (bundle diff): the event contract is
 > byte-for-byte identical for every wrapped element — same registrations, same
 > bubbling `change` `CustomEvent` with the value in `detail`. 5.0.0's bridge
-> additionally fixes the two host-element gaps that `controlled-form-controls.md`
+> additionally fixes the two host-element gaps that `resolved-controlled-form-controls.md`
 > required: empty/`false` updates and attribute *removal* now apply (the
 > `attributeChangedCallback` limitation cited in §3.4's history is gone), and
 > properties set on the host *before* the registration script runs are
@@ -207,7 +207,7 @@ pub fn HmiSwitch(
 ### 3.4 Controlled binding (uniform across the three)
 
 All three are **controlled** when `value`/`checked` is passed (per
-`controlled-form-controls.md`): the control always displays exactly the prop, a
+`resolved-controlled-form-controls.md`): the control always displays exactly the prop, a
 user action only *requests* a change via the `change` `CustomEvent`'s `detail`,
 and the new value appears when the caller feeds it back into the prop. Omitting
 `value`/`checked` leaves the control uncontrolled (it owns its own state and
@@ -225,7 +225,7 @@ re-applying pre-upgrade own properties in `connectedCallback`.
 > cleared; and a `value`/`checked` *property* set before the registration
 > script ran was shadowed and lost — which is exactly where Dioxus's initial
 > property write lands. 5.0.0 fixed both (they were the two ❌ items in
-> `controlled-form-controls.md`), so the wrappers dropped the
+> `resolved-controlled-form-controls.md`), so the wrappers dropped the
 > `default-value`/`default-checked` seeding workaround.
 
 ---
@@ -311,7 +311,7 @@ JSON prop/`detail` shapes against the upstream `.d.ts`.
   signal and back into the input, an un-echoed controlled input stays frozen at
   its prop, toggles round-trip both directions, and the reset button clears the
   input / re-checks the switch / unchecks the box — the full
-  `controlled-form-controls.md` acceptance checklist. Mid-string editing now
+  `resolved-controlled-form-controls.md` acceptance checklist. Mid-string editing now
   preserves the caret (5.0.1 fix): inserting `X` at position 2 of `abcdef`
   yields `abXcdef` with the caret at 3, and a fast `XY` insert yields
   `abXYcdef` — both regressed before 5.0.1.

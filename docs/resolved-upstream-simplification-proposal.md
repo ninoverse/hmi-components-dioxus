@@ -201,4 +201,4 @@ The shipped binding is **uncontrolled** (initial state + `on_change`). To suppor
 **controlled** two-way binding — where the host owns the value and can clear or
 reset it — the web components need two small behaviour fixes (honour empty/`false`
 updates; keep the property path reliable through upgrade). The required behaviour
-is specified in [`controlled-form-controls.md`](controlled-form-controls.md).
+is specified in [`resolved-controlled-form-controls.md`](resolved-controlled-form-controls.md).
