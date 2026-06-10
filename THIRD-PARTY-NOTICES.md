@@ -8,7 +8,7 @@ committed under `assets/vendor/` and injected at runtime by `HmiAssets`:
 - `hmi-components.css` — component styles
 - `hmi-constants.css`, `hmi-color-default.css`, `hmi-structure-default.css` — theme tokens
 
-These files are taken verbatim from `@ninoverse/hmi-components` version `3.1.2`
+These files are taken verbatim from `@ninoverse/hmi-components` version `5.0.0`
 (see `xtask/`, which re-vendors them). They are distributed under the MIT License,
 reproduced below. `hmi-dioxus` itself is also MIT-licensed (see `LICENSE`); the two
 licenses are compatible.

@@ -77,7 +77,7 @@ cargo fmt                                     # format Rust; `dx fmt` formats rs
 
 Both publishable crates share one repo-owned version via `[workspace.package].version`
 (the demo inherits it), kept **independent of** the wrapped npm package. The
-`@ninoverse/hmi-components` `4.2.0` pin lives only in `xtask`, not in the crate
+`@ninoverse/hmi-components` `5.0.0` pin lives only in `xtask`, not in the crate
 version. CI bumps the shared version on merge to `main`.
 
 ## Conventions

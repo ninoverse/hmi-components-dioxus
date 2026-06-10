@@ -45,12 +45,12 @@ and the actual `cargo publish` (the license + metadata prerequisites are done).
       `dx build --release --platform web`.
 - [x] **Repo restructured around the library**: `hmi-dioxus` at the workspace
       root, demo moved to `demo/`. Both crates share one repo-owned version via
-      `[workspace.package].version`, deliberately decoupled from npm `4.2.0`
+      `[workspace.package].version`, deliberately decoupled from npm `5.0.0`
       (which is pinned only in `xtask`).
 
 ---
 
-## Component surface (verified against vendored 4.2.0)
+## Component surface (verified against vendored 4.2.0; unchanged in 5.0.0)
 
 The bundle registers **85 custom elements** through a single helper
 `tt("name", …)` that defines `hmi-<name>` — `customElements.define` is called in

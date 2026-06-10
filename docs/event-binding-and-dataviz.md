@@ -11,6 +11,18 @@
 > the controlled/uncontrolled fight (§4) — is kept to explain why the pre-4.2.0
 > code looked the way it did; **§3 reflects the current code**. The **data-viz**
 > half (§5) is still a forward-looking spike.
+>
+> **Re-verified against upstream 5.0.0** (bundle diff): the event contract is
+> byte-for-byte identical for every wrapped element — same registrations, same
+> bubbling `change` `CustomEvent` with the value in `detail` — so §3 stands
+> as-is. 5.0.0's bridge additionally fixes two host-element gaps: attribute
+> *removal* now resets the prop to its type default (the `attributeChangedCallback`
+> limitation cited in §3.4 is gone), and properties set on the host *before*
+> the registration script runs are re-applied at upgrade. Neither changes the
+> wrappers, but the removal fix means a future controlled-attribute binding is
+> no longer ruled out by the bridge — only by React ignoring
+> `defaultValue`/`defaultChecked` updates (still true) and Dioxus's
+> `value`/`checked` property special-case (still true).
 
 ## TL;DR
 
