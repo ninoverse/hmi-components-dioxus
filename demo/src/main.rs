@@ -3,8 +3,8 @@ use hmi_dioxus::{
     AvatarSize, AvatarStatus, BadgeVariant, ButtonVariant, CardVariant, DividerAlign,
     DividerOrientation, HeadingSize, HeadingTone, HmiAssets, HmiAvatar, HmiBadge, HmiButton,
     HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiHeading, HmiInput, HmiKbd, HmiProgress,
-    HmiSpacer, HmiSpinner, HmiSwitch, HmiText, KbdSize, SpacerAxis, SpacerSize, SpinnerSize,
-    TextTone, TextWeight,
+    HmiSkeleton, HmiSpacer, HmiSpinner, HmiSwitch, HmiText, KbdSize, SkeletonVariant, SpacerAxis,
+    SpacerSize, SpinnerSize, TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -149,6 +149,11 @@ fn App() -> Element {
             HmiText { "B" }
             HmiSpacer { grow: true }
             HmiText { "C (pushed right by grow)" }
+        }
+        div { style: "display:flex;gap:1rem;align-items:center;margin-top:2rem;",
+            HmiSkeleton { width: "10rem" }
+            HmiSkeleton { variant: SkeletonVariant::Rect, width: "6rem", height: "4rem" }
+            HmiSkeleton { variant: SkeletonVariant::Circle, width: "3rem", height: "3rem" }
         }
     }
 }
