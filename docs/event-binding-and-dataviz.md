@@ -11,6 +11,30 @@
 > the controlled/uncontrolled fight (§4) — is kept to explain why the pre-4.2.0
 > code looked the way it did; **§3 reflects the current code**. The **data-viz**
 > half (§5) is still a forward-looking spike.
+>
+> **Re-verified against upstream 5.0.0** (bundle diff): the event contract is
+> byte-for-byte identical for every wrapped element — same registrations, same
+> bubbling `change` `CustomEvent` with the value in `detail`. 5.0.0's bridge
+> additionally fixes the two host-element gaps that `controlled-form-controls.md`
+> required: empty/`false` updates and attribute *removal* now apply (the
+> `attributeChangedCallback` limitation cited in §3.4's history is gone), and
+> properties set on the host *before* the registration script runs are
+> re-applied at upgrade. Those fixes made Dioxus's `value`/`checked`
+> property writes land, so the wrappers were **migrated to controlled
+> binding** — §3.4 describes the current model, with the old uncontrolled
+> rationale kept as history.
+>
+> **Upgraded to 5.0.1** (now vendored): a patch that fixes the **mid-string
+> caret jump** the controlled binding exposed (the old §4 footgun). The React
+> text components now capture the inner element's selection in their `onChange`
+> (guarded against IME composition via `isComposing`) and restore it in a
+> `useLayoutEffect` keyed on the `value` prop — but only while the element is
+> focused, the new value matches the user's edit, and the type is
+> selection-capable (`text`/`search`/`password`/`tel`/`url` or `textarea`).
+> Because the fix lives entirely in the upstream React layer and rides the
+> existing echo path, **no wrapper code changed**; re-running the headless
+> caret measurement against the demo confirms mid-string edits now keep their
+> caret (see §6). The event contract and registrations are still identical.
 
 ## TL;DR
 
@@ -129,8 +153,9 @@ The demo forwards it: `web = ["dioxus/web", "hmi-dioxus/web"]`.
 ### 3.2 `src/event.rs` — the one interop helper
 
 `on_input_event` is `#[cfg]`-gated with a no-op off-web body so wrapper code is
-identical across renderers. It **only reads values out** — the wrappers are
-uncontrolled (§3.4), so there is nothing to push in.
+identical across renderers. It **only reads values out** — pushing values in
+needs no interop at all, because Dioxus's `value`/`checked` property writes
+reach React through the 5.0.0 host (§3.4).
 
 - Downcasts the `onmounted` `MountedData` to `web_sys::Element` (the dioxus-web
   backing type) and attaches a listener for the bridge's `change` `CustomEvent`
@@ -148,7 +173,8 @@ uncontrolled (§3.4), so there is nothing to push in.
 ```rust
 #[component]
 pub fn HmiSwitch(
-    #[props(default)] checked: bool,
+    /// Controlled state: the switch always shows exactly this value.
+    checked: Option<bool>,
     label: Option<String>,
     #[props(default)] disabled: bool,
     name: Option<String>,
@@ -159,8 +185,9 @@ pub fn HmiSwitch(
 
     rsx! {
         hmi-switch {
-            // Seed the initial state; the control is uncontrolled thereafter.
-            "default-checked": if checked { "true" } else { "false" },
+            // Dioxus writes `checked` as a DOM *property*; the 5.0.0 host
+            // forwards it to the React prop, even pre-upgrade.
+            "checked": checked.map(|c| if c { "true" } else { "false" }),
             "label": label.as_deref().map(json_string), // JSON-encoded text
             "disabled": if disabled { "true" },
             "name": name,
@@ -173,32 +200,33 @@ pub fn HmiSwitch(
 }
 ```
 
-`HmiInput` is the same shape with `"default-value": if !value.is_empty() { value }`
-and `on_input_event(&m, "change", …, |d| d.string())`. Callbacks use
+`HmiInput` is the same shape with `"value": value` (`Option<String>`) and
+`on_input_event(&m, "change", …, |d| d.string())`. Callbacks use
 `EventHandler<T>` (Copy, default no-op) so omitting them keeps call sites working.
 
-### 3.4 Uncontrolled binding (uniform across the three)
+### 3.4 Controlled binding (uniform across the three)
 
-All three are **uncontrolled**: `value`/`checked` seed the initial state via the
-upstream `default-value` / `default-checked` attributes (new in 4.2.0), and edits
-are read back out of the `change` `CustomEvent`'s `detail`. The DOM owns the live
-value, so the user can type and toggle freely with no React revert and nothing to
-push back in.
+All three are **controlled** when `value`/`checked` is passed (per
+`controlled-form-controls.md`): the control always displays exactly the prop, a
+user action only *requests* a change via the `change` `CustomEvent`'s `detail`,
+and the new value appears when the caller feeds it back into the prop. Omitting
+`value`/`checked` leaves the control uncontrolled (it owns its own state and
+still reports edits through `on_change`).
 
-> **Why not controlled?** Two-way controlled binding doesn't work cleanly here.
-> Dioxus' `use_effect` re-runs on *signal* reads inside its closure, not on
-> *prop* changes, so an effect that pushes `value`/`checked` back never re-fires
-> when the prop updates (verified in-browser: the host attribute stays at its
-> mount value). On top of that the bridge's `attributeChangedCallback` ignores
-> attribute *removals* and empty values (`(newValue || type==="method")`), so a
-> controlled checkbox can't be set back to `false` and a controlled input can't
-> be cleared. Uncontrolled sidesteps both — and matches how the pre-4.2.0 code
-> actually behaved at runtime.
+Push-in needs no interop code: Dioxus special-cases `value`/`checked` in
+`setAttributeInner` as DOM *property* writes, and the 5.0.0 host maps host
+properties to React props — via prototype accessors after upgrade, and by
+re-applying pre-upgrade own properties in `connectedCallback`.
 
-This implementation was verified end-to-end with headless Chromium
-(`.claude/component-workflow.md` screenshot method): typing into the input,
-toggling the switch both directions, and checking the box all update their
-signal readouts and the live DOM state.
+> **History — why this was uncontrolled until 5.0.0.** Two bridge gaps blocked
+> controlled binding: the host's `attributeChangedCallback` ignored attribute
+> *removals* and empty/`false` values (`(newValue || type==="method")`), so a
+> controlled checkbox couldn't be unchecked and a controlled input couldn't be
+> cleared; and a `value`/`checked` *property* set before the registration
+> script ran was shadowed and lost — which is exactly where Dioxus's initial
+> property write lands. 5.0.0 fixed both (they were the two ❌ items in
+> `controlled-form-controls.md`), so the wrappers dropped the
+> `default-value`/`default-checked` seeding workaround.
 
 ---
 
@@ -206,9 +234,17 @@ signal readouts and the live DOM state.
 
 Still live:
 
-- **Uncontrolled, not two-way.** `value`/`checked` are *initial* state only;
-  changing the prop after mount does **not** update the control (React ignores
-  `defaultValue`/`defaultChecked` changes). Drive UI from `on_change` instead.
+- **Controlled means you must echo.** When `value`/`checked` is passed, an edit
+  only sticks once `on_change` feeds it back into the prop — bind it to a
+  signal or the control freezes at the prop value. Omit the prop entirely for
+  fire-and-forget usage.
+- **The echo is asynchronous** — the keystroke→`on_change`→prop→DOM round-trip
+  crosses the Dioxus and React schedulers. This *used* to bounce a controlled
+  input's caret to the end on mid-string edits (the classic
+  controlled-over-a-bridge artifact); **upstream 5.0.1 fixed it** by
+  capturing/restoring the selection across the echo, so mid-string typing now
+  keeps its caret. The async gap remains (don't assume the DOM reflects a new
+  `value` synchronously), but it's no longer user-visible for text entry.
 - **Runtime + scheduler.** A raw `web-sys` callback fires outside the runtime →
   re-enter it (`Runtime::wrap_closure`) and call `schedule_update()`; otherwise
   the handler/signal write no-ops or never re-renders.
@@ -224,7 +260,8 @@ Retired by 4.2.0 (kept for history): the `detail`-vs-`target` split (all
 controls now carry `detail`), the *capture-phase* read to beat React's revert
 (an `onChange` means there's nothing to beat), the inner-`checked`-property +
 animation-frame retry dance, and the imperative `value`/`checked` push-in
-(`ElementHandle`/`set_attr`) — uncontrolled binding needs none of it.
+(`ElementHandle`/`set_attr`) — controlled binding rides Dioxus's own property
+writes and needs none of it.
 
 ---
 
@@ -267,16 +304,21 @@ JSON prop/`detail` shapes against the upstream `.d.ts`.
 
 ## 6. Status & follow-ups
 
-- **Shipped & runtime-verified (headless Chromium):** `web` feature +
-  `src/event.rs`; `HmiInput`, `HmiSwitch`, `HmiCheckbox` (initial `value`/
-  `checked` + `on_change`, uncontrolled); demo binds all three to signals with
-  native readouts.
+- **Shipped & runtime-verified (headless Chromium, against 5.0.1):** `web`
+  feature + `src/event.rs`; `HmiInput`, `HmiSwitch`, `HmiCheckbox` (controlled
+  `value`/`checked` + `on_change`); demo binds all three to signals with native
+  readouts plus a reset button. Verified end-to-end: typing echoes through the
+  signal and back into the input, an un-echoed controlled input stays frozen at
+  its prop, toggles round-trip both directions, and the reset button clears the
+  input / re-checks the switch / unchecks the box — the full
+  `controlled-form-controls.md` acceptance checklist. Mid-string editing now
+  preserves the caret (5.0.1 fix): inserting `X` at position 2 of `abcdef`
+  yields `abXcdef` with the caret at 3, and a fast `XY` insert yields
+  `abXYcdef` — both regressed before 5.0.1.
 - **Not done:** `HmiChip` `on_select`/`on_close` — now a one-liner, since
   `on_input_event` already decodes `CustomEvent` `detail` (just pass `"select"`
   / `"close"`); other `change`-emitting controls (textarea, select/combobox,
   slider, radio-group, …) reuse the same `detail`-reading helper; data-viz
   wrappers (§5).
-- **Runtime check still pending in CI-less envs:** the 4.2.0 simplification
-  (controlled switch/checkbox via the `checked` attribute, `detail` reads)
-  compiles and the demo builds; confirm toggles/edits end-to-end with
-  `cd demo && dx serve --platform web`.
+- **Resolved in 5.0.1:** the mid-string caret jump (the controlled echo crosses
+  two schedulers) — upstream now preserves the selection across the echo (§4).

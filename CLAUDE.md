@@ -17,7 +17,7 @@ This repo **is** the `hmi-dioxus` library — typed Dioxus wrappers for the
 - **Toolchain:** You MUST use `cargo` for the Rust crates and the Dioxus CLI (`dx`) for serving, building, and formatting. Never introduce a JavaScript package manager (npm/pnpm/yarn) for app code.
 - **Dioxus CLI:** Install once with `cargo install dioxus-cli` (or `cargo binstall dioxus-cli`). Keep the `dx` and `dioxus` crate versions on the same `major.minor`.
 - **Platform selection:** Pass `--platform web|desktop|mobile` to `dx serve`/`dx build`, run from `demo/`. `web` is the demo's `default` cargo feature, so plain `cargo` and rust-analyzer target web.
-- **Versioning:** Both publishable crates share one repo-owned version via `[workspace.package].version` (the demo inherits it), deliberately **independent of** the wrapped npm package (`@ninoverse/hmi-components` `3.1.2`, pinned only in `xtask`). Don't hand-edit versions — CI bumps them on merge to `main`.
+- **Versioning:** Both publishable crates share one repo-owned version via `[workspace.package].version` (the demo inherits it), deliberately **independent of** the wrapped npm package (`@ninoverse/hmi-components` `5.0.1`, pinned only in `xtask`). Don't hand-edit versions — CI bumps them on merge to `main`.
 - **Maintain the Build:** Never leave the codebase in a state where the build, clippy, or `dx check` fails. Run the relevant commands below to verify your work before concluding a task.
 
 ```bash
