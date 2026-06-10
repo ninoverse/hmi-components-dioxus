@@ -73,7 +73,9 @@ Rough grouping, to suggest order (**13 / 85 wrapped**):
 
 ---
 
-## Open questions
+## Future / low priority
 
-- [ ] Once published, does the `demo/` stay in this repo (current plan) or move to
-      a separate example, to keep library release history clean?
+- [ ] Publish the crate to a Cargo repository on **Google Cloud Artifact
+      Registry** as an additional/private distribution channel alongside
+      crates.io (configure the registry in `.cargo/config.toml`, authenticate
+      with the GCP credential helper, then `cargo publish --registry <name>`).
