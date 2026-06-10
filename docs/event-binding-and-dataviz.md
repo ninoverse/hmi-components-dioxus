@@ -23,6 +23,18 @@
 > property writes land, so the wrappers were **migrated to controlled
 > binding** — §3.4 describes the current model, with the old uncontrolled
 > rationale kept as history.
+>
+> **Upgraded to 5.0.1** (now vendored): a patch that fixes the **mid-string
+> caret jump** the controlled binding exposed (the old §4 footgun). The React
+> text components now capture the inner element's selection in their `onChange`
+> (guarded against IME composition via `isComposing`) and restore it in a
+> `useLayoutEffect` keyed on the `value` prop — but only while the element is
+> focused, the new value matches the user's edit, and the type is
+> selection-capable (`text`/`search`/`password`/`tel`/`url` or `textarea`).
+> Because the fix lives entirely in the upstream React layer and rides the
+> existing echo path, **no wrapper code changed**; re-running the headless
+> caret measurement against the demo confirms mid-string edits now keep their
+> caret (see §6). The event contract and registrations are still identical.
 
 ## TL;DR
 
@@ -226,10 +238,13 @@ Still live:
   only sticks once `on_change` feeds it back into the prop — bind it to a
   signal or the control freezes at the prop value. Omit the prop entirely for
   fire-and-forget usage.
-- **The echo is asynchronous.** The keystroke→`on_change`→prop→DOM round-trip
-  crosses the Dioxus and React schedulers, so a controlled input's caret can
-  jump to the end when editing mid-string (the classic controlled-over-a-bridge
-  artifact). End-of-string typing is unaffected.
+- **The echo is asynchronous** — the keystroke→`on_change`→prop→DOM round-trip
+  crosses the Dioxus and React schedulers. This *used* to bounce a controlled
+  input's caret to the end on mid-string edits (the classic
+  controlled-over-a-bridge artifact); **upstream 5.0.1 fixed it** by
+  capturing/restoring the selection across the echo, so mid-string typing now
+  keeps its caret. The async gap remains (don't assume the DOM reflects a new
+  `value` synchronously), but it's no longer user-visible for text entry.
 - **Runtime + scheduler.** A raw `web-sys` callback fires outside the runtime →
   re-enter it (`Runtime::wrap_closure`) and call `schedule_update()`; otherwise
   the handler/signal write no-ops or never re-renders.
@@ -289,18 +304,21 @@ JSON prop/`detail` shapes against the upstream `.d.ts`.
 
 ## 6. Status & follow-ups
 
-- **Shipped & runtime-verified (headless Chromium, against 5.0.0):** `web`
+- **Shipped & runtime-verified (headless Chromium, against 5.0.1):** `web`
   feature + `src/event.rs`; `HmiInput`, `HmiSwitch`, `HmiCheckbox` (controlled
   `value`/`checked` + `on_change`); demo binds all three to signals with native
   readouts plus a reset button. Verified end-to-end: typing echoes through the
   signal and back into the input, an un-echoed controlled input stays frozen at
   its prop, toggles round-trip both directions, and the reset button clears the
   input / re-checks the switch / unchecks the box — the full
-  `controlled-form-controls.md` acceptance checklist.
+  `controlled-form-controls.md` acceptance checklist. Mid-string editing now
+  preserves the caret (5.0.1 fix): inserting `X` at position 2 of `abcdef`
+  yields `abXcdef` with the caret at 3, and a fast `XY` insert yields
+  `abXYcdef` — both regressed before 5.0.1.
 - **Not done:** `HmiChip` `on_select`/`on_close` — now a one-liner, since
   `on_input_event` already decodes `CustomEvent` `detail` (just pass `"select"`
   / `"close"`); other `change`-emitting controls (textarea, select/combobox,
   slider, radio-group, …) reuse the same `detail`-reading helper; data-viz
   wrappers (§5).
-- **Known limitation:** the controlled echo crosses two schedulers, so a
-  controlled input's caret can jump to the end when editing mid-string (§4).
+- **Resolved in 5.0.1:** the mid-string caret jump (the controlled echo crosses
+  two schedulers) — upstream now preserves the selection across the echo (§4).
