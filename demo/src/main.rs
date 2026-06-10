@@ -2,8 +2,8 @@ use dioxus::prelude::*;
 use hmi_dioxus::{
     AvatarSize, AvatarStatus, BadgeVariant, ButtonVariant, CardVariant, DividerAlign,
     DividerOrientation, HeadingSize, HeadingTone, HmiAssets, HmiAvatar, HmiBadge, HmiButton,
-    HmiCard, HmiCheckbox, HmiChip, HmiDivider, HmiHeading, HmiInput, HmiProgress, HmiSpinner,
-    HmiSwitch, HmiText, SpinnerSize, TextTone, TextWeight,
+    HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiHeading, HmiInput, HmiProgress,
+    HmiSpinner, HmiSwitch, HmiText, SpinnerSize, TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -128,6 +128,14 @@ fn App() -> Element {
                 },
                 "Reset form state"
             }
+        }
+        div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
+            HmiText {
+                "Inline "
+                HmiCode { "cargo add hmi-dioxus" }
+                " sample."
+            }
+            HmiCode { block: true, "fn main() {{\n    println!(\"hello\");\n}}" }
         }
     }
 }
