@@ -3,9 +3,9 @@ use hmi_dioxus::{
     AvatarSize, AvatarStatus, BadgeVariant, ButtonVariant, CardVariant, DividerAlign,
     DividerOrientation, HeadingSize, HeadingTone, HmiAssets, HmiAvatar, HmiBadge, HmiButton,
     HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiHeading, HmiInput, HmiKbd, HmiLink,
-    HmiProgress,
-    HmiSkeleton, HmiSpacer, HmiSpinner, HmiSwitch, HmiText, KbdSize, LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis,
-    SpacerSize, SpinnerSize, TextTone, TextWeight,
+    HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner, HmiSwitch, HmiText, KbdSize,
+    LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, TextTone,
+    TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -170,6 +170,19 @@ fn App() -> Element {
                 "Muted, no underline"
             }
             HmiLink { href: "https://example.com", target: "_blank", "Opens in new tab" }
+        }
+        div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
+            HmiMeter { value: 0.7, label: "Disk usage", show_value: true }
+            HmiMeter {
+                value: 30.0,
+                min: 0.0,
+                max: 100.0,
+                low: 40.0,
+                high: 80.0,
+                optimum: 100.0,
+                label: "Score (poor)",
+                show_value: true,
+            }
         }
     }
 }
