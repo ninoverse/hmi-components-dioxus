@@ -1,11 +1,12 @@
 use dioxus::prelude::*;
 use hmi_dioxus::{
     AvatarSize, AvatarStatus, BadgeVariant, BoxBackground, BoxPadding, BoxRadius, ButtonVariant,
-    CardVariant, DividerAlign, DividerOrientation, HeadingSize, HeadingTone, HmiAssets, HmiAvatar,
-    HmiBadge, HmiBox, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiHeading,
-    HmiInput, HmiKbd, HmiLink, HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner,
-    HmiSwitch, HmiText, KbdSize, LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis, SpacerSize,
-    SpinnerSize, TextTone, TextWeight,
+    CardVariant, DividerAlign, DividerOrientation, FlexAlign, FlexDirection, FlexGap, FlexJustify,
+    HeadingSize, HeadingTone, HmiAssets, HmiAvatar, HmiBadge, HmiBox, HmiButton, HmiCard,
+    HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiHeading, HmiInput, HmiKbd, HmiLink,
+    HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner, HmiSwitch, HmiText, KbdSize,
+    LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, TextTone,
+    TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -186,6 +187,28 @@ fn App() -> Element {
                 optimum: 100.0,
                 label: "Score (poor)",
                 show_value: true,
+            }
+        }
+        HmiFlex {
+            direction: FlexDirection::Row,
+            align: FlexAlign::Center,
+            justify: FlexJustify::Between,
+            gap: FlexGap::Medium,
+            wrap: true,
+            HmiBox {
+                padding: BoxPadding::Small,
+                background: BoxBackground::SurfaceContainer,
+                "One"
+            }
+            HmiBox {
+                padding: BoxPadding::Small,
+                background: BoxBackground::SurfaceContainer,
+                "Two"
+            }
+            HmiBox {
+                padding: BoxPadding::Small,
+                background: BoxBackground::SurfaceContainer,
+                "Three"
             }
         }
         div { style: "display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem;",

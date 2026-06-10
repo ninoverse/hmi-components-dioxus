@@ -13,9 +13,10 @@ mod event;
 pub use assets::HmiAssets;
 pub use components::{
     AvatarSize, AvatarStatus, BadgeVariant, BoxBackground, BoxPadding, BoxRadius, ButtonSize,
-    ButtonType, ButtonVariant, CardVariant, DividerAlign, DividerOrientation, HeadingSize,
-    HeadingTone, HmiAvatar, HmiBadge, HmiBox, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode,
-    HmiDivider, HmiHeading, HmiInput, HmiKbd, HmiLink, HmiMeter, HmiProgress, HmiSkeleton,
-    HmiSpacer, HmiSpinner, HmiSwitch, HmiText, KbdSize, LinkTone, LinkUnderline, SkeletonVariant,
-    SpacerAxis, SpacerSize, SpinnerSize, TextAlign, TextSize, TextTone, TextWeight,
+    ButtonType, ButtonVariant, CardVariant, DividerAlign, DividerOrientation, FlexAlign,
+    FlexDirection, FlexGap, FlexJustify, HeadingSize, HeadingTone, HmiAvatar, HmiBadge, HmiBox,
+    HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiHeading, HmiInput,
+    HmiKbd, HmiLink, HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner, HmiSwitch, HmiText,
+    KbdSize, LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize,
+    TextAlign, TextSize, TextTone, TextWeight,
 };
