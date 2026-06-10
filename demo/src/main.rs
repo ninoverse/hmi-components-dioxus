@@ -2,8 +2,10 @@ use dioxus::prelude::*;
 use hmi_dioxus::{
     AvatarSize, AvatarStatus, BadgeVariant, ButtonVariant, CardVariant, DividerAlign,
     DividerOrientation, HeadingSize, HeadingTone, HmiAssets, HmiAvatar, HmiBadge, HmiButton,
-    HmiCard, HmiCheckbox, HmiChip, HmiDivider, HmiHeading, HmiInput, HmiProgress, HmiSpinner,
-    HmiSwitch, HmiText, SpinnerSize, TextTone, TextWeight,
+    HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiHeading, HmiInput, HmiKbd, HmiLink,
+    HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner, HmiSwitch, HmiText, KbdSize,
+    LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, TextTone,
+    TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -127,6 +129,59 @@ fn App() -> Element {
                     accepted.set(false);
                 },
                 "Reset form state"
+            }
+        }
+        div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
+            HmiText {
+                "Inline "
+                HmiCode { "cargo add hmi-dioxus" }
+                " sample."
+            }
+            HmiCode { block: true, "fn main() {{\n    println!(\"hello\");\n}}" }
+        }
+        div { style: "display:flex;gap:0.5rem;align-items:center;margin-top:2rem;",
+            HmiKbd { size: KbdSize::Small, "Ctrl" }
+            HmiKbd { "Enter" }
+            HmiKbd { "Esc" }
+        }
+        div { style: "display:flex;align-items:center;margin-top:2rem;max-width:30rem;",
+            HmiText { "A" }
+            HmiSpacer { axis: SpacerAxis::Horizontal, size: SpacerSize::Large }
+            HmiText { "B" }
+            HmiSpacer { grow: true }
+            HmiText { "C (pushed right by grow)" }
+        }
+        div { style: "display:flex;gap:1rem;align-items:center;margin-top:2rem;",
+            HmiSkeleton { width: "10rem" }
+            HmiSkeleton { variant: SkeletonVariant::Rect, width: "6rem", height: "4rem" }
+            HmiSkeleton { variant: SkeletonVariant::Circle, width: "3rem", height: "3rem" }
+        }
+        div { style: "display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;margin-top:2rem;",
+            HmiLink { href: "https://example.com", "Default link" }
+            HmiLink {
+                href: "https://example.com",
+                underline: LinkUnderline::Hover,
+                "Underline on hover"
+            }
+            HmiLink {
+                href: "https://example.com",
+                underline: LinkUnderline::None,
+                tone: LinkTone::Muted,
+                "Muted, no underline"
+            }
+            HmiLink { href: "https://example.com", target: "_blank", "Opens in new tab" }
+        }
+        div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
+            HmiMeter { value: 0.7, label: "Disk usage", show_value: true }
+            HmiMeter {
+                value: 30.0,
+                min: 0.0,
+                max: 100.0,
+                low: 40.0,
+                high: 80.0,
+                optimum: 100.0,
+                label: "Score (poor)",
+                show_value: true,
             }
         }
     }
