@@ -2,11 +2,11 @@ use dioxus::prelude::*;
 use hmi_dioxus::{
     AvatarSize, AvatarStatus, BadgeVariant, BoxBackground, BoxPadding, BoxRadius, ButtonVariant,
     CardVariant, DividerAlign, DividerOrientation, FlexAlign, FlexDirection, FlexGap, FlexJustify,
-    HeadingSize, HeadingTone, HmiAssets, HmiAvatar, HmiBadge, HmiBox, HmiButton, HmiCard,
-    HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiHeading, HmiInput, HmiKbd, HmiLink,
-    HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner, HmiSwitch, HmiText, KbdSize,
-    LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, TextTone,
-    TextWeight,
+    GridGap, HeadingSize, HeadingTone, HmiAssets, HmiAvatar, HmiBadge, HmiBox, HmiButton, HmiCard,
+    HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiInput, HmiKbd,
+    HmiLink, HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner, HmiSwitch, HmiText,
+    KbdSize, LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize,
+    TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -229,6 +229,23 @@ fn App() -> Element {
                 radius: BoxRadius::Full,
                 bordered: true,
                 "Pill box"
+            }
+        }
+        HmiGrid { columns: "repeat(3, 1fr)", gap: GridGap::Medium,
+            HmiBox {
+                padding: BoxPadding::Small,
+                background: BoxBackground::SurfaceContainerLow,
+                "Cell 1"
+            }
+            HmiBox {
+                padding: BoxPadding::Small,
+                background: BoxBackground::SurfaceContainerLow,
+                "Cell 2"
+            }
+            HmiBox {
+                padding: BoxPadding::Small,
+                background: BoxBackground::SurfaceContainerLow,
+                "Cell 3"
             }
         }
     }
