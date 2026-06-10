@@ -2,8 +2,9 @@ use dioxus::prelude::*;
 use hmi_dioxus::{
     AvatarSize, AvatarStatus, BadgeVariant, ButtonVariant, CardVariant, DividerAlign,
     DividerOrientation, HeadingSize, HeadingTone, HmiAssets, HmiAvatar, HmiBadge, HmiButton,
-    HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiHeading, HmiInput, HmiKbd, HmiProgress,
-    HmiSkeleton, HmiSpacer, HmiSpinner, HmiSwitch, HmiText, KbdSize, SkeletonVariant, SpacerAxis,
+    HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiHeading, HmiInput, HmiKbd, HmiLink,
+    HmiProgress,
+    HmiSkeleton, HmiSpacer, HmiSpinner, HmiSwitch, HmiText, KbdSize, LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis,
     SpacerSize, SpinnerSize, TextTone, TextWeight,
 };
 
@@ -154,6 +155,21 @@ fn App() -> Element {
             HmiSkeleton { width: "10rem" }
             HmiSkeleton { variant: SkeletonVariant::Rect, width: "6rem", height: "4rem" }
             HmiSkeleton { variant: SkeletonVariant::Circle, width: "3rem", height: "3rem" }
+        }
+        div { style: "display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;margin-top:2rem;",
+            HmiLink { href: "https://example.com", "Default link" }
+            HmiLink {
+                href: "https://example.com",
+                underline: LinkUnderline::Hover,
+                "Underline on hover"
+            }
+            HmiLink {
+                href: "https://example.com",
+                underline: LinkUnderline::None,
+                tone: LinkTone::Muted,
+                "Muted, no underline"
+            }
+            HmiLink { href: "https://example.com", target: "_blank", "Opens in new tab" }
         }
     }
 }
