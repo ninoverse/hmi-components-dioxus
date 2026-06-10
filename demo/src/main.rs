@@ -2,8 +2,8 @@ use dioxus::prelude::*;
 use hmi_dioxus::{
     AvatarSize, AvatarStatus, BadgeVariant, ButtonVariant, CardVariant, DividerAlign,
     DividerOrientation, HeadingSize, HeadingTone, HmiAssets, HmiAvatar, HmiBadge, HmiButton,
-    HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiHeading, HmiInput, HmiProgress,
-    HmiSpinner, HmiSwitch, HmiText, SpinnerSize, TextTone, TextWeight,
+    HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiHeading, HmiInput, HmiKbd, HmiProgress,
+    HmiSpinner, HmiSwitch, HmiText, KbdSize, SpinnerSize, TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -136,6 +136,11 @@ fn App() -> Element {
                 " sample."
             }
             HmiCode { block: true, "fn main() {{\n    println!(\"hello\");\n}}" }
+        }
+        div { style: "display:flex;gap:0.5rem;align-items:center;margin-top:2rem;",
+            HmiKbd { size: KbdSize::Small, "Ctrl" }
+            HmiKbd { "Enter" }
+            HmiKbd { "Esc" }
         }
     }
 }

@@ -14,7 +14,6 @@ pub use assets::HmiAssets;
 pub use components::{
     AvatarSize, AvatarStatus, BadgeVariant, ButtonSize, ButtonType, ButtonVariant, CardVariant,
     DividerAlign, DividerOrientation, HeadingSize, HeadingTone, HmiAvatar, HmiBadge, HmiButton,
-    HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiHeading, HmiInput, HmiProgress,
-    HmiSpinner,
-    HmiSwitch, HmiText, SpinnerSize, TextAlign, TextSize, TextTone, TextWeight,
+    HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiHeading, HmiInput, HmiKbd, HmiProgress,
+    HmiSpinner, HmiSwitch, HmiText, KbdSize, SpinnerSize, TextAlign, TextSize, TextTone, TextWeight,
 };
