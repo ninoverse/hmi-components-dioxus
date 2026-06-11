@@ -3,10 +3,10 @@ use hmi_dioxus::{
     AlertVariant, AvatarSize, AvatarStatus, BadgeVariant, BoxBackground, BoxPadding, BoxRadius,
     ButtonVariant, CardVariant, DividerAlign, DividerOrientation, FlexAlign, FlexDirection,
     FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert, HmiAssets, HmiAvatar,
-    HmiBadge, HmiBox, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex,
-    HmiGrid, HmiHeading, HmiInput, HmiKbd, HmiLink, HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer,
-    HmiSpinner, HmiSwitch, HmiText, KbdSize, LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis,
-    SpacerSize, SpinnerSize, TextTone, TextWeight,
+    HmiBadge, HmiBlockquote, HmiBox, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider,
+    HmiFlex, HmiGrid, HmiHeading, HmiInput, HmiKbd, HmiLink, HmiMeter, HmiProgress, HmiSkeleton,
+    HmiSpacer, HmiSpinner, HmiSwitch, HmiText, KbdSize, LinkTone, LinkUnderline, SkeletonVariant,
+    SpacerAxis, SpacerSize, SpinnerSize, TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -253,6 +253,11 @@ fn App() -> Element {
             HmiAlert { variant: AlertVariant::Success, "Your changes were saved." }
             HmiAlert { variant: AlertVariant::Warning, title: "Careful", "This action is hard to undo." }
             HmiAlert { variant: AlertVariant::Danger, "Something went wrong." }
+        }
+        div { style: "margin-top:2rem;max-width:30rem;",
+            HmiBlockquote { cite: "Ada Lovelace",
+                "That brain of mine is something more than merely mortal, as time will show."
+            }
         }
     }
 }

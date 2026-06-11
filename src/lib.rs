@@ -15,8 +15,9 @@ pub use components::{
     AlertVariant, AvatarSize, AvatarStatus, BadgeVariant, BoxBackground, BoxPadding, BoxRadius,
     ButtonSize, ButtonType, ButtonVariant, CardVariant, DividerAlign, DividerOrientation,
     FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert,
-    HmiAvatar, HmiBadge, HmiBox, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider,
-    HmiFlex, HmiGrid, HmiHeading, HmiInput, HmiKbd, HmiLink, HmiMeter, HmiProgress, HmiSkeleton,
-    HmiSpacer, HmiSpinner, HmiSwitch, HmiText, KbdSize, LinkTone, LinkUnderline, SkeletonVariant,
-    SpacerAxis, SpacerSize, SpinnerSize, TextAlign, TextSize, TextTone, TextWeight,
+    HmiAvatar, HmiBadge, HmiBlockquote, HmiBox, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode,
+    HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiInput, HmiKbd, HmiLink, HmiMeter, HmiProgress,
+    HmiSkeleton, HmiSpacer, HmiSpinner, HmiSwitch, HmiText, KbdSize, LinkTone, LinkUnderline,
+    SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, TextAlign, TextSize, TextTone,
+    TextWeight,
 };
