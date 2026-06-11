@@ -5,9 +5,9 @@ use hmi_dioxus::{
     FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert,
     HmiAssets, HmiAvatar, HmiBadge, HmiBanner, HmiBlockquote, HmiBox, HmiButton, HmiCard,
     HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput,
-    HmiKbd, HmiLink, HmiList, HmiMeter, HmiNumberInput, HmiProgress, HmiRadioGroup, HmiSelect,
-    HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat, HmiSwitch, HmiText, HmiBreadcrumbs, HmiTextarea,
-    ImageFit,
+    HmiKbd, HmiLink, HmiList, HmiMeter, HmiNumberInput, HmiPasswordInput, HmiProgress,
+    HmiRadioGroup, HmiSearchInput, HmiSelect, HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat,
+    HmiSwitch, HmiText, HmiBreadcrumbs, HmiTextarea, ImageFit,
     ImageRadius, KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption, SelectOption,
     SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TextTone, TextWeight,
 };
@@ -155,6 +155,10 @@ fn App() -> Element {
             HmiNumberInput { error: true, placeholder: "Error state" }
             HmiNumberInput { disabled: true, default_value: 42.0 }
             div { "Number value: {num_val}" }
+            HmiPasswordInput { placeholder: "Enter password" }
+            HmiPasswordInput { error: true, placeholder: "Wrong password" }
+            HmiSearchInput { placeholder: "Search…" }
+            HmiSearchInput { disabled: true, placeholder: "Disabled search" }
         }
         div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
             HmiSwitch {
