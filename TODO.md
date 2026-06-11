@@ -34,14 +34,22 @@ expressible as attributes — attach standard DOM event handlers to the rendered
 element instead. Re-vendor with `cargo run -p xtask` and re-extract this list when
 bumping the upstream version.
 
-Rough grouping, to suggest order (**25 / 85 wrapped**):
+Rough grouping, to suggest order (**27 / 85 wrapped**):
+
+> **⛔ = blocked on upstream.** `tooltip`, `popover`, `hover-card`, and
+> `context-menu` take their **trigger as slotted children** and wire it with
+> `React.cloneElement`, which can't work across the web-component boundary (the
+> bridge passes children as an HTML string, so the handlers/anchor `ref` never
+> attach and the overlay never opens). They compile but are inert as thin
+> wrappers — deferred until upstream renders a real anchor wrapper. Full
+> analysis and proposed fix: [`docs/slotted-trigger-overlays.md`](docs/slotted-trigger-overlays.md).
 
 **Presentational / leaf — wrap first**
 - [x] badge · [x] button · [x] chip
-- [x] alert · [x] avatar · [ ] banner · [x] blockquote · [x] box · [ ] breadcrumbs
-- [x] card · [x] code · [x] divider · [x] flex · [x] grid · [x] heading · [ ] image
+- [x] alert · [x] avatar · [x] banner · [x] blockquote · [x] box · [ ] breadcrumbs
+- [x] card · [x] code · [x] divider · [x] flex · [x] grid · [x] heading · [x] image
 - [x] kbd · [x] link · [ ] list · [x] meter · [x] progress · [x] skeleton · [x] spacer
-- [x] spinner · [x] stat · [x] text · [ ] tooltip
+- [x] spinner · [x] stat · [x] text · ⛔ tooltip
 
 **Inputs / form (verify standalone; need value/event plumbing)**
 - [x] checkbox · [ ] combobox · [x] input · [ ] radio · [ ] select · [ ] slider
@@ -52,9 +60,9 @@ Rough grouping, to suggest order (**25 / 85 wrapped**):
 
 **Containers / overlays / navigation / structure**
 - [ ] accordion · [ ] aspect-ratio · [ ] avatar-stack · [ ] carousel · [ ] drawer
-- [ ] menu · [ ] modal · [ ] navbar · [ ] pagination · [ ] popover · [ ] scroll-area
+- [ ] menu · [ ] modal · [ ] navbar · [ ] pagination · ⛔ popover · [ ] scroll-area
 - [ ] sidebar · [ ] table · [ ] timeline · [ ] toast · [ ] tree · [ ] visually-hidden
-- [ ] command-palette · [ ] confirm-dialog · [ ] context-menu · [ ] hover-card
+- [ ] command-palette · [ ] confirm-dialog · ⛔ context-menu · ⛔ hover-card
 - [ ] empty-state
 
 **Data viz (need data props — lower priority)**
