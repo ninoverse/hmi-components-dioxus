@@ -57,6 +57,7 @@ mod spacer;
 mod spinner;
 mod stat;
 mod switch;
+mod tabs;
 mod text;
 mod textarea;
 
@@ -95,5 +96,6 @@ pub use spacer::{HmiSpacer, SpacerAxis, SpacerSize};
 pub use spinner::{HmiSpinner, SpinnerSize};
 pub use stat::{HmiStat, StatTrend};
 pub use switch::HmiSwitch;
+pub use tabs::{HmiTabs, TabItem, TabsVariant};
 pub use text::{HmiText, TextAlign, TextSize, TextTone, TextWeight};
 pub use textarea::HmiTextarea;

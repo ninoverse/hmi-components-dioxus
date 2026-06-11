@@ -7,9 +7,10 @@ use hmi_dioxus::{
     HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput,
     HmiKbd, HmiLink, HmiList, HmiMeter, HmiNumberInput, HmiPasswordInput, HmiProgress, HmiRadio,
     HmiRadioGroup, HmiSearchInput, HmiSelect, HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat,
-    HmiSlider, HmiSwitch, HmiText, HmiBreadcrumbs, HmiTextarea, ImageFit,
+    HmiSlider, HmiSwitch, HmiTabs, HmiText, HmiBreadcrumbs, HmiTextarea, ImageFit,
     ImageRadius, KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption, SelectOption,
-    SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TextTone, TextWeight,
+    SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TabItem, TabsVariant,
+    TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -27,6 +28,7 @@ fn App() -> Element {
     let mut select_val = use_signal(|| Option::<String>::None);
     let mut num_val = use_signal(|| 0.0_f64);
     let mut slider_val = use_signal(|| 40.0_f64);
+    let mut tab_val = use_signal(|| String::from("overview"));
     let mut notifications = use_signal(|| true);
     let mut accepted = use_signal(|| false);
     rsx! {
@@ -172,6 +174,24 @@ fn App() -> Element {
             }
             HmiSlider { default_value: 30.0, disabled: true }
             div { "Slider value: {slider_val}" }
+            HmiTabs {
+                options: vec![
+                    TabItem::new("overview", "Overview"),
+                    TabItem::new("activity", "Activity"),
+                    TabItem::new("settings", "Settings"),
+                ],
+                value: tab_val(),
+                on_change: move |v| tab_val.set(v),
+            }
+            HmiTabs {
+                options: vec![
+                    TabItem::new("a", "First"),
+                    TabItem::new("b", "Second"),
+                ],
+                variant: TabsVariant::Underline,
+                default_value: "a",
+            }
+            div { "Active tab: {tab_val}" }
         }
         div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
             HmiSwitch {
