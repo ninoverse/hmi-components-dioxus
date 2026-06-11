@@ -17,7 +17,7 @@ pub use components::{
     FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert,
     HmiAvatar, HmiBadge, HmiBlockquote, HmiBox, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode,
     HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiInput, HmiKbd, HmiLink, HmiMeter, HmiProgress,
-    HmiSkeleton, HmiSpacer, HmiSpinner, HmiSwitch, HmiText, KbdSize, LinkTone, LinkUnderline,
-    SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, TextAlign, TextSize, TextTone,
-    TextWeight,
+    HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat, HmiSwitch, HmiText, KbdSize, LinkTone,
+    LinkUnderline, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TextAlign,
+    TextSize, TextTone, TextWeight,
 };

@@ -44,6 +44,7 @@ mod progress;
 mod skeleton;
 mod spacer;
 mod spinner;
+mod stat;
 mod switch;
 mod text;
 
@@ -69,5 +70,6 @@ pub use progress::HmiProgress;
 pub use skeleton::{HmiSkeleton, SkeletonVariant};
 pub use spacer::{HmiSpacer, SpacerAxis, SpacerSize};
 pub use spinner::{HmiSpinner, SpinnerSize};
+pub use stat::{HmiStat, StatTrend};
 pub use switch::HmiSwitch;
 pub use text::{HmiText, TextAlign, TextSize, TextTone, TextWeight};

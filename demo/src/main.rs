@@ -5,8 +5,8 @@ use hmi_dioxus::{
     FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert, HmiAssets, HmiAvatar,
     HmiBadge, HmiBlockquote, HmiBox, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider,
     HmiFlex, HmiGrid, HmiHeading, HmiInput, HmiKbd, HmiLink, HmiMeter, HmiProgress, HmiSkeleton,
-    HmiSpacer, HmiSpinner, HmiSwitch, HmiText, KbdSize, LinkTone, LinkUnderline, SkeletonVariant,
-    SpacerAxis, SpacerSize, SpinnerSize, TextTone, TextWeight,
+    HmiSpacer, HmiSpinner, HmiStat, HmiSwitch, HmiText, KbdSize, LinkTone, LinkUnderline,
+    SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -258,6 +258,22 @@ fn App() -> Element {
             HmiBlockquote { cite: "Ada Lovelace",
                 "That brain of mine is something more than merely mortal, as time will show."
             }
+        }
+        div { style: "display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:2rem;",
+            HmiStat {
+                value: "$12,400",
+                label: "Revenue",
+                delta: "+12%",
+                trend: StatTrend::Up,
+            }
+            HmiStat {
+                value: "318",
+                label: "Active users",
+                delta: "-4%",
+                trend: StatTrend::Down,
+                help_text: "vs. last week",
+            }
+            HmiStat { value: "99.9%", label: "Uptime" }
         }
     }
 }
