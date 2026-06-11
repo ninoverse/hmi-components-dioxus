@@ -51,6 +51,7 @@ mod spinner;
 mod stat;
 mod switch;
 mod text;
+mod textarea;
 
 pub use alert::{AlertVariant, HmiAlert};
 pub use avatar::{AvatarSize, AvatarStatus, HmiAvatar};
@@ -81,3 +82,4 @@ pub use spinner::{HmiSpinner, SpinnerSize};
 pub use stat::{HmiStat, StatTrend};
 pub use switch::HmiSwitch;
 pub use text::{HmiText, TextAlign, TextSize, TextTone, TextWeight};
+pub use textarea::HmiTextarea;

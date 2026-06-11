@@ -6,8 +6,9 @@ use hmi_dioxus::{
     HmiAssets, HmiAvatar, HmiBadge, HmiBanner, HmiBlockquote, HmiBox, HmiButton, HmiCard,
     HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput,
     HmiKbd, HmiLink, HmiList, HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat,
-    HmiSwitch, HmiText, HmiBreadcrumbs, ImageFit, ImageRadius, KbdSize, LinkTone, LinkUnderline,
-    ListItem, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TextTone, TextWeight,
+    HmiSwitch, HmiText, HmiBreadcrumbs, HmiTextarea, ImageFit, ImageRadius, KbdSize, LinkTone,
+    LinkUnderline, ListItem, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend,
+    TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -20,6 +21,7 @@ fn main() {
 fn App() -> Element {
     // Single source of truth for the bound input below; fed back into `value`.
     let mut text = use_signal(String::new);
+    let mut textarea_text = use_signal(String::new);
     let mut notifications = use_signal(|| true);
     let mut accepted = use_signal(|| false);
     rsx! {
@@ -107,6 +109,15 @@ fn App() -> Element {
             // Live readout in a native element: the hmi-* elements snapshot their
             // slot content at mount, so dynamic text must live outside them.
             div { "You typed: {text}" }
+            HmiTextarea {
+                value: textarea_text(),
+                placeholder: "Write a message…",
+                rows: 3,
+                on_change: move |v| textarea_text.set(v),
+            }
+            HmiTextarea { error: true, placeholder: "Error state", rows: 2 }
+            HmiTextarea { disabled: true, placeholder: "Disabled" }
+            div { "Textarea value: {textarea_text}" }
         }
         div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
             HmiSwitch {
