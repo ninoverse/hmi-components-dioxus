@@ -1,18 +1,17 @@
 use dioxus::prelude::*;
 use hmi_dioxus::{
     AlertVariant, AvatarSize, AvatarStatus, BadgeVariant, BannerVariant, BoxBackground, BoxPadding,
-    BoxRadius, BreadcrumbItem, ButtonVariant, CardVariant, DividerAlign, DividerOrientation,
-    FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert,
-    HmiAssets, HmiAvatar, HmiBadge, HmiBanner, HmiBlockquote, HmiBox, HmiButton, HmiCard,
-    HmiCheckbox, HmiChip, HmiCode, HmiCombobox, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiImage,
-    HmiInput,
-    HmiKbd, HmiLink, HmiList, HmiMeter, HmiNumberInput, HmiPasswordInput, HmiProgress, HmiRadio,
-    HmiRadioGroup, HmiSearchInput, HmiSelect, HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat,
-    HmiSegmentedControl, HmiSlider, HmiSwitch, HmiTabs, HmiText, HmiBreadcrumbs, HmiTextarea,
-    ComboboxOption, ImageFit, ImageRadius, KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption,
-    SegmentOption,
-    SelectOption, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TabItem,
-    TabsVariant, TextTone, TextWeight,
+    BoxRadius, BreadcrumbItem, ButtonVariant, CardVariant, ComboboxOption, DividerAlign,
+    DividerOrientation, FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize,
+    HeadingTone, HmiAlert, HmiAssets, HmiAvatar, HmiBadge, HmiBanner, HmiBlockquote, HmiBox,
+    HmiBreadcrumbs, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiCombobox, HmiDivider,
+    HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput, HmiKbd, HmiLink, HmiList, HmiMeter,
+    HmiNumberInput, HmiPasswordInput, HmiProgress, HmiRadio, HmiRadioGroup, HmiSearchInput,
+    HmiSegmentedControl, HmiSelect, HmiSkeleton, HmiSlider, HmiSpacer, HmiSpinner, HmiStat,
+    HmiSwitch, HmiTabs, HmiText, HmiTextarea, HmiValueScaleSelector, ImageFit, ImageRadius,
+    KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption, SegmentOption, SelectOption,
+    SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TabItem, TabsVariant,
+    TextTone, TextWeight, ValueScaleSize,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -35,6 +34,7 @@ fn App() -> Element {
     let mut seg_val = use_signal(|| String::from("list"));
     let mut seg2_val = use_signal(|| String::from("w"));
     let mut combo_val = use_signal(|| Option::<String>::None);
+    let mut rating = use_signal(|| 3.0_f64);
     let mut notifications = use_signal(|| true);
     let mut accepted = use_signal(|| false);
     rsx! {
@@ -231,6 +231,13 @@ fn App() -> Element {
                 on_change: move |v| combo_val.set(Some(v)),
             }
             div { "Combobox value: {combo_val:?}" }
+            HmiValueScaleSelector {
+                value: rating(),
+                max: 5.0,
+                on_change: move |v| rating.set(v),
+            }
+            HmiValueScaleSelector { value: 4.0, icon: "♥", read_only: true }
+            div { "Rating: {rating}" }
         }
         div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
             HmiSwitch {
