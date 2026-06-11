@@ -66,7 +66,7 @@ pub fn HmiRadioGroup(
         hmi-radio-group {
             "options": opts_json,
             "value": value,
-            "defaultValue": default_value,
+            "default-value": default_value,
             "name": name,
             onmounted: move |m| {
                 listener.set(on_input_event(&m, "change", on_change, |d| d.string()));

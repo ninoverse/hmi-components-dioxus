@@ -22,7 +22,7 @@ pub fn HmiSearchInput(
     rsx! {
         hmi-search-input {
             "value": value,
-            "defaultValue": default_value,
+            "default-value": default_value,
             "placeholder": placeholder,
             "disabled": if disabled { "true" },
             "error": if error { "true" },

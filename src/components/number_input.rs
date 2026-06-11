@@ -25,7 +25,7 @@ pub fn HmiNumberInput(
     rsx! {
         hmi-number-input {
             "value": value,
-            "defaultValue": default_value,
+            "default-value": default_value,
             "min": min,
             "max": max,
             "step": step,

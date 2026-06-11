@@ -25,7 +25,7 @@ pub fn HmiRadio(
     rsx! {
         hmi-radio {
             "checked": checked.map(|c| if c { "true" } else { "false" }),
-            "defaultChecked": default_checked.map(|c| if c { "true" } else { "false" }),
+            "default-checked": default_checked.map(|c| if c { "true" } else { "false" }),
             "label": label.as_deref().map(json_string),
             "disabled": if disabled { "true" },
             "name": name,

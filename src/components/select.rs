@@ -70,7 +70,7 @@ pub fn HmiSelect(
         hmi-select {
             "options": opts_json,
             "value": value,
-            "defaultValue": default_value,
+            "default-value": default_value,
             "placeholder": placeholder.as_deref().map(json_string),
             "disabled": if disabled { "true" },
             onmounted: move |m| {

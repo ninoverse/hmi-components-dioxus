@@ -26,7 +26,7 @@ pub fn HmiTextarea(
     rsx! {
         hmi-textarea {
             "value": value,
-            "defaultValue": default_value,
+            "default-value": default_value,
             "placeholder": placeholder,
             "rows": rows,
             "disabled": if disabled { "true" },
