@@ -12,7 +12,10 @@ pub struct BreadcrumbItem {
 
 impl BreadcrumbItem {
     pub fn new(label: impl Into<String>) -> Self {
-        Self { label: label.into(), href: None }
+        Self {
+            label: label.into(),
+            href: None,
+        }
     }
 
     pub fn with_href(mut self, href: impl Into<String>) -> Self {
