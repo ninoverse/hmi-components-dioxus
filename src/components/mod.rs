@@ -67,6 +67,7 @@ mod switch;
 mod tabs;
 mod text;
 mod textarea;
+mod timeline;
 mod value_scale_selector;
 
 pub use alert::{AlertVariant, HmiAlert};
@@ -114,4 +115,5 @@ pub use switch::HmiSwitch;
 pub use tabs::{HmiTabs, TabItem, TabsVariant};
 pub use text::{HmiText, TextAlign, TextSize, TextTone, TextWeight};
 pub use textarea::HmiTextarea;
+pub use timeline::{HmiTimeline, TimelineColor, TimelineEntry};
 pub use value_scale_selector::{HmiValueScaleSelector, ValueScaleSize};

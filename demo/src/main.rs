@@ -4,16 +4,15 @@ use hmi_dioxus::{
     BoxRadius, BreadcrumbItem, ButtonVariant, CardVariant, ComboboxOption, DividerAlign,
     DividerOrientation, FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize,
     HeadingTone, HmiAlert, HmiAssets, HmiAvatar, HmiAvatarStack, HmiBadge, HmiBanner,
-    HmiBlockquote, HmiBox,
-    HmiBreadcrumbs, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiColorPicker, HmiCombobox,
-    HmiDivider, HmiEmptyState, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput, HmiKbd, HmiLink,
-    HmiList, HmiMeter,
-    HmiMultiInput, HmiNumberInput, HmiPasswordInput, HmiProgress, HmiRadio, HmiRadioGroup,
-    HmiSearchInput, HmiSegmentedControl, HmiSelect, HmiSkeleton, HmiSlider, HmiSpacer, HmiSpinner,
-    HmiStat, HmiStepper, HmiSwitch, HmiTabs, HmiText, HmiTextarea, HmiValueScaleSelector, ImageFit,
-    ImageRadius, KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption, SegmentOption,
-    SelectOption, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, StepItem,
-    TabItem, TabsVariant, TextTone, TextWeight, ValueScaleSize,
+    HmiBlockquote, HmiBox, HmiBreadcrumbs, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode,
+    HmiColorPicker, HmiCombobox, HmiDivider, HmiEmptyState, HmiFlex, HmiGrid, HmiHeading, HmiImage,
+    HmiInput, HmiKbd, HmiLink, HmiList, HmiMeter, HmiMultiInput, HmiNumberInput, HmiPasswordInput,
+    HmiProgress, HmiRadio, HmiRadioGroup, HmiSearchInput, HmiSegmentedControl, HmiSelect,
+    HmiSkeleton, HmiSlider, HmiSpacer, HmiSpinner, HmiStat, HmiStepper, HmiSwitch, HmiTabs,
+    HmiText, HmiTextarea, HmiTimeline, HmiValueScaleSelector, ImageFit, ImageRadius, KbdSize,
+    LinkTone, LinkUnderline, ListItem, RadioOption, SegmentOption, SelectOption, SkeletonVariant,
+    SpacerAxis, SpacerSize, SpinnerSize, StatTrend, StepItem, TabItem, TabsVariant, TextTone,
+    TextWeight, TimelineColor, TimelineEntry, ValueScaleSize,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -284,6 +283,24 @@ fn App() -> Element {
                 icon: "📭",
                 title: "No messages yet",
                 description: "When you receive messages, they'll show up here.",
+            }
+        }
+        div { style: "margin-top:2rem;max-width:30rem;",
+            HmiTimeline {
+                items: vec![
+                    TimelineEntry::new("Order placed")
+                        .time("09:01")
+                        .description("Payment confirmed")
+                        .color(TimelineColor::Success),
+                    TimelineEntry::new("Shipped")
+                        .time("14:20")
+                        .description("Left the warehouse")
+                        .color(TimelineColor::Primary),
+                    TimelineEntry::new("Delayed")
+                        .time("Tomorrow")
+                        .description("Weather hold")
+                        .color(TimelineColor::Warning),
+                ],
             }
         }
         div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
