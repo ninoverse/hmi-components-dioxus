@@ -5,10 +5,10 @@ use hmi_dioxus::{
     FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert,
     HmiAssets, HmiAvatar, HmiBadge, HmiBanner, HmiBlockquote, HmiBox, HmiButton, HmiCard,
     HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput,
-    HmiKbd, HmiLink, HmiList, HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat,
-    HmiSwitch, HmiText, HmiBreadcrumbs, HmiTextarea, ImageFit, ImageRadius, KbdSize, LinkTone,
-    LinkUnderline, ListItem, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend,
-    TextTone, TextWeight,
+    HmiKbd, HmiLink, HmiList, HmiMeter, HmiProgress, HmiRadioGroup, HmiSkeleton, HmiSpacer,
+    HmiSpinner, HmiStat, HmiSwitch, HmiText, HmiBreadcrumbs, HmiTextarea, ImageFit, ImageRadius,
+    KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption, SkeletonVariant, SpacerAxis,
+    SpacerSize, SpinnerSize, StatTrend, TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -22,6 +22,7 @@ fn App() -> Element {
     // Single source of truth for the bound input below; fed back into `value`.
     let mut text = use_signal(String::new);
     let mut textarea_text = use_signal(String::new);
+    let mut radio_val = use_signal(|| String::from("b"));
     let mut notifications = use_signal(|| true);
     let mut accepted = use_signal(|| false);
     rsx! {
@@ -118,6 +119,18 @@ fn App() -> Element {
             HmiTextarea { error: true, placeholder: "Error state", rows: 2 }
             HmiTextarea { disabled: true, placeholder: "Disabled" }
             div { "Textarea value: {textarea_text}" }
+        }
+        div { style: "display:flex;flex-direction:column;gap:1.5rem;margin-top:2rem;max-width:30rem;",
+            HmiRadioGroup {
+                options: vec![
+                    RadioOption::new("a", "Option A"),
+                    RadioOption::new("b", "Option B"),
+                    RadioOption::new("c", "Option C (disabled)").disabled(),
+                ],
+                value: radio_val(),
+                on_change: move |v| radio_val.set(v),
+            }
+            div { "Selected: {radio_val}" }
         }
         div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
             HmiSwitch {
