@@ -3,7 +3,8 @@ use hmi_dioxus::{
     AlertVariant, AvatarSize, AvatarStatus, BadgeVariant, BannerVariant, BoxBackground, BoxPadding,
     BoxRadius, BreadcrumbItem, ButtonVariant, CardVariant, ComboboxOption, DividerAlign,
     DividerOrientation, FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize,
-    HeadingTone, HmiAlert, HmiAssets, HmiAvatar, HmiBadge, HmiBanner, HmiBlockquote, HmiBox,
+    HeadingTone, HmiAlert, HmiAssets, HmiAvatar, HmiAvatarStack, HmiBadge, HmiBanner,
+    HmiBlockquote, HmiBox,
     HmiBreadcrumbs, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiColorPicker, HmiCombobox,
     HmiDivider,
     HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput, HmiKbd, HmiLink, HmiList, HmiMeter,
@@ -104,6 +105,19 @@ fn App() -> Element {
                 status: AvatarStatus::Away,
             }
             HmiAvatar { name: "Margaret Hamilton", status: AvatarStatus::Offline }
+        }
+        div { style: "display:flex;gap:1.5rem;align-items:center;margin-top:2rem;",
+            HmiAvatarStack {
+                names: vec![
+                    "Ada Lovelace".to_string(),
+                    "Grace Hopper".to_string(),
+                    "Alan Turing".to_string(),
+                    "Linus Torvalds".to_string(),
+                    "Margaret Hamilton".to_string(),
+                    "Donald Knuth".to_string(),
+                ],
+                max: 4,
+            }
         }
         div { style: "display:flex;gap:1.5rem;align-items:center;margin-top:2rem;",
             HmiSpinner { size: SpinnerSize::Small }

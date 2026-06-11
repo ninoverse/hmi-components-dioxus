@@ -23,6 +23,7 @@ fn json_string(s: &str) -> String {
 
 mod alert;
 mod avatar;
+mod avatar_stack;
 mod badge;
 mod banner;
 mod blockquote;
@@ -69,6 +70,7 @@ mod value_scale_selector;
 
 pub use alert::{AlertVariant, HmiAlert};
 pub use avatar::{AvatarSize, AvatarStatus, HmiAvatar};
+pub use avatar_stack::HmiAvatarStack;
 pub use badge::{BadgeVariant, HmiBadge};
 pub use banner::{BannerVariant, HmiBanner};
 pub use blockquote::HmiBlockquote;
