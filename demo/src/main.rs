@@ -5,8 +5,9 @@ use hmi_dioxus::{
     FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert,
     HmiAssets, HmiAvatar, HmiBadge, HmiBanner, HmiBlockquote, HmiBox, HmiButton, HmiCard,
     HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput,
-    HmiKbd, HmiLink, HmiList, HmiMeter, HmiProgress, HmiRadioGroup, HmiSelect, HmiSkeleton,
-    HmiSpacer, HmiSpinner, HmiStat, HmiSwitch, HmiText, HmiBreadcrumbs, HmiTextarea, ImageFit,
+    HmiKbd, HmiLink, HmiList, HmiMeter, HmiNumberInput, HmiProgress, HmiRadioGroup, HmiSelect,
+    HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat, HmiSwitch, HmiText, HmiBreadcrumbs, HmiTextarea,
+    ImageFit,
     ImageRadius, KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption, SelectOption,
     SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TextTone, TextWeight,
 };
@@ -24,6 +25,7 @@ fn App() -> Element {
     let mut textarea_text = use_signal(String::new);
     let mut radio_val = use_signal(|| String::from("b"));
     let mut select_val = use_signal(|| Option::<String>::None);
+    let mut num_val = use_signal(|| 0.0_f64);
     let mut notifications = use_signal(|| true);
     let mut accepted = use_signal(|| false);
     rsx! {
@@ -143,6 +145,16 @@ fn App() -> Element {
                 on_change: move |v| select_val.set(Some(v)),
             }
             div { "Select value: {select_val:?}" }
+            HmiNumberInput {
+                value: num_val(),
+                min: 0.0,
+                max: 100.0,
+                step: 5.0,
+                on_change: move |v| num_val.set(v),
+            }
+            HmiNumberInput { error: true, placeholder: "Error state" }
+            HmiNumberInput { disabled: true, default_value: 42.0 }
+            div { "Number value: {num_val}" }
         }
         div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
             HmiSwitch {
