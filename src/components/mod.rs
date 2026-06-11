@@ -21,6 +21,7 @@ fn json_string(s: &str) -> String {
     out
 }
 
+mod alert;
 mod avatar;
 mod badge;
 #[path = "box.rs"]
@@ -45,6 +46,7 @@ mod spinner;
 mod switch;
 mod text;
 
+pub use alert::{AlertVariant, HmiAlert};
 pub use avatar::{AvatarSize, AvatarStatus, HmiAvatar};
 pub use badge::{BadgeVariant, HmiBadge};
 pub use box_::{BoxBackground, BoxPadding, BoxRadius, HmiBox};

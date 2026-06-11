@@ -1,12 +1,12 @@
 use dioxus::prelude::*;
 use hmi_dioxus::{
-    AvatarSize, AvatarStatus, BadgeVariant, BoxBackground, BoxPadding, BoxRadius, ButtonVariant,
-    CardVariant, DividerAlign, DividerOrientation, FlexAlign, FlexDirection, FlexGap, FlexJustify,
-    GridGap, HeadingSize, HeadingTone, HmiAssets, HmiAvatar, HmiBadge, HmiBox, HmiButton, HmiCard,
-    HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiInput, HmiKbd,
-    HmiLink, HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner, HmiSwitch, HmiText,
-    KbdSize, LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize,
-    TextTone, TextWeight,
+    AlertVariant, AvatarSize, AvatarStatus, BadgeVariant, BoxBackground, BoxPadding, BoxRadius,
+    ButtonVariant, CardVariant, DividerAlign, DividerOrientation, FlexAlign, FlexDirection,
+    FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert, HmiAssets, HmiAvatar,
+    HmiBadge, HmiBox, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex,
+    HmiGrid, HmiHeading, HmiInput, HmiKbd, HmiLink, HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer,
+    HmiSpinner, HmiSwitch, HmiText, KbdSize, LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis,
+    SpacerSize, SpinnerSize, TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -247,6 +247,12 @@ fn App() -> Element {
                 background: BoxBackground::SurfaceContainerLow,
                 "Cell 3"
             }
+        }
+        div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
+            HmiAlert { title: "Heads up", "This is an informational alert." }
+            HmiAlert { variant: AlertVariant::Success, "Your changes were saved." }
+            HmiAlert { variant: AlertVariant::Warning, title: "Careful", "This action is hard to undo." }
+            HmiAlert { variant: AlertVariant::Danger, "Something went wrong." }
         }
     }
 }

@@ -12,11 +12,11 @@ mod event;
 
 pub use assets::HmiAssets;
 pub use components::{
-    AvatarSize, AvatarStatus, BadgeVariant, BoxBackground, BoxPadding, BoxRadius, ButtonSize,
-    ButtonType, ButtonVariant, CardVariant, DividerAlign, DividerOrientation, FlexAlign,
-    FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAvatar, HmiBadge,
-    HmiBox, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid,
-    HmiHeading, HmiInput, HmiKbd, HmiLink, HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer,
-    HmiSpinner, HmiSwitch, HmiText, KbdSize, LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis,
-    SpacerSize, SpinnerSize, TextAlign, TextSize, TextTone, TextWeight,
+    AlertVariant, AvatarSize, AvatarStatus, BadgeVariant, BoxBackground, BoxPadding, BoxRadius,
+    ButtonSize, ButtonType, ButtonVariant, CardVariant, DividerAlign, DividerOrientation,
+    FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert,
+    HmiAvatar, HmiBadge, HmiBox, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider,
+    HmiFlex, HmiGrid, HmiHeading, HmiInput, HmiKbd, HmiLink, HmiMeter, HmiProgress, HmiSkeleton,
+    HmiSpacer, HmiSpinner, HmiSwitch, HmiText, KbdSize, LinkTone, LinkUnderline, SkeletonVariant,
+    SpacerAxis, SpacerSize, SpinnerSize, TextAlign, TextSize, TextTone, TextWeight,
 };
