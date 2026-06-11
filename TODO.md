@@ -34,7 +34,7 @@ expressible as attributes — attach standard DOM event handlers to the rendered
 element instead. Re-vendor with `cargo run -p xtask` and re-extract this list when
 bumping the upstream version.
 
-Rough grouping, to suggest order (**29 / 85 wrapped**):
+Rough grouping, to suggest order (**35 / 85 wrapped**):
 
 > **⛔ = blocked on upstream.** `tooltip`, `popover`, `hover-card`, and
 > `context-menu` take their **trigger as slotted children** and wire it with
@@ -52,10 +52,10 @@ Rough grouping, to suggest order (**29 / 85 wrapped**):
 - [x] spinner · [x] stat · [x] text · ⛔ tooltip
 
 **Inputs / form (verify standalone; need value/event plumbing)**
-- [x] checkbox · [ ] combobox · [x] input · [ ] radio · [ ] select · [ ] slider
-- [ ] stepper · [x] switch · [ ] tabs · [ ] textarea · [ ] form-control
+- [x] checkbox · [ ] combobox · [x] input · [ ] radio · [x] select · [ ] slider
+- [ ] stepper · [x] switch · [ ] tabs · [x] textarea · [ ] form-control
 - [ ] color-picker · [ ] date-picker · [ ] file-upload · [ ] multi-input
-- [ ] number-input · [ ] password-input · [ ] radio-group · [ ] search-input
+- [x] number-input · [x] password-input · [x] radio-group · [x] search-input
 - [ ] segmented-control · [ ] value-scale-selector
 
 **Containers / overlays / navigation / structure**
