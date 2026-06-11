@@ -7,7 +7,7 @@ use hmi_dioxus::{
     HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput,
     HmiKbd, HmiLink, HmiList, HmiMeter, HmiNumberInput, HmiPasswordInput, HmiProgress, HmiRadio,
     HmiRadioGroup, HmiSearchInput, HmiSelect, HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat,
-    HmiSwitch, HmiText, HmiBreadcrumbs, HmiTextarea, ImageFit,
+    HmiSlider, HmiSwitch, HmiText, HmiBreadcrumbs, HmiTextarea, ImageFit,
     ImageRadius, KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption, SelectOption,
     SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TextTone, TextWeight,
 };
@@ -26,6 +26,7 @@ fn App() -> Element {
     let mut radio_val = use_signal(|| String::from("b"));
     let mut select_val = use_signal(|| Option::<String>::None);
     let mut num_val = use_signal(|| 0.0_f64);
+    let mut slider_val = use_signal(|| 40.0_f64);
     let mut notifications = use_signal(|| true);
     let mut accepted = use_signal(|| false);
     rsx! {
@@ -161,6 +162,16 @@ fn App() -> Element {
             HmiPasswordInput { error: true, placeholder: "Wrong password" }
             HmiSearchInput { placeholder: "Search…" }
             HmiSearchInput { disabled: true, placeholder: "Disabled search" }
+            HmiSlider {
+                value: slider_val(),
+                min: 0.0,
+                max: 100.0,
+                step: 5.0,
+                show_value: true,
+                on_change: move |v| slider_val.set(v),
+            }
+            HmiSlider { default_value: 30.0, disabled: true }
+            div { "Slider value: {slider_val}" }
         }
         div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
             HmiSwitch {

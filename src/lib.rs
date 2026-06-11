@@ -19,7 +19,7 @@ pub use components::{
     HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiImage,
     HmiInput, HmiKbd, HmiLink, HmiList, HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner,
     HmiNumberInput, HmiPasswordInput, HmiRadio, HmiSearchInput, HmiStat, HmiSwitch, HmiText,
-    HmiBreadcrumbs, HmiTextarea, HmiRadioGroup, HmiSelect, ImageFit,
+    HmiBreadcrumbs, HmiTextarea, HmiRadioGroup, HmiSelect, HmiSlider, ImageFit,
     ImageLoading, ImageRadius, KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption,
     SelectOption, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TextAlign,
     TextSize, TextTone, TextWeight,
