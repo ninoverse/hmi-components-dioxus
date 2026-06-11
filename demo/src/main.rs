@@ -1,12 +1,12 @@
 use dioxus::prelude::*;
 use hmi_dioxus::{
-    AvatarSize, AvatarStatus, BadgeVariant, BoxBackground, BoxPadding, BoxRadius, ButtonVariant,
-    CardVariant, DividerAlign, DividerOrientation, FlexAlign, FlexDirection, FlexGap, FlexJustify,
-    GridGap, HeadingSize, HeadingTone, HmiAssets, HmiAvatar, HmiBadge, HmiBox, HmiButton, HmiCard,
-    HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiInput, HmiKbd,
-    HmiLink, HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner, HmiSwitch, HmiText,
-    KbdSize, LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize,
-    TextTone, TextWeight,
+    AlertVariant, AvatarSize, AvatarStatus, BadgeVariant, BoxBackground, BoxPadding, BoxRadius,
+    ButtonVariant, CardVariant, DividerAlign, DividerOrientation, FlexAlign, FlexDirection,
+    FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert, HmiAssets, HmiAvatar,
+    HmiBadge, HmiBlockquote, HmiBox, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider,
+    HmiFlex, HmiGrid, HmiHeading, HmiInput, HmiKbd, HmiLink, HmiMeter, HmiProgress, HmiSkeleton,
+    HmiSpacer, HmiSpinner, HmiStat, HmiSwitch, HmiText, KbdSize, LinkTone, LinkUnderline,
+    SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -247,6 +247,33 @@ fn App() -> Element {
                 background: BoxBackground::SurfaceContainerLow,
                 "Cell 3"
             }
+        }
+        div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
+            HmiAlert { title: "Heads up", "This is an informational alert." }
+            HmiAlert { variant: AlertVariant::Success, "Your changes were saved." }
+            HmiAlert { variant: AlertVariant::Warning, title: "Careful", "This action is hard to undo." }
+            HmiAlert { variant: AlertVariant::Danger, "Something went wrong." }
+        }
+        div { style: "margin-top:2rem;max-width:30rem;",
+            HmiBlockquote { cite: "Ada Lovelace",
+                "That brain of mine is something more than merely mortal, as time will show."
+            }
+        }
+        div { style: "display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:2rem;",
+            HmiStat {
+                value: "$12,400",
+                label: "Revenue",
+                delta: "+12%",
+                trend: StatTrend::Up,
+            }
+            HmiStat {
+                value: "318",
+                label: "Active users",
+                delta: "-4%",
+                trend: StatTrend::Down,
+                help_text: "vs. last week",
+            }
+            HmiStat { value: "99.9%", label: "Uptime" }
         }
     }
 }

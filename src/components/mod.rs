@@ -21,8 +21,10 @@ fn json_string(s: &str) -> String {
     out
 }
 
+mod alert;
 mod avatar;
 mod badge;
+mod blockquote;
 #[path = "box.rs"]
 mod box_;
 mod button;
@@ -42,11 +44,14 @@ mod progress;
 mod skeleton;
 mod spacer;
 mod spinner;
+mod stat;
 mod switch;
 mod text;
 
+pub use alert::{AlertVariant, HmiAlert};
 pub use avatar::{AvatarSize, AvatarStatus, HmiAvatar};
 pub use badge::{BadgeVariant, HmiBadge};
+pub use blockquote::HmiBlockquote;
 pub use box_::{BoxBackground, BoxPadding, BoxRadius, HmiBox};
 pub use button::{ButtonSize, ButtonType, ButtonVariant, HmiButton};
 pub use card::{CardVariant, HmiCard};
@@ -65,5 +70,6 @@ pub use progress::HmiProgress;
 pub use skeleton::{HmiSkeleton, SkeletonVariant};
 pub use spacer::{HmiSpacer, SpacerAxis, SpacerSize};
 pub use spinner::{HmiSpinner, SpinnerSize};
+pub use stat::{HmiStat, StatTrend};
 pub use switch::HmiSwitch;
 pub use text::{HmiText, TextAlign, TextSize, TextTone, TextWeight};

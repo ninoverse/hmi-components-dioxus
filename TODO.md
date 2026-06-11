@@ -34,14 +34,14 @@ expressible as attributes — attach standard DOM event handlers to the rendered
 element instead. Re-vendor with `cargo run -p xtask` and re-extract this list when
 bumping the upstream version.
 
-Rough grouping, to suggest order (**22 / 85 wrapped**):
+Rough grouping, to suggest order (**25 / 85 wrapped**):
 
 **Presentational / leaf — wrap first**
 - [x] badge · [x] button · [x] chip
-- [ ] alert · [x] avatar · [ ] banner · [ ] blockquote · [x] box · [ ] breadcrumbs
+- [x] alert · [x] avatar · [ ] banner · [x] blockquote · [x] box · [ ] breadcrumbs
 - [x] card · [x] code · [x] divider · [x] flex · [x] grid · [x] heading · [ ] image
 - [x] kbd · [x] link · [ ] list · [x] meter · [x] progress · [x] skeleton · [x] spacer
-- [x] spinner · [ ] stat · [x] text · [ ] tooltip
+- [x] spinner · [x] stat · [x] text · [ ] tooltip
 
 **Inputs / form (verify standalone; need value/event plumbing)**
 - [x] checkbox · [ ] combobox · [x] input · [ ] radio · [ ] select · [ ] slider
