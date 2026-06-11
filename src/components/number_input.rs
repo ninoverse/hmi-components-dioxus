@@ -11,8 +11,6 @@ use crate::event::{on_input_event, ListenerGuard};
 pub fn HmiNumberInput(
     /// Controlled value.
     value: Option<f64>,
-    /// Initial value for uncontrolled usage.
-    default_value: Option<f64>,
     min: Option<f64>,
     max: Option<f64>,
     #[props(default = 1.0)] step: f64,
@@ -25,7 +23,6 @@ pub fn HmiNumberInput(
     rsx! {
         hmi-number-input {
             "value": value,
-            "default-value": default_value,
             "min": min,
             "max": max,
             "step": step,

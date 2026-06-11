@@ -57,8 +57,6 @@ pub fn HmiSelect(
     options: Vec<SelectOption>,
     /// Controlled selection.
     value: Option<String>,
-    /// Initial selection for uncontrolled usage.
-    default_value: Option<String>,
     /// Placeholder shown when nothing is selected.
     placeholder: Option<String>,
     #[props(default)] disabled: bool,
@@ -70,7 +68,6 @@ pub fn HmiSelect(
         hmi-select {
             "options": opts_json,
             "value": value,
-            "default-value": default_value,
             "placeholder": placeholder.as_deref().map(json_string),
             "disabled": if disabled { "true" },
             onmounted: move |m| {

@@ -4,16 +4,13 @@ use crate::event::{on_input_event, ListenerGuard};
 
 /// Typed wrapper for the `<hmi-textarea>` web component.
 ///
-/// Pass `value` for a **controlled** textarea — the element always shows
-/// exactly `value` and each keystroke fires `on_change` with the full
-/// requested text. Omit `value` (and optionally set `default_value`) for an
-/// uncontrolled textarea that manages its own state.
+/// Pass `value` to render **controlled** — the element always shows exactly
+/// `value` and each keystroke fires `on_change` with the full requested text,
+/// which appears once the caller feeds it back into `value`.
 #[component]
 pub fn HmiTextarea(
     /// Controlled text: the textarea always displays exactly this value.
     value: Option<String>,
-    /// Initial value for uncontrolled usage; ignored when `value` is set.
-    default_value: Option<String>,
     placeholder: Option<String>,
     /// Visible row count.
     rows: Option<u32>,
@@ -26,7 +23,6 @@ pub fn HmiTextarea(
     rsx! {
         hmi-textarea {
             "value": value,
-            "default-value": default_value,
             "placeholder": placeholder,
             "rows": rows,
             "disabled": if disabled { "true" },

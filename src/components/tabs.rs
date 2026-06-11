@@ -75,8 +75,6 @@ pub fn HmiTabs(
     options: Vec<TabItem>,
     /// Controlled selection.
     value: Option<String>,
-    /// Initial selection for uncontrolled usage.
-    default_value: Option<String>,
     #[props(default)] variant: TabsVariant,
     #[props(default)] on_change: EventHandler<String>,
 ) -> Element {
@@ -86,7 +84,6 @@ pub fn HmiTabs(
         hmi-tabs {
             "options": opts_json,
             "value": value,
-            "default-value": default_value,
             "variant": variant.as_str(),
             onmounted: move |m| {
                 listener.set(on_input_event(&m, "change", on_change, |d| d.string()));

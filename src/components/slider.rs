@@ -11,8 +11,6 @@ use crate::event::{on_input_event, ListenerGuard};
 pub fn HmiSlider(
     /// Controlled value.
     value: Option<f64>,
-    /// Initial value for uncontrolled usage (defaults to `min` upstream).
-    default_value: Option<f64>,
     #[props(default = 0.0)] min: f64,
     #[props(default = 100.0)] max: f64,
     #[props(default = 1.0)] step: f64,
@@ -24,7 +22,6 @@ pub fn HmiSlider(
     rsx! {
         hmi-slider {
             "value": value,
-            "default-value": default_value,
             "min": min,
             "max": max,
             "step": step,

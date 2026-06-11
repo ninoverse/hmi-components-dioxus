@@ -54,8 +54,6 @@ pub fn HmiRadioGroup(
     options: Vec<RadioOption>,
     /// Controlled selection: the group always reflects this value.
     value: Option<String>,
-    /// Initial value for uncontrolled usage.
-    default_value: Option<String>,
     /// `name` attribute forwarded to every underlying radio input.
     name: Option<String>,
     #[props(default)] on_change: EventHandler<String>,
@@ -66,7 +64,6 @@ pub fn HmiRadioGroup(
         hmi-radio-group {
             "options": opts_json,
             "value": value,
-            "default-value": default_value,
             "name": name,
             onmounted: move |m| {
                 listener.set(on_input_event(&m, "change", on_change, |d| d.string()));

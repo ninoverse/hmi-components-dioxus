@@ -10,8 +10,6 @@ use crate::event::{on_input_event, ListenerGuard};
 pub fn HmiPasswordInput(
     /// Controlled text.
     value: Option<String>,
-    /// Initial value for uncontrolled usage.
-    default_value: Option<String>,
     placeholder: Option<String>,
     #[props(default)] disabled: bool,
     #[props(default)] error: bool,
@@ -21,7 +19,6 @@ pub fn HmiPasswordInput(
     rsx! {
         hmi-password-input {
             "value": value,
-            "default-value": default_value,
             "placeholder": placeholder,
             "disabled": if disabled { "true" },
             "error": if error { "true" },

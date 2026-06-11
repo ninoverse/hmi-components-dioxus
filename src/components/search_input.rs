@@ -11,8 +11,6 @@ use crate::event::{on_input_event, ListenerGuard};
 pub fn HmiSearchInput(
     /// Controlled text.
     value: Option<String>,
-    /// Initial value for uncontrolled usage.
-    default_value: Option<String>,
     placeholder: Option<String>,
     #[props(default)] disabled: bool,
     #[props(default)] error: bool,
@@ -22,7 +20,6 @@ pub fn HmiSearchInput(
     rsx! {
         hmi-search-input {
             "value": value,
-            "default-value": default_value,
             "placeholder": placeholder,
             "disabled": if disabled { "true" },
             "error": if error { "true" },

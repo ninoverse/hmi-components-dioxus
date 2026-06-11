@@ -13,8 +13,6 @@ use crate::event::{on_input_event, ListenerGuard};
 pub fn HmiRadio(
     /// Controlled state: the radio always shows exactly this value.
     checked: Option<bool>,
-    /// Initial checked state for uncontrolled usage.
-    default_checked: Option<bool>,
     label: Option<String>,
     #[props(default)] disabled: bool,
     name: Option<String>,
@@ -25,7 +23,6 @@ pub fn HmiRadio(
     rsx! {
         hmi-radio {
             "checked": checked.map(|c| if c { "true" } else { "false" }),
-            "default-checked": default_checked.map(|c| if c { "true" } else { "false" }),
             "label": label.as_deref().map(json_string),
             "disabled": if disabled { "true" },
             "name": name,
