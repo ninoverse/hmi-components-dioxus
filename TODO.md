@@ -34,7 +34,7 @@ expressible as attributes — attach standard DOM event handlers to the rendered
 element instead. Re-vendor with `cargo run -p xtask` and re-extract this list when
 bumping the upstream version.
 
-Rough grouping, to suggest order (**42 / 85 wrapped**):
+Rough grouping, to suggest order (**44 / 85 wrapped**):
 
 > **⛔ = blocked on upstream.** `tooltip`, `popover`, `hover-card`, and
 > `context-menu` take their **trigger as slotted children** and wire it with
@@ -49,6 +49,13 @@ Rough grouping, to suggest order (**42 / 85 wrapped**):
 > nested interactive control (the field it wraps) is re-parsed from an HTML
 > string and loses its live `value`/`checked` property and `on_change` listener.
 > Analysis and proposed fix: [`docs/slotted-interactive-children.md`](docs/slotted-interactive-children.md).
+>
+> `date-picker` and `file-upload` are blocked because their `value`/`onChange`
+> traffic in **native JS objects** (`Date`, `File[]`) that have no JSON form the
+> component accepts: `date-picker` throws `getFullYear is not a function` the
+> moment a serialised value is supplied, and a `File` list can't be constructed
+> from data (browser security). Analysis and proposed fix:
+> [`docs/non-serializable-value-objects.md`](docs/non-serializable-value-objects.md).
 
 **Presentational / leaf — wrap first**
 - [x] badge · [x] button · [x] chip
@@ -59,8 +66,8 @@ Rough grouping, to suggest order (**42 / 85 wrapped**):
 
 **Inputs / form (verify standalone; need value/event plumbing)**
 - [x] checkbox · [x] combobox · [x] input · [x] radio · [x] select · [x] slider
-- [ ] stepper · [x] switch · [x] tabs · [x] textarea · ⛔ form-control
-- [ ] color-picker · [ ] date-picker · [ ] file-upload · [x] multi-input
+- [x] stepper · [x] switch · [x] tabs · [x] textarea · ⛔ form-control
+- [x] color-picker · ⛔ date-picker · ⛔ file-upload · [x] multi-input
 - [x] number-input · [x] password-input · [x] radio-group · [x] search-input
 - [x] segmented-control · [x] value-scale-selector
 
