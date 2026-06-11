@@ -5,10 +5,10 @@ use hmi_dioxus::{
     FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert,
     HmiAssets, HmiAvatar, HmiBadge, HmiBanner, HmiBlockquote, HmiBox, HmiButton, HmiCard,
     HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput,
-    HmiKbd, HmiLink, HmiList, HmiMeter, HmiProgress, HmiRadioGroup, HmiSkeleton, HmiSpacer,
-    HmiSpinner, HmiStat, HmiSwitch, HmiText, HmiBreadcrumbs, HmiTextarea, ImageFit, ImageRadius,
-    KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption, SkeletonVariant, SpacerAxis,
-    SpacerSize, SpinnerSize, StatTrend, TextTone, TextWeight,
+    HmiKbd, HmiLink, HmiList, HmiMeter, HmiProgress, HmiRadioGroup, HmiSelect, HmiSkeleton,
+    HmiSpacer, HmiSpinner, HmiStat, HmiSwitch, HmiText, HmiBreadcrumbs, HmiTextarea, ImageFit,
+    ImageRadius, KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption, SelectOption,
+    SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -23,6 +23,7 @@ fn App() -> Element {
     let mut text = use_signal(String::new);
     let mut textarea_text = use_signal(String::new);
     let mut radio_val = use_signal(|| String::from("b"));
+    let mut select_val = use_signal(|| Option::<String>::None);
     let mut notifications = use_signal(|| true);
     let mut accepted = use_signal(|| false);
     rsx! {
@@ -131,6 +132,17 @@ fn App() -> Element {
                 on_change: move |v| radio_val.set(v),
             }
             div { "Selected: {radio_val}" }
+            HmiSelect {
+                options: vec![
+                    SelectOption::new("rs", "Rust"),
+                    SelectOption::new("ts", "TypeScript"),
+                    SelectOption::new("go", "Go"),
+                ],
+                value: select_val(),
+                placeholder: "Pick a language",
+                on_change: move |v| select_val.set(Some(v)),
+            }
+            div { "Select value: {select_val:?}" }
         }
         div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
             HmiSwitch {
