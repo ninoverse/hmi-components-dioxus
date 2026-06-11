@@ -6,7 +6,8 @@ use hmi_dioxus::{
     HeadingTone, HmiAlert, HmiAssets, HmiAvatar, HmiBadge, HmiBanner, HmiBlockquote, HmiBox,
     HmiBreadcrumbs, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiCombobox, HmiDivider,
     HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput, HmiKbd, HmiLink, HmiList, HmiMeter,
-    HmiNumberInput, HmiPasswordInput, HmiProgress, HmiRadio, HmiRadioGroup, HmiSearchInput,
+    HmiMultiInput, HmiNumberInput, HmiPasswordInput, HmiProgress, HmiRadio, HmiRadioGroup,
+    HmiSearchInput,
     HmiSegmentedControl, HmiSelect, HmiSkeleton, HmiSlider, HmiSpacer, HmiSpinner, HmiStat,
     HmiSwitch, HmiTabs, HmiText, HmiTextarea, HmiValueScaleSelector, ImageFit, ImageRadius,
     KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption, SegmentOption, SelectOption,
@@ -35,6 +36,7 @@ fn App() -> Element {
     let mut seg2_val = use_signal(|| String::from("w"));
     let mut combo_val = use_signal(|| Option::<String>::None);
     let mut rating = use_signal(|| 3.0_f64);
+    let mut otp = use_signal(String::new);
     let mut notifications = use_signal(|| true);
     let mut accepted = use_signal(|| false);
     rsx! {
@@ -238,6 +240,13 @@ fn App() -> Element {
             }
             HmiValueScaleSelector { value: 4.0, icon: "♥", read_only: true }
             div { "Rating: {rating}" }
+            HmiMultiInput {
+                length: 6,
+                group_size: 3,
+                value: otp(),
+                on_change: move |v| otp.set(v),
+            }
+            div { "OTP: {otp}" }
         }
         div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
             HmiSwitch {
