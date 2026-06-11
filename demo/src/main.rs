@@ -1,11 +1,12 @@
 use dioxus::prelude::*;
 use hmi_dioxus::{
-    AvatarSize, AvatarStatus, BadgeVariant, ButtonVariant, CardVariant, DividerAlign,
-    DividerOrientation, HeadingSize, HeadingTone, HmiAssets, HmiAvatar, HmiBadge, HmiButton,
-    HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiHeading, HmiInput, HmiKbd, HmiLink,
-    HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner, HmiSwitch, HmiText, KbdSize,
-    LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, TextTone,
-    TextWeight,
+    AvatarSize, AvatarStatus, BadgeVariant, BoxBackground, BoxPadding, BoxRadius, ButtonVariant,
+    CardVariant, DividerAlign, DividerOrientation, FlexAlign, FlexDirection, FlexGap, FlexJustify,
+    GridGap, HeadingSize, HeadingTone, HmiAssets, HmiAvatar, HmiBadge, HmiBox, HmiButton, HmiCard,
+    HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiInput, HmiKbd,
+    HmiLink, HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner, HmiSwitch, HmiText,
+    KbdSize, LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize,
+    TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -153,16 +154,20 @@ fn App() -> Element {
         }
         div { style: "display:flex;gap:1rem;align-items:center;margin-top:2rem;",
             HmiSkeleton { width: "10rem" }
-            HmiSkeleton { variant: SkeletonVariant::Rect, width: "6rem", height: "4rem" }
-            HmiSkeleton { variant: SkeletonVariant::Circle, width: "3rem", height: "3rem" }
+            HmiSkeleton {
+                variant: SkeletonVariant::Rect,
+                width: "6rem",
+                height: "4rem",
+            }
+            HmiSkeleton {
+                variant: SkeletonVariant::Circle,
+                width: "3rem",
+                height: "3rem",
+            }
         }
         div { style: "display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;margin-top:2rem;",
             HmiLink { href: "https://example.com", "Default link" }
-            HmiLink {
-                href: "https://example.com",
-                underline: LinkUnderline::Hover,
-                "Underline on hover"
-            }
+            HmiLink { href: "https://example.com", underline: LinkUnderline::Hover, "Underline on hover" }
             HmiLink {
                 href: "https://example.com",
                 underline: LinkUnderline::None,
@@ -182,6 +187,65 @@ fn App() -> Element {
                 optimum: 100.0,
                 label: "Score (poor)",
                 show_value: true,
+            }
+        }
+        HmiFlex {
+            direction: FlexDirection::Row,
+            align: FlexAlign::Center,
+            justify: FlexJustify::Between,
+            gap: FlexGap::Medium,
+            wrap: true,
+            HmiBox {
+                padding: BoxPadding::Small,
+                background: BoxBackground::SurfaceContainer,
+                "One"
+            }
+            HmiBox {
+                padding: BoxPadding::Small,
+                background: BoxBackground::SurfaceContainer,
+                "Two"
+            }
+            HmiBox {
+                padding: BoxPadding::Small,
+                background: BoxBackground::SurfaceContainer,
+                "Three"
+            }
+        }
+        div { style: "display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem;",
+            HmiBox {
+                padding: BoxPadding::Medium,
+                background: BoxBackground::SurfaceContainer,
+                "Default surface box"
+            }
+            HmiBox {
+                padding: BoxPadding::Large,
+                background: BoxBackground::SurfaceVariant,
+                radius: BoxRadius::Large,
+                bordered: true,
+                "Bordered, large radius"
+            }
+            HmiBox {
+                padding: BoxPadding::Small,
+                radius: BoxRadius::Full,
+                bordered: true,
+                "Pill box"
+            }
+        }
+        HmiGrid { columns: "repeat(3, 1fr)", gap: GridGap::Medium,
+            HmiBox {
+                padding: BoxPadding::Small,
+                background: BoxBackground::SurfaceContainerLow,
+                "Cell 1"
+            }
+            HmiBox {
+                padding: BoxPadding::Small,
+                background: BoxBackground::SurfaceContainerLow,
+                "Cell 2"
+            }
+            HmiBox {
+                padding: BoxPadding::Small,
+                background: BoxBackground::SurfaceContainerLow,
+                "Cell 3"
             }
         }
     }

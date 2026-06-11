@@ -23,12 +23,16 @@ fn json_string(s: &str) -> String {
 
 mod avatar;
 mod badge;
+#[path = "box.rs"]
+mod box_;
 mod button;
 mod card;
 mod checkbox;
 mod chip;
 mod code;
 mod divider;
+mod flex;
+mod grid;
 mod heading;
 mod input;
 mod kbd;
@@ -43,12 +47,15 @@ mod text;
 
 pub use avatar::{AvatarSize, AvatarStatus, HmiAvatar};
 pub use badge::{BadgeVariant, HmiBadge};
+pub use box_::{BoxBackground, BoxPadding, BoxRadius, HmiBox};
 pub use button::{ButtonSize, ButtonType, ButtonVariant, HmiButton};
 pub use card::{CardVariant, HmiCard};
 pub use checkbox::HmiCheckbox;
 pub use chip::HmiChip;
 pub use code::HmiCode;
 pub use divider::{DividerAlign, DividerOrientation, HmiDivider};
+pub use flex::{FlexAlign, FlexDirection, FlexGap, FlexJustify, HmiFlex};
+pub use grid::{GridGap, HmiGrid};
 pub use heading::{HeadingSize, HeadingTone, HmiHeading};
 pub use input::HmiInput;
 pub use kbd::{HmiKbd, KbdSize};
