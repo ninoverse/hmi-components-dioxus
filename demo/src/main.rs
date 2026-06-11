@@ -7,10 +7,10 @@ use hmi_dioxus::{
     HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput,
     HmiKbd, HmiLink, HmiList, HmiMeter, HmiNumberInput, HmiPasswordInput, HmiProgress, HmiRadio,
     HmiRadioGroup, HmiSearchInput, HmiSelect, HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat,
-    HmiSlider, HmiSwitch, HmiTabs, HmiText, HmiBreadcrumbs, HmiTextarea, ImageFit,
-    ImageRadius, KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption, SelectOption,
-    SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TabItem, TabsVariant,
-    TextTone, TextWeight,
+    HmiSegmentedControl, HmiSlider, HmiSwitch, HmiTabs, HmiText, HmiBreadcrumbs, HmiTextarea,
+    ImageFit, ImageRadius, KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption, SegmentOption,
+    SelectOption, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TabItem,
+    TabsVariant, TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -29,6 +29,9 @@ fn App() -> Element {
     let mut num_val = use_signal(|| 0.0_f64);
     let mut slider_val = use_signal(|| 40.0_f64);
     let mut tab_val = use_signal(|| String::from("overview"));
+    let mut tab2_val = use_signal(|| String::from("a"));
+    let mut seg_val = use_signal(|| String::from("list"));
+    let mut seg2_val = use_signal(|| String::from("w"));
     let mut notifications = use_signal(|| true);
     let mut accepted = use_signal(|| false);
     rsx! {
@@ -158,7 +161,7 @@ fn App() -> Element {
                 on_change: move |v| num_val.set(v),
             }
             HmiNumberInput { error: true, placeholder: "Error state" }
-            HmiNumberInput { disabled: true, default_value: 42.0 }
+            HmiNumberInput { disabled: true, value: 42.0 }
             div { "Number value: {num_val}" }
             HmiPasswordInput { placeholder: "Enter password" }
             HmiPasswordInput { error: true, placeholder: "Wrong password" }
@@ -172,7 +175,7 @@ fn App() -> Element {
                 show_value: true,
                 on_change: move |v| slider_val.set(v),
             }
-            HmiSlider { default_value: 30.0, disabled: true }
+            HmiSlider { value: 30.0, disabled: true }
             div { "Slider value: {slider_val}" }
             HmiTabs {
                 options: vec![
@@ -189,9 +192,30 @@ fn App() -> Element {
                     TabItem::new("b", "Second"),
                 ],
                 variant: TabsVariant::Underline,
-                default_value: "a",
+                value: tab2_val(),
+                on_change: move |v| tab2_val.set(v),
             }
             div { "Active tab: {tab_val}" }
+            HmiSegmentedControl {
+                options: vec![
+                    SegmentOption::new("list", "List"),
+                    SegmentOption::new("grid", "Grid"),
+                    SegmentOption::new("board", "Board"),
+                ],
+                value: seg_val(),
+                on_change: move |v| seg_val.set(v),
+            }
+            HmiSegmentedControl {
+                options: vec![
+                    SegmentOption::new("d", "Day"),
+                    SegmentOption::new("w", "Week"),
+                    SegmentOption::new("m", "Month").disabled(),
+                ],
+                value: seg2_val(),
+                on_change: move |v| seg2_val.set(v),
+                full_width: true,
+            }
+            div { "Segment: {seg_val}" }
         }
         div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
             HmiSwitch {
