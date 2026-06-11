@@ -1,13 +1,13 @@
 use dioxus::prelude::*;
 use hmi_dioxus::{
-    AlertVariant, AvatarSize, AvatarStatus, BadgeVariant, BoxBackground, BoxPadding, BoxRadius,
-    ButtonVariant, CardVariant, DividerAlign, DividerOrientation, FlexAlign, FlexDirection,
-    FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert, HmiAssets, HmiAvatar,
-    HmiBadge, HmiBlockquote, HmiBox, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider,
-    HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput, HmiKbd, HmiLink, HmiMeter, HmiProgress,
-    HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat, HmiSwitch, HmiText, ImageFit, ImageRadius,
-    KbdSize, LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize,
-    StatTrend, TextTone, TextWeight,
+    AlertVariant, AvatarSize, AvatarStatus, BadgeVariant, BannerVariant, BoxBackground, BoxPadding,
+    BoxRadius, ButtonVariant, CardVariant, DividerAlign, DividerOrientation, FlexAlign,
+    FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert, HmiAssets,
+    HmiAvatar, HmiBadge, HmiBanner, HmiBlockquote, HmiBox, HmiButton, HmiCard, HmiCheckbox,
+    HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput, HmiKbd,
+    HmiLink, HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat, HmiSwitch,
+    HmiText, ImageFit, ImageRadius, KbdSize, LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis,
+    SpacerSize, SpinnerSize, StatTrend, TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -254,6 +254,15 @@ fn App() -> Element {
             HmiAlert { variant: AlertVariant::Success, "Your changes were saved." }
             HmiAlert { variant: AlertVariant::Warning, title: "Careful", "This action is hard to undo." }
             HmiAlert { variant: AlertVariant::Danger, "Something went wrong." }
+        }
+        div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:40rem;",
+            HmiBanner { title: "Scheduled maintenance",
+                "The service will be briefly unavailable on Sunday at 02:00 UTC."
+            }
+            HmiBanner { variant: BannerVariant::Success, "All systems operational." }
+            HmiBanner { variant: BannerVariant::Danger, title: "Payment failed",
+                "Update your billing details to keep your subscription active."
+            }
         }
         div { style: "margin-top:2rem;max-width:30rem;",
             HmiBlockquote { cite: "Ada Lovelace",
