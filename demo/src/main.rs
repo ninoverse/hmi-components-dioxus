@@ -5,9 +5,9 @@ use hmi_dioxus::{
     FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert,
     HmiAssets, HmiAvatar, HmiBadge, HmiBanner, HmiBlockquote, HmiBox, HmiButton, HmiCard,
     HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput,
-    HmiKbd, HmiLink, HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat, HmiSwitch,
-    HmiText, HmiBreadcrumbs, ImageFit, ImageRadius, KbdSize, LinkTone, LinkUnderline,
-    SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TextTone, TextWeight,
+    HmiKbd, HmiLink, HmiList, HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat,
+    HmiSwitch, HmiText, HmiBreadcrumbs, ImageFit, ImageRadius, KbdSize, LinkTone, LinkUnderline,
+    ListItem, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -299,6 +299,25 @@ fn App() -> Element {
                     BreadcrumbItem::new("Settings"),
                 ],
                 separator: Some("›".to_string()),
+            }
+        }
+        div { style: "margin-top:2rem;max-width:30rem;",
+            HmiList {
+                items: vec![
+                    ListItem::new("1")
+                        .avatar("Ada Lovelace")
+                        .title("Ada Lovelace")
+                        .subtitle("Mathematician")
+                        .right("Online"),
+                    ListItem::new("2")
+                        .avatar("Grace Hopper")
+                        .title("Grace Hopper")
+                        .subtitle("Computer scientist")
+                        .right("Away"),
+                    ListItem::new("3")
+                        .title("No avatar row")
+                        .subtitle("Just a title and subtitle"),
+                ],
             }
         }
         div { style: "display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;margin-top:2rem;",
