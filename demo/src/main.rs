@@ -4,7 +4,8 @@ use hmi_dioxus::{
     BoxRadius, BreadcrumbItem, ButtonVariant, CardVariant, ComboboxOption, DividerAlign,
     DividerOrientation, FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize,
     HeadingTone, HmiAlert, HmiAssets, HmiAvatar, HmiBadge, HmiBanner, HmiBlockquote, HmiBox,
-    HmiBreadcrumbs, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiCombobox, HmiDivider,
+    HmiBreadcrumbs, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiColorPicker, HmiCombobox,
+    HmiDivider,
     HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput, HmiKbd, HmiLink, HmiList, HmiMeter,
     HmiMultiInput, HmiNumberInput, HmiPasswordInput, HmiProgress, HmiRadio, HmiRadioGroup,
     HmiSearchInput, HmiSegmentedControl, HmiSelect, HmiSkeleton, HmiSlider, HmiSpacer, HmiSpinner,
@@ -37,6 +38,7 @@ fn App() -> Element {
     let mut rating = use_signal(|| 3.0_f64);
     let mut otp = use_signal(String::new);
     let mut step = use_signal(|| String::from("shipping"));
+    let mut color = use_signal(|| String::from("#4f8a8b"));
     let mut notifications = use_signal(|| true);
     let mut accepted = use_signal(|| false);
     rsx! {
@@ -257,6 +259,11 @@ fn App() -> Element {
                 on_change: move |v| step.set(v),
             }
             div { "Step: {step}" }
+            HmiColorPicker {
+                value: color(),
+                on_change: move |v| color.set(v),
+            }
+            div { "Color: {color}" }
         }
         div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
             HmiSwitch {
