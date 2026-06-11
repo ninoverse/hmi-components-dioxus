@@ -5,7 +5,7 @@ use hmi_dioxus::{
     FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert,
     HmiAssets, HmiAvatar, HmiBadge, HmiBanner, HmiBlockquote, HmiBox, HmiButton, HmiCard,
     HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput,
-    HmiKbd, HmiLink, HmiList, HmiMeter, HmiNumberInput, HmiPasswordInput, HmiProgress,
+    HmiKbd, HmiLink, HmiList, HmiMeter, HmiNumberInput, HmiPasswordInput, HmiProgress, HmiRadio,
     HmiRadioGroup, HmiSearchInput, HmiSelect, HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat,
     HmiSwitch, HmiText, HmiBreadcrumbs, HmiTextarea, ImageFit,
     ImageRadius, KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption, SelectOption,
@@ -134,6 +134,8 @@ fn App() -> Element {
                 on_change: move |v| radio_val.set(v),
             }
             div { "Selected: {radio_val}" }
+            HmiRadio { label: "Standalone radio (uncontrolled)", name: "standalone", value: "x" }
+            HmiRadio { label: "Disabled radio", disabled: true, name: "standalone", value: "y" }
             HmiSelect {
                 options: vec![
                     SelectOption::new("rs", "Rust"),
