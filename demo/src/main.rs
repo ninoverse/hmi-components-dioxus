@@ -6,8 +6,8 @@ use hmi_dioxus::{
     HeadingTone, HmiAlert, HmiAssets, HmiAvatar, HmiAvatarStack, HmiBadge, HmiBanner,
     HmiBlockquote, HmiBox,
     HmiBreadcrumbs, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiColorPicker, HmiCombobox,
-    HmiDivider,
-    HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput, HmiKbd, HmiLink, HmiList, HmiMeter,
+    HmiDivider, HmiEmptyState, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput, HmiKbd, HmiLink,
+    HmiList, HmiMeter,
     HmiMultiInput, HmiNumberInput, HmiPasswordInput, HmiProgress, HmiRadio, HmiRadioGroup,
     HmiSearchInput, HmiSegmentedControl, HmiSelect, HmiSkeleton, HmiSlider, HmiSpacer, HmiSpinner,
     HmiStat, HmiStepper, HmiSwitch, HmiTabs, HmiText, HmiTextarea, HmiValueScaleSelector, ImageFit,
@@ -278,6 +278,13 @@ fn App() -> Element {
                 on_change: move |v| color.set(v),
             }
             div { "Color: {color}" }
+        }
+        div { style: "margin-top:2rem;max-width:30rem;",
+            HmiEmptyState {
+                icon: "📭",
+                title: "No messages yet",
+                description: "When you receive messages, they'll show up here.",
+            }
         }
         div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
             HmiSwitch {
