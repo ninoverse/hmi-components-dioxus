@@ -36,7 +36,12 @@ pub struct SegmentOption {
 
 impl SegmentOption {
     pub fn new(value: impl Into<String>, label: impl Into<String>) -> Self {
-        Self { value: value.into(), label: label.into(), icon: None, disabled: false }
+        Self {
+            value: value.into(),
+            label: label.into(),
+            icon: None,
+            disabled: false,
+        }
     }
 
     pub fn icon(mut self, icon: impl Into<String>) -> Self {

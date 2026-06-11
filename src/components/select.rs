@@ -16,7 +16,11 @@ pub struct SelectOption {
 
 impl SelectOption {
     pub fn new(value: impl Into<String>, label: impl Into<String>) -> Self {
-        Self { value: value.into(), label: label.into(), icon: None }
+        Self {
+            value: value.into(),
+            label: label.into(),
+            icon: None,
+        }
     }
 
     pub fn icon(mut self, icon: impl Into<String>) -> Self {

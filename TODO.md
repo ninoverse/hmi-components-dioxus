@@ -34,7 +34,7 @@ expressible as attributes — attach standard DOM event handlers to the rendered
 element instead. Re-vendor with `cargo run -p xtask` and re-extract this list when
 bumping the upstream version.
 
-Rough grouping, to suggest order (**35 / 85 wrapped**):
+Rough grouping, to suggest order (**42 / 85 wrapped**):
 
 > **⛔ = blocked on upstream.** `tooltip`, `popover`, `hover-card`, and
 > `context-menu` take their **trigger as slotted children** and wire it with
@@ -43,6 +43,12 @@ Rough grouping, to suggest order (**35 / 85 wrapped**):
 > attach and the overlay never opens). They compile but are inert as thin
 > wrappers — deferred until upstream renders a real anchor wrapper. Full
 > analysis and proposed fix: [`docs/slotted-trigger-overlays.md`](docs/slotted-trigger-overlays.md).
+>
+> `form-control` is blocked by the **same root cause** in a different form: the
+> bridge re-renders slotted children through `dangerouslySetInnerHTML`, so a
+> nested interactive control (the field it wraps) is re-parsed from an HTML
+> string and loses its live `value`/`checked` property and `on_change` listener.
+> Analysis and proposed fix: [`docs/slotted-interactive-children.md`](docs/slotted-interactive-children.md).
 
 **Presentational / leaf — wrap first**
 - [x] badge · [x] button · [x] chip
@@ -52,11 +58,11 @@ Rough grouping, to suggest order (**35 / 85 wrapped**):
 - [x] spinner · [x] stat · [x] text · ⛔ tooltip
 
 **Inputs / form (verify standalone; need value/event plumbing)**
-- [x] checkbox · [ ] combobox · [x] input · [ ] radio · [x] select · [ ] slider
-- [ ] stepper · [x] switch · [ ] tabs · [x] textarea · [ ] form-control
-- [ ] color-picker · [ ] date-picker · [ ] file-upload · [ ] multi-input
+- [x] checkbox · [x] combobox · [x] input · [x] radio · [x] select · [x] slider
+- [ ] stepper · [x] switch · [x] tabs · [x] textarea · ⛔ form-control
+- [ ] color-picker · [ ] date-picker · [ ] file-upload · [x] multi-input
 - [x] number-input · [x] password-input · [x] radio-group · [x] search-input
-- [ ] segmented-control · [ ] value-scale-selector
+- [x] segmented-control · [x] value-scale-selector
 
 **Containers / overlays / navigation / structure**
 - [ ] accordion · [ ] aspect-ratio · [ ] avatar-stack · [ ] carousel · [ ] drawer

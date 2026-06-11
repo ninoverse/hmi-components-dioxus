@@ -15,7 +15,11 @@ pub struct RadioOption {
 
 impl RadioOption {
     pub fn new(value: impl Into<String>, label: impl Into<String>) -> Self {
-        Self { value: value.into(), label: label.into(), disabled: false }
+        Self {
+            value: value.into(),
+            label: label.into(),
+            disabled: false,
+        }
     }
 
     pub fn disabled(mut self) -> Self {
