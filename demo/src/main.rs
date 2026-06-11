@@ -7,12 +7,11 @@ use hmi_dioxus::{
     HmiBreadcrumbs, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiCombobox, HmiDivider,
     HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput, HmiKbd, HmiLink, HmiList, HmiMeter,
     HmiMultiInput, HmiNumberInput, HmiPasswordInput, HmiProgress, HmiRadio, HmiRadioGroup,
-    HmiSearchInput,
-    HmiSegmentedControl, HmiSelect, HmiSkeleton, HmiSlider, HmiSpacer, HmiSpinner, HmiStat,
-    HmiSwitch, HmiTabs, HmiText, HmiTextarea, HmiValueScaleSelector, ImageFit, ImageRadius,
-    KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption, SegmentOption, SelectOption,
-    SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TabItem, TabsVariant,
-    TextTone, TextWeight, ValueScaleSize,
+    HmiSearchInput, HmiSegmentedControl, HmiSelect, HmiSkeleton, HmiSlider, HmiSpacer, HmiSpinner,
+    HmiStat, HmiStepper, HmiSwitch, HmiTabs, HmiText, HmiTextarea, HmiValueScaleSelector, ImageFit,
+    ImageRadius, KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption, SegmentOption,
+    SelectOption, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, StepItem,
+    TabItem, TabsVariant, TextTone, TextWeight, ValueScaleSize,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -37,6 +36,7 @@ fn App() -> Element {
     let mut combo_val = use_signal(|| Option::<String>::None);
     let mut rating = use_signal(|| 3.0_f64);
     let mut otp = use_signal(String::new);
+    let mut step = use_signal(|| String::from("shipping"));
     let mut notifications = use_signal(|| true);
     let mut accepted = use_signal(|| false);
     rsx! {
@@ -247,6 +247,16 @@ fn App() -> Element {
                 on_change: move |v| otp.set(v),
             }
             div { "OTP: {otp}" }
+            HmiStepper {
+                steps: vec![
+                    StepItem::new("cart", "Cart").description("Review items"),
+                    StepItem::new("shipping", "Shipping").description("Address"),
+                    StepItem::new("payment", "Payment").description("Card details"),
+                ],
+                current: step(),
+                on_change: move |v| step.set(v),
+            }
+            div { "Step: {step}" }
         }
         div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
             HmiSwitch {
