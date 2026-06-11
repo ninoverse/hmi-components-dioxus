@@ -4,11 +4,13 @@ use hmi_dioxus::{
     BoxRadius, BreadcrumbItem, ButtonVariant, CardVariant, DividerAlign, DividerOrientation,
     FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert,
     HmiAssets, HmiAvatar, HmiBadge, HmiBanner, HmiBlockquote, HmiBox, HmiButton, HmiCard,
-    HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput,
+    HmiCheckbox, HmiChip, HmiCode, HmiCombobox, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiImage,
+    HmiInput,
     HmiKbd, HmiLink, HmiList, HmiMeter, HmiNumberInput, HmiPasswordInput, HmiProgress, HmiRadio,
     HmiRadioGroup, HmiSearchInput, HmiSelect, HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat,
     HmiSegmentedControl, HmiSlider, HmiSwitch, HmiTabs, HmiText, HmiBreadcrumbs, HmiTextarea,
-    ImageFit, ImageRadius, KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption, SegmentOption,
+    ComboboxOption, ImageFit, ImageRadius, KbdSize, LinkTone, LinkUnderline, ListItem, RadioOption,
+    SegmentOption,
     SelectOption, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TabItem,
     TabsVariant, TextTone, TextWeight,
 };
@@ -32,6 +34,7 @@ fn App() -> Element {
     let mut tab2_val = use_signal(|| String::from("a"));
     let mut seg_val = use_signal(|| String::from("list"));
     let mut seg2_val = use_signal(|| String::from("w"));
+    let mut combo_val = use_signal(|| Option::<String>::None);
     let mut notifications = use_signal(|| true);
     let mut accepted = use_signal(|| false);
     rsx! {
@@ -216,6 +219,18 @@ fn App() -> Element {
                 full_width: true,
             }
             div { "Segment: {seg_val}" }
+            HmiCombobox {
+                options: vec![
+                    ComboboxOption::new("us", "United States"),
+                    ComboboxOption::new("ca", "Canada"),
+                    ComboboxOption::new("mx", "Mexico"),
+                    ComboboxOption::new("br", "Brazil"),
+                ],
+                value: combo_val(),
+                placeholder: "Search country…",
+                on_change: move |v| combo_val.set(Some(v)),
+            }
+            div { "Combobox value: {combo_val:?}" }
         }
         div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
             HmiSwitch {
