@@ -26,6 +26,7 @@ mod avatar;
 mod badge;
 mod banner;
 mod blockquote;
+mod breadcrumbs;
 #[path = "box.rs"]
 mod box_;
 mod button;
@@ -55,6 +56,7 @@ pub use avatar::{AvatarSize, AvatarStatus, HmiAvatar};
 pub use badge::{BadgeVariant, HmiBadge};
 pub use banner::{BannerVariant, HmiBanner};
 pub use blockquote::HmiBlockquote;
+pub use breadcrumbs::{BreadcrumbItem, HmiBreadcrumbs};
 pub use box_::{BoxBackground, BoxPadding, BoxRadius, HmiBox};
 pub use button::{ButtonSize, ButtonType, ButtonVariant, HmiButton};
 pub use card::{CardVariant, HmiCard};

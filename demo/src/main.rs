@@ -1,13 +1,13 @@
 use dioxus::prelude::*;
 use hmi_dioxus::{
     AlertVariant, AvatarSize, AvatarStatus, BadgeVariant, BannerVariant, BoxBackground, BoxPadding,
-    BoxRadius, ButtonVariant, CardVariant, DividerAlign, DividerOrientation, FlexAlign,
-    FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert, HmiAssets,
-    HmiAvatar, HmiBadge, HmiBanner, HmiBlockquote, HmiBox, HmiButton, HmiCard, HmiCheckbox,
-    HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput, HmiKbd,
-    HmiLink, HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat, HmiSwitch,
-    HmiText, ImageFit, ImageRadius, KbdSize, LinkTone, LinkUnderline, SkeletonVariant, SpacerAxis,
-    SpacerSize, SpinnerSize, StatTrend, TextTone, TextWeight,
+    BoxRadius, BreadcrumbItem, ButtonVariant, CardVariant, DividerAlign, DividerOrientation,
+    FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert,
+    HmiAssets, HmiAvatar, HmiBadge, HmiBanner, HmiBlockquote, HmiBox, HmiButton, HmiCard,
+    HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput,
+    HmiKbd, HmiLink, HmiMeter, HmiProgress, HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat, HmiSwitch,
+    HmiText, HmiBreadcrumbs, ImageFit, ImageRadius, KbdSize, LinkTone, LinkUnderline,
+    SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TextTone, TextWeight,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -284,6 +284,22 @@ fn App() -> Element {
                 help_text: "vs. last week",
             }
             HmiStat { value: "99.9%", label: "Uptime" }
+        }
+        div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;",
+            HmiBreadcrumbs {
+                items: vec![
+                    BreadcrumbItem::new("Home").with_href("/"),
+                    BreadcrumbItem::new("Docs").with_href("/docs"),
+                    BreadcrumbItem::new("Components"),
+                ],
+            }
+            HmiBreadcrumbs {
+                items: vec![
+                    BreadcrumbItem::new("Dashboard").with_href("/"),
+                    BreadcrumbItem::new("Settings"),
+                ],
+                separator: Some("›".to_string()),
+            }
         }
         div { style: "display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;margin-top:2rem;",
             HmiImage {
