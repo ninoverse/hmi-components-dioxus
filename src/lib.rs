@@ -19,8 +19,9 @@ pub use components::{
     HmiBlockquote, HmiBox, HmiBreadcrumbs, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode,
     HmiDivider, HmiEmptyState, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput, HmiKbd, HmiLink,
     HmiList, HmiMeter, HmiPasswordInput, HmiProgress, HmiRadio, HmiScrollArea, HmiSearchInput,
-    HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat, HmiSwitch, HmiText, HmiTextarea, HmiTimeline,
-    HmiVisuallyHidden, ImageFit, ImageLoading, ImageRadius, KbdSize, LinkTone, LinkUnderline,
-    ListItem, ScrollOrientation, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend,
-    TextAlign, TextSize, TextTone, TextWeight, TimelineColor, TimelineEntry,
+    HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat, HmiSwitch, HmiTable, HmiText, HmiTextarea,
+    HmiTimeline, HmiVisuallyHidden, ImageFit, ImageLoading, ImageRadius, KbdSize, LinkTone,
+    LinkUnderline, ListItem, ScrollOrientation, SkeletonVariant, SpacerAxis, SpacerSize,
+    SpinnerSize, StatTrend, TableColumn, TextAlign, TextSize, TextTone, TextWeight, TimelineColor,
+    TimelineEntry,
 };

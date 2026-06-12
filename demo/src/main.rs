@@ -7,10 +7,10 @@ use hmi_dioxus::{
     HmiBox, HmiBreadcrumbs, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider,
     HmiEmptyState, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput, HmiKbd, HmiLink, HmiList,
     HmiMeter, HmiPasswordInput, HmiProgress, HmiRadio, HmiScrollArea, HmiSearchInput, HmiSkeleton,
-    HmiSpacer, HmiSpinner, HmiStat, HmiSwitch, HmiText, HmiTextarea, HmiTimeline,
+    HmiSpacer, HmiSpinner, HmiStat, HmiSwitch, HmiTable, HmiText, HmiTextarea, HmiTimeline,
     HmiVisuallyHidden, ImageFit, ImageRadius, KbdSize, LinkTone, LinkUnderline, ListItem,
-    SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TextTone, TextWeight,
-    TimelineColor, TimelineEntry,
+    SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TableColumn, TextTone,
+    TextWeight, TimelineColor, TimelineEntry,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -195,6 +195,20 @@ fn App() -> Element {
                 "There is "
                 HmiVisuallyHidden { "a screen-reader-only note and " }
                 "visible text after the hidden content."
+            }
+        }
+        div { style: "margin-top:2rem;max-width:30rem;",
+            HmiTable {
+                columns: vec![
+                    TableColumn::new("name", "Name"),
+                    TableColumn::new("role", "Role"),
+                    TableColumn::new("commits", "Commits"),
+                ],
+                rows: vec![
+                    vec!["Ada Lovelace".to_string(), "Author".to_string(), "42".to_string()],
+                    vec!["Grace Hopper".to_string(), "Maintainer".to_string(), "108".to_string()],
+                    vec!["Alan Turing".to_string(), "Reviewer".to_string(), "17".to_string()],
+                ],
             }
         }
         div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
