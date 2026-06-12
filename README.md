@@ -25,26 +25,20 @@ near the root of your app, then use the `Hmi*` wrappers anywhere in the tree:
 
 ```rust
 use dioxus::prelude::*;
-use hmi_dioxus::{BadgeVariant, ButtonVariant, HmiAssets, HmiBadge, HmiButton};
+use hmi_dioxus::HmiAssets;
 
 #[component]
 fn App() -> Element {
     rsx! {
-        HmiAssets {}                                   // inject styles + register elements (once)
-        HmiBadge { variant: BadgeVariant::Success, "Active" }
-        HmiButton { variant: ButtonVariant::Primary, "Click me" }
+        HmiAssets {}   // inject styles + register elements (once)
+        // typed `Hmi*` wrappers go here
     }
 }
 ```
 
-Wrapped so far (13): presentational — `HmiAvatar`, `HmiBadge`, `HmiButton`,
-`HmiCard`, `HmiChip`, `HmiDivider`, `HmiHeading`, `HmiProgress`, `HmiSpinner`,
-`HmiText` — and interactive — `HmiInput`, `HmiSwitch`, `HmiCheckbox` (controlled
-`value`/`checked` + `on_change`, behind the `web` feature). Each ships its own
-`*Variant`/`*Size`/`*Tone` enums. See `TODO.md` for scope and the path to a
-crates.io release, and
-[`docs/event-binding-and-dataviz.md`](docs/event-binding-and-dataviz.md) for the
-event-callback / two-way-binding pattern and data-viz findings.
+> **Status:** the typed wrappers are being re-built against a new upstream
+> version, so none ship yet — only the self-injecting `HmiAssets`. See `TODO.md`
+> for the wrapping scope and the path to a crates.io release.
 
 ## Running the demo
 
