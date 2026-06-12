@@ -116,11 +116,16 @@ web-component bridge always hits the wrapper branch.
 
 ## Affected elements
 
-`tooltip`, `hover-card`, `popover`, `context-menu`. The `open`-driven overlays
-(`modal`, `drawer`, `confirm-dialog`, `command-palette`) are **not** affected —
-they take an `open` boolean attribute plus json content props and do not depend
-on a slotted element trigger, so they are wrappable today (modulo their
-`onClose`/`onConfirm` callbacks, which the wrapper handles as DOM events).
+`tooltip`, `hover-card`, `popover`, `context-menu` — these are blocked by the
+slotted-trigger (`cloneElement`) mechanism described above.
+
+> **Correction:** an earlier version of this section claimed the `open`-driven
+> overlays (`modal`, `drawer`, `confirm-dialog`, `command-palette`) were "not
+> affected … wrappable today." That is **wrong** — they are blocked by a
+> *different* mechanism: their content portals to `document.body`, outside
+> r2wc's React-event-delegation root, so their action/close callbacks never
+> fire (and `modal`/`drawer`'s `actions` require live React nodes). See
+> [`portal-overlay-callbacks.md`](portal-overlay-callbacks.md).
 
 ## Impact on `hmi-dioxus`
 

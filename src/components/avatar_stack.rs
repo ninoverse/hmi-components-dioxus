@@ -44,9 +44,6 @@ mod tests {
     #[test]
     fn names_to_json_basic() {
         let names = vec!["Ada Lovelace".to_string(), "Grace Hopper".to_string()];
-        assert_eq!(
-            names_to_json(&names),
-            r#"["Ada Lovelace","Grace Hopper"]"#
-        );
+        assert_eq!(names_to_json(&names), r#"["Ada Lovelace","Grace Hopper"]"#);
     }
 }

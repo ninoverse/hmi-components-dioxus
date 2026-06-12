@@ -34,7 +34,7 @@ expressible as attributes — attach standard DOM event handlers to the rendered
 element instead. Re-vendor with `cargo run -p xtask` and re-extract this list when
 bumping the upstream version.
 
-Rough grouping, to suggest order (**44 / 85 wrapped**):
+Rough grouping, to suggest order (**47 / 85 wrapped**):
 
 > **⛔ = blocked on upstream.** `tooltip`, `popover`, `hover-card`, and
 > `context-menu` take their **trigger as slotted children** and wire it with
@@ -56,6 +56,14 @@ Rough grouping, to suggest order (**44 / 85 wrapped**):
 > moment a serialised value is supplied, and a `File` list can't be constructed
 > from data (browser security). Analysis and proposed fix:
 > [`docs/non-serializable-value-objects.md`](docs/non-serializable-value-objects.md).
+>
+> `modal`, `drawer`, `confirm-dialog`, and `command-palette` are blocked because
+> they render their content through a **React portal to `document.body`** —
+> outside r2wc's React-event-delegation root (the custom-element host) — so
+> their action/close buttons never fire `confirm`/`cancel`/`close` (and
+> `modal`/`drawer`'s `actions` require live React nodes, which crash on a
+> serialised value). Analysis and proposed fix:
+> [`docs/portal-overlay-callbacks.md`](docs/portal-overlay-callbacks.md).
 
 **Presentational / leaf — wrap first**
 - [x] badge · [x] button · [x] chip
@@ -72,11 +80,11 @@ Rough grouping, to suggest order (**44 / 85 wrapped**):
 - [x] segmented-control · [x] value-scale-selector
 
 **Containers / overlays / navigation / structure**
-- [ ] accordion · [ ] aspect-ratio · [ ] avatar-stack · [ ] carousel · [ ] drawer
-- [ ] menu · [ ] modal · [ ] navbar · [ ] pagination · ⛔ popover · [ ] scroll-area
-- [ ] sidebar · [ ] table · [ ] timeline · [ ] toast · [ ] tree · [ ] visually-hidden
-- [ ] command-palette · [ ] confirm-dialog · ⛔ context-menu · ⛔ hover-card
-- [ ] empty-state
+- [ ] accordion · [ ] aspect-ratio · [x] avatar-stack · [ ] carousel · ⛔ drawer
+- [ ] menu · ⛔ modal · [ ] navbar · [ ] pagination · ⛔ popover · [ ] scroll-area
+- [ ] sidebar · [ ] table · [x] timeline · [ ] toast · [ ] tree · [ ] visually-hidden
+- ⛔ command-palette · ⛔ confirm-dialog · ⛔ context-menu · ⛔ hover-card
+- [x] empty-state
 
 **Data viz (need data props — lower priority)**
 - [ ] gauge · [ ] heatmap · [ ] legend · [ ] sparkline · [ ] area-chart · [ ] bar-chart

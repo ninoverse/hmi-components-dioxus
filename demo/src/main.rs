@@ -12,7 +12,7 @@ use hmi_dioxus::{
     HmiText, HmiTextarea, HmiTimeline, HmiValueScaleSelector, ImageFit, ImageRadius, KbdSize,
     LinkTone, LinkUnderline, ListItem, RadioOption, SegmentOption, SelectOption, SkeletonVariant,
     SpacerAxis, SpacerSize, SpinnerSize, StatTrend, StepItem, TabItem, TabsVariant, TextTone,
-    TextWeight, TimelineColor, TimelineEntry, ValueScaleSize,
+    TextWeight, TimelineColor, TimelineEntry,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
