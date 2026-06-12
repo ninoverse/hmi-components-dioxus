@@ -1,16 +1,16 @@
 use dioxus::prelude::*;
 use hmi_dioxus::{
-    AlertVariant, AvatarSize, AvatarStatus, BadgeVariant, BannerVariant, BoxBackground, BoxPadding,
-    BoxRadius, BreadcrumbItem, ButtonVariant, CardVariant, DividerAlign, DividerOrientation,
-    FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert,
-    HmiAspectRatio, HmiAssets, HmiAvatar, HmiAvatarStack, HmiBadge, HmiBanner, HmiBlockquote,
-    HmiBox, HmiBreadcrumbs, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider,
-    HmiEmptyState, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput, HmiKbd, HmiLink, HmiList,
-    HmiMeter, HmiPasswordInput, HmiProgress, HmiRadio, HmiScrollArea, HmiSearchInput, HmiSkeleton,
-    HmiSpacer, HmiSpinner, HmiStat, HmiSwitch, HmiTable, HmiText, HmiTextarea, HmiTimeline,
-    HmiVisuallyHidden, ImageFit, ImageRadius, KbdSize, LinkTone, LinkUnderline, ListItem,
-    SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TableColumn, TextTone,
-    TextWeight, TimelineColor, TimelineEntry,
+    AccordionItem, AlertVariant, AvatarSize, AvatarStatus, BadgeVariant, BannerVariant,
+    BoxBackground, BoxPadding, BoxRadius, BreadcrumbItem, ButtonVariant, CardVariant, DividerAlign,
+    DividerOrientation, FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize,
+    HeadingTone, HmiAccordion, HmiAlert, HmiAspectRatio, HmiAssets, HmiAvatar, HmiAvatarStack,
+    HmiBadge, HmiBanner, HmiBlockquote, HmiBox, HmiBreadcrumbs, HmiButton, HmiCard, HmiCheckbox,
+    HmiChip, HmiCode, HmiDivider, HmiEmptyState, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput,
+    HmiKbd, HmiLink, HmiList, HmiMeter, HmiPasswordInput, HmiProgress, HmiRadio, HmiScrollArea,
+    HmiSearchInput, HmiSkeleton, HmiSpacer, HmiSpinner, HmiStat, HmiSwitch, HmiTable, HmiText,
+    HmiTextarea, HmiTimeline, HmiVisuallyHidden, ImageFit, ImageRadius, KbdSize, LinkTone,
+    LinkUnderline, ListItem, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend,
+    TableColumn, TextTone, TextWeight, TimelineColor, TimelineEntry,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -195,6 +195,15 @@ fn App() -> Element {
                 "There is "
                 HmiVisuallyHidden { "a screen-reader-only note and " }
                 "visible text after the hidden content."
+            }
+        }
+        div { style: "margin-top:2rem;max-width:30rem;",
+            HmiAccordion {
+                items: vec![
+                    AccordionItem::new("What is hmi-dioxus?", "Typed Dioxus wrappers for the hmi-components web components.").open(),
+                    AccordionItem::new("How do I install it?", "Run cargo add hmi-dioxus once it's published."),
+                    AccordionItem::new("Coming soon", "This panel is disabled.").disabled(),
+                ],
             }
         }
         div { style: "margin-top:2rem;max-width:30rem;",

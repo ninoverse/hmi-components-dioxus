@@ -21,6 +21,7 @@ fn json_string(s: &str) -> String {
     out
 }
 
+mod accordion;
 mod alert;
 mod aspect_ratio;
 mod avatar;
@@ -63,6 +64,7 @@ mod textarea;
 mod timeline;
 mod visually_hidden;
 
+pub use accordion::{AccordionItem, HmiAccordion};
 pub use alert::{AlertVariant, HmiAlert};
 pub use aspect_ratio::HmiAspectRatio;
 pub use avatar::{AvatarSize, AvatarStatus, HmiAvatar};
