@@ -34,9 +34,21 @@ expressible as attributes — attach standard DOM event handlers to the rendered
 element instead. Re-vendor with `cargo run -p xtask` and re-extract this list when
 bumping the upstream version.
 
-Rough grouping, to suggest order (**47 / 85 wrapped**):
+Rough grouping, to suggest order (**36 / 85 wrapped**):
 
-> **⛔ = blocked on upstream.** `tooltip`, `popover`, `hover-card`, and
+> **⛔ = blocked on upstream.** **The biggest blocker:** the upstream `tt`
+> registration only turns a callback into a DOM `CustomEvent` when it's listed in
+> the element's *events config* (4th arg). Exactly **7** elements have one
+> (`checkbox`, `input`, `password-input`, `radio`, `search-input`, `switch`,
+> `textarea`); every other element's `onChange`/`onSelect`/… is **never
+> dispatched**, so its `on_change` can't fire through the web-component boundary.
+> A controlled wrapper for those is *frozen*. This blocks `select`, `combobox`,
+> `tabs`, `segmented-control`, `radio-group`, `slider`, `number-input`,
+> `multi-input`, `value-scale-selector`, `stepper`, `color-picker`,
+> `pagination`, and the data/nav elements that need a callback. Analysis and
+> one-line-per-callback fix: [`docs/callback-events-not-dispatched.md`](docs/callback-events-not-dispatched.md).
+>
+> `tooltip`, `popover`, `hover-card`, and
 > `context-menu` take their **trigger as slotted children** and wire it with
 > `React.cloneElement`, which can't work across the web-component boundary (the
 > bridge passes children as an HTML string, so the handlers/anchor `ref` never
@@ -73,11 +85,16 @@ Rough grouping, to suggest order (**47 / 85 wrapped**):
 - [x] spinner · [x] stat · [x] text · ⛔ tooltip
 
 **Inputs / form (verify standalone; need value/event plumbing)**
-- [x] checkbox · [x] combobox · [x] input · [x] radio · [x] select · [x] slider
-- [x] stepper · [x] switch · [x] tabs · [x] textarea · ⛔ form-control
-- [x] color-picker · ⛔ date-picker · ⛔ file-upload · [x] multi-input
-- [x] number-input · [x] password-input · [x] radio-group · [x] search-input
-- [x] segmented-control · [x] value-scale-selector
+- [x] checkbox · ⛔ combobox · [x] input · [x] radio · ⛔ select · ⛔ slider
+- ⛔ stepper · [x] switch · ⛔ tabs · [x] textarea · ⛔ form-control
+- ⛔ color-picker · ⛔ date-picker · ⛔ file-upload · ⛔ multi-input
+- ⛔ number-input · [x] password-input · ⛔ radio-group · [x] search-input
+- ⛔ segmented-control · ⛔ value-scale-selector
+
+> The ⛔ inputs above all compile and render but are **frozen** (their callback
+> never fires — see the events-config note). The wrapper code for each was
+> written and is ready to re-land once upstream adds the events configs; it was
+> removed from the crate to keep the shipped API honest.
 
 **Containers / overlays / navigation / structure**
 - [ ] accordion · [ ] aspect-ratio · [x] avatar-stack · [ ] carousel · ⛔ drawer

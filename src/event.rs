@@ -46,10 +46,6 @@ impl EventValue {
     pub(crate) fn bool(&self) -> Option<bool> {
         self.0.as_bool()
     }
-    /// The detail as an `f64` (number-input's value), or `None` otherwise.
-    pub(crate) fn number(&self) -> Option<f64> {
-        self.0.as_f64()
-    }
 }
 
 #[cfg(not(feature = "web"))]
@@ -59,9 +55,6 @@ impl EventValue {
         None
     }
     pub(crate) fn bool(&self) -> Option<bool> {
-        None
-    }
-    pub(crate) fn number(&self) -> Option<f64> {
         None
     }
 }

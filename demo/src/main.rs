@@ -1,18 +1,15 @@
 use dioxus::prelude::*;
 use hmi_dioxus::{
     AlertVariant, AvatarSize, AvatarStatus, BadgeVariant, BannerVariant, BoxBackground, BoxPadding,
-    BoxRadius, BreadcrumbItem, ButtonVariant, CardVariant, ComboboxOption, DividerAlign,
-    DividerOrientation, FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize,
-    HeadingTone, HmiAlert, HmiAssets, HmiAvatar, HmiAvatarStack, HmiBadge, HmiBanner,
-    HmiBlockquote, HmiBox, HmiBreadcrumbs, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode,
-    HmiColorPicker, HmiCombobox, HmiDivider, HmiEmptyState, HmiFlex, HmiGrid, HmiHeading, HmiImage,
-    HmiInput, HmiKbd, HmiLink, HmiList, HmiMeter, HmiMultiInput, HmiNumberInput, HmiPasswordInput,
-    HmiProgress, HmiRadio, HmiRadioGroup, HmiSearchInput, HmiSegmentedControl, HmiSelect,
-    HmiSkeleton, HmiSlider, HmiSpacer, HmiSpinner, HmiStat, HmiStepper, HmiSwitch, HmiTabs,
-    HmiText, HmiTextarea, HmiTimeline, HmiValueScaleSelector, ImageFit, ImageRadius, KbdSize,
-    LinkTone, LinkUnderline, ListItem, RadioOption, SegmentOption, SelectOption, SkeletonVariant,
-    SpacerAxis, SpacerSize, SpinnerSize, StatTrend, StepItem, TabItem, TabsVariant, TextTone,
-    TextWeight, TimelineColor, TimelineEntry,
+    BoxRadius, BreadcrumbItem, ButtonVariant, CardVariant, DividerAlign, DividerOrientation,
+    FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert,
+    HmiAssets, HmiAvatar, HmiAvatarStack, HmiBadge, HmiBanner, HmiBlockquote, HmiBox,
+    HmiBreadcrumbs, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiEmptyState,
+    HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput, HmiKbd, HmiLink, HmiList, HmiMeter,
+    HmiPasswordInput, HmiProgress, HmiRadio, HmiSearchInput, HmiSkeleton, HmiSpacer, HmiSpinner,
+    HmiStat, HmiSwitch, HmiText, HmiTextarea, HmiTimeline, ImageFit, ImageRadius, KbdSize, LinkTone,
+    LinkUnderline, ListItem, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend,
+    TextTone, TextWeight, TimelineColor, TimelineEntry,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -26,19 +23,6 @@ fn App() -> Element {
     // Single source of truth for the bound input below; fed back into `value`.
     let mut text = use_signal(String::new);
     let mut textarea_text = use_signal(String::new);
-    let mut radio_val = use_signal(|| String::from("b"));
-    let mut select_val = use_signal(|| Option::<String>::None);
-    let mut num_val = use_signal(|| 0.0_f64);
-    let mut slider_val = use_signal(|| 40.0_f64);
-    let mut tab_val = use_signal(|| String::from("overview"));
-    let mut tab2_val = use_signal(|| String::from("a"));
-    let mut seg_val = use_signal(|| String::from("list"));
-    let mut seg2_val = use_signal(|| String::from("w"));
-    let mut combo_val = use_signal(|| Option::<String>::None);
-    let mut rating = use_signal(|| 3.0_f64);
-    let mut otp = use_signal(String::new);
-    let mut step = use_signal(|| String::from("shipping"));
-    let mut color = use_signal(|| String::from("#4f8a8b"));
     let mut notifications = use_signal(|| true);
     let mut accepted = use_signal(|| false);
     rsx! {
@@ -150,133 +134,12 @@ fn App() -> Element {
             div { "Textarea value: {textarea_text}" }
         }
         div { style: "display:flex;flex-direction:column;gap:1.5rem;margin-top:2rem;max-width:30rem;",
-            HmiRadioGroup {
-                options: vec![
-                    RadioOption::new("a", "Option A"),
-                    RadioOption::new("b", "Option B"),
-                    RadioOption::new("c", "Option C (disabled)").disabled(),
-                ],
-                value: radio_val(),
-                on_change: move |v| radio_val.set(v),
-            }
-            div { "Selected: {radio_val}" }
             HmiRadio { label: "Standalone radio (uncontrolled)", name: "standalone", value: "x" }
             HmiRadio { label: "Disabled radio", disabled: true, name: "standalone", value: "y" }
-            HmiSelect {
-                options: vec![
-                    SelectOption::new("rs", "Rust"),
-                    SelectOption::new("ts", "TypeScript"),
-                    SelectOption::new("go", "Go"),
-                ],
-                value: select_val(),
-                placeholder: "Pick a language",
-                on_change: move |v| select_val.set(Some(v)),
-            }
-            div { "Select value: {select_val:?}" }
-            HmiNumberInput {
-                value: num_val(),
-                min: 0.0,
-                max: 100.0,
-                step: 5.0,
-                on_change: move |v| num_val.set(v),
-            }
-            HmiNumberInput { error: true, placeholder: "Error state" }
-            HmiNumberInput { disabled: true, value: 42.0 }
-            div { "Number value: {num_val}" }
             HmiPasswordInput { placeholder: "Enter password" }
             HmiPasswordInput { error: true, placeholder: "Wrong password" }
             HmiSearchInput { placeholder: "Search…" }
             HmiSearchInput { disabled: true, placeholder: "Disabled search" }
-            HmiSlider {
-                value: slider_val(),
-                min: 0.0,
-                max: 100.0,
-                step: 5.0,
-                show_value: true,
-                on_change: move |v| slider_val.set(v),
-            }
-            HmiSlider { value: 30.0, disabled: true }
-            div { "Slider value: {slider_val}" }
-            HmiTabs {
-                options: vec![
-                    TabItem::new("overview", "Overview"),
-                    TabItem::new("activity", "Activity"),
-                    TabItem::new("settings", "Settings"),
-                ],
-                value: tab_val(),
-                on_change: move |v| tab_val.set(v),
-            }
-            HmiTabs {
-                options: vec![
-                    TabItem::new("a", "First"),
-                    TabItem::new("b", "Second"),
-                ],
-                variant: TabsVariant::Underline,
-                value: tab2_val(),
-                on_change: move |v| tab2_val.set(v),
-            }
-            div { "Active tab: {tab_val}" }
-            HmiSegmentedControl {
-                options: vec![
-                    SegmentOption::new("list", "List"),
-                    SegmentOption::new("grid", "Grid"),
-                    SegmentOption::new("board", "Board"),
-                ],
-                value: seg_val(),
-                on_change: move |v| seg_val.set(v),
-            }
-            HmiSegmentedControl {
-                options: vec![
-                    SegmentOption::new("d", "Day"),
-                    SegmentOption::new("w", "Week"),
-                    SegmentOption::new("m", "Month").disabled(),
-                ],
-                value: seg2_val(),
-                on_change: move |v| seg2_val.set(v),
-                full_width: true,
-            }
-            div { "Segment: {seg_val}" }
-            HmiCombobox {
-                options: vec![
-                    ComboboxOption::new("us", "United States"),
-                    ComboboxOption::new("ca", "Canada"),
-                    ComboboxOption::new("mx", "Mexico"),
-                    ComboboxOption::new("br", "Brazil"),
-                ],
-                value: combo_val(),
-                placeholder: "Search country…",
-                on_change: move |v| combo_val.set(Some(v)),
-            }
-            div { "Combobox value: {combo_val:?}" }
-            HmiValueScaleSelector {
-                value: rating(),
-                max: 5.0,
-                on_change: move |v| rating.set(v),
-            }
-            HmiValueScaleSelector { value: 4.0, icon: "♥", read_only: true }
-            div { "Rating: {rating}" }
-            HmiMultiInput {
-                length: 6,
-                group_size: 3,
-                value: otp(),
-                on_change: move |v| otp.set(v),
-            }
-            div { "OTP: {otp}" }
-            HmiStepper {
-                steps: vec![
-                    StepItem::new("cart", "Cart").description("Review items"),
-                    StepItem::new("shipping", "Shipping").description("Address"),
-                    StepItem::new("payment", "Payment").description("Card details"),
-                ],
-                current: step(),
-                on_change: move |v| step.set(v),
-            }
-            div { "Step: {step}" }
-            HmiColorPicker {
-                value: color(),
-                on_change: move |v| color.set(v),
-            }
-            div { "Color: {color}" }
         }
         div { style: "margin-top:2rem;max-width:30rem;",
             HmiEmptyState {
