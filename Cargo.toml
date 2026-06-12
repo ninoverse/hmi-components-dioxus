@@ -5,7 +5,7 @@ resolver = "2"
 # Both publishable crates share one repo-owned version (the demo inherits it too),
 # kept deliberately independent of the wrapped npm package version.
 [workspace.package]
-version = "1.6.0"
+version = "2.0.0"
 # MSRV: matches the Dioxus 0.7 toolchain floor (dioxus declares rust-version 1.83).
 rust-version = "1.83"
 
