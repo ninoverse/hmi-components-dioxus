@@ -22,6 +22,7 @@ fn json_string(s: &str) -> String {
 }
 
 mod alert;
+mod aspect_ratio;
 mod avatar;
 mod avatar_stack;
 mod badge;
@@ -49,6 +50,7 @@ mod meter;
 mod password_input;
 mod progress;
 mod radio;
+mod scroll_area;
 mod search_input;
 mod skeleton;
 mod spacer;
@@ -58,8 +60,10 @@ mod switch;
 mod text;
 mod textarea;
 mod timeline;
+mod visually_hidden;
 
 pub use alert::{AlertVariant, HmiAlert};
+pub use aspect_ratio::HmiAspectRatio;
 pub use avatar::{AvatarSize, AvatarStatus, HmiAvatar};
 pub use avatar_stack::HmiAvatarStack;
 pub use badge::{BadgeVariant, HmiBadge};
@@ -86,6 +90,7 @@ pub use meter::HmiMeter;
 pub use password_input::HmiPasswordInput;
 pub use progress::HmiProgress;
 pub use radio::HmiRadio;
+pub use scroll_area::{HmiScrollArea, ScrollOrientation};
 pub use search_input::HmiSearchInput;
 pub use skeleton::{HmiSkeleton, SkeletonVariant};
 pub use spacer::{HmiSpacer, SpacerAxis, SpacerSize};
@@ -95,3 +100,4 @@ pub use switch::HmiSwitch;
 pub use text::{HmiText, TextAlign, TextSize, TextTone, TextWeight};
 pub use textarea::HmiTextarea;
 pub use timeline::{HmiTimeline, TimelineColor, TimelineEntry};
+pub use visually_hidden::HmiVisuallyHidden;

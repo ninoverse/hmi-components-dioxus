@@ -3,13 +3,14 @@ use hmi_dioxus::{
     AlertVariant, AvatarSize, AvatarStatus, BadgeVariant, BannerVariant, BoxBackground, BoxPadding,
     BoxRadius, BreadcrumbItem, ButtonVariant, CardVariant, DividerAlign, DividerOrientation,
     FlexAlign, FlexDirection, FlexGap, FlexJustify, GridGap, HeadingSize, HeadingTone, HmiAlert,
-    HmiAssets, HmiAvatar, HmiAvatarStack, HmiBadge, HmiBanner, HmiBlockquote, HmiBox,
-    HmiBreadcrumbs, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider, HmiEmptyState,
-    HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput, HmiKbd, HmiLink, HmiList, HmiMeter,
-    HmiPasswordInput, HmiProgress, HmiRadio, HmiSearchInput, HmiSkeleton, HmiSpacer, HmiSpinner,
-    HmiStat, HmiSwitch, HmiText, HmiTextarea, HmiTimeline, ImageFit, ImageRadius, KbdSize, LinkTone,
-    LinkUnderline, ListItem, SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend,
-    TextTone, TextWeight, TimelineColor, TimelineEntry,
+    HmiAspectRatio, HmiAssets, HmiAvatar, HmiAvatarStack, HmiBadge, HmiBanner, HmiBlockquote,
+    HmiBox, HmiBreadcrumbs, HmiButton, HmiCard, HmiCheckbox, HmiChip, HmiCode, HmiDivider,
+    HmiEmptyState, HmiFlex, HmiGrid, HmiHeading, HmiImage, HmiInput, HmiKbd, HmiLink, HmiList,
+    HmiMeter, HmiPasswordInput, HmiProgress, HmiRadio, HmiScrollArea, HmiSearchInput, HmiSkeleton,
+    HmiSpacer, HmiSpinner, HmiStat, HmiSwitch, HmiText, HmiTextarea, HmiTimeline,
+    HmiVisuallyHidden, ImageFit, ImageRadius, KbdSize, LinkTone, LinkUnderline, ListItem,
+    SkeletonVariant, SpacerAxis, SpacerSize, SpinnerSize, StatTrend, TextTone, TextWeight,
+    TimelineColor, TimelineEntry,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -164,6 +165,36 @@ fn App() -> Element {
                         .description("Weather hold")
                         .color(TimelineColor::Warning),
                 ],
+            }
+        }
+        div { style: "display:flex;gap:1.5rem;margin-top:2rem;flex-wrap:wrap;",
+            HmiAspectRatio { ratio: "16/9",
+                div { style: "width:16rem;background:var(--surface-container-high);display:flex;align-items:center;justify-content:center;height:100%;",
+                    "16 / 9"
+                }
+            }
+            HmiAspectRatio { ratio: "1",
+                div { style: "width:8rem;background:var(--surface-container-high);display:flex;align-items:center;justify-content:center;height:100%;",
+                    "1 / 1"
+                }
+            }
+        }
+        div { style: "margin-top:2rem;max-width:20rem;",
+            HmiScrollArea { max_height: "8rem",
+                div { style: "display:flex;flex-direction:column;gap:0.5rem;",
+                    for i in 1..=12 {
+                        div { style: "padding:0.5rem;background:var(--surface-container-low);",
+                            "Scrollable row {i}"
+                        }
+                    }
+                }
+            }
+        }
+        div { style: "margin-top:2rem;",
+            HmiText {
+                "There is "
+                HmiVisuallyHidden { "a screen-reader-only note and " }
+                "visible text after the hidden content."
             }
         }
         div { style: "display:flex;flex-direction:column;gap:1rem;margin-top:2rem;max-width:30rem;",
