@@ -19,6 +19,10 @@
 //!
 //! Wrappers call this unconditionally; the body is real under the `web` feature
 //! and a no-op otherwise, so wrapper code stays identical across renderers.
+//!
+//! Retained as reusable interop while the wrappers are being re-built against a
+//! new upstream version, so its items are currently unused.
+#![allow(dead_code)]
 
 use dioxus::prelude::*;
 

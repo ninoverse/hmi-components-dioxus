@@ -5,84 +5,41 @@
 `cargo add hmi-dioxus`. The crate is the workspace root of this repo; the `demo/`
 app (`publish = false`) is its first consumer and stays in-repo.
 
-**Where things stand:** the crate is built, wired, and verified locally.
-Thirteen wrappers ship — `HmiBadge`/`HmiButton`/`HmiChip`, seven more
-presentational (`HmiCard`, `HmiDivider`, `HmiHeading`, `HmiText`, `HmiAvatar`,
-`HmiSpinner`, `HmiProgress`), and three interactive (`HmiInput`, `HmiSwitch`,
-`HmiCheckbox`) — plus the self-injecting `HmiAssets` and an optional `web`
-feature that powers DOM event binding. The license + publish-metadata
-prerequisites are done; what's left is breadth (more wrappers) and the actual
-`cargo publish`.
+**Where things stand:** the wrappers were cleared to re-wrap against a new
+upstream version — **0 wrappers ship** right now. The infrastructure remains:
+the self-injecting `HmiAssets`, the optional `web` feature with its DOM
+event-binding interop (`src/event.rs`), and the `json_string` attribute helper.
+The license + publish-metadata prerequisites are done; what's left is the
+wrapping itself and the eventual `cargo publish`.
 
 ---
 
-## Component surface (verified against vendored 4.2.0; unchanged through 5.0.1)
+## Component surface
 
-The bundle registers **85 custom elements** through a single helper
-`tt("name", …)` that defines `hmi-<name>` — `customElements.define` is called in
-exactly one place (inside `tt`), and `tt` is invoked for 85 distinct names.
+Re-vendor the new upstream with `cargo run -p xtask`, then re-extract the list
+of registered custom elements (the bundle defines `hmi-<name>` through a single
+`customElements.define` call inside the `tt("name", …)` helper) and refresh the
+inventory below before starting to wrap.
 
-> An earlier draft here split these into "54 web components / 31 React-only"; that
-> does **not** hold for 4.2.0 — every name below is registered as a custom element.
-> Caveat: chart/data-heavy elements (and some inputs) likely need JSON/data props,
-> or a surrounding context, to render usefully — so wrap the simple presentational
-> ones first and confirm each renders standalone before wrapping it.
+> Caveat: chart/data-heavy elements (and some inputs) likely need JSON/data
+> props, or a surrounding context, to render usefully — so wrap the simple
+> presentational ones first and confirm each renders standalone before wrapping
+> it. Some elements may also turn out **structurally unwrappable** (e.g. slotted
+> triggers wired with `React.cloneElement`, or `value`/`onChange` trafficking in
+> native JS objects); see `.claude/skills/triage-unwrappable-component` for the
+> protocol — mark those ⛔ with a fresh analysis doc under `docs/`.
 
-Wrapping conventions (from the existing wrappers): complex props are passed as
-JSON-encoded strings; upstream `onSelect`/`onClose`-style callbacks aren't
-expressible as attributes — attach standard DOM event handlers to the rendered
-element instead. Re-vendor with `cargo run -p xtask` and re-extract this list when
-bumping the upstream version.
+Wrapping conventions: complex props are passed as JSON-encoded strings (see the
+`json_string` helper in `src/components/mod.rs`); upstream
+`onSelect`/`onClose`-style callbacks aren't expressible as attributes — attach
+standard DOM event handlers to the rendered element instead, or use the `web`
+feature interop in `src/event.rs` for `change`-style events.
 
-Rough grouping, to suggest order (**44 / 85 wrapped**):
+Inventory (**0 wrapped** — repopulate after re-vendoring the new upstream):
 
-> **⛔ = blocked on upstream.** `tooltip`, `popover`, `hover-card`, and
-> `context-menu` take their **trigger as slotted children** and wire it with
-> `React.cloneElement`, which can't work across the web-component boundary (the
-> bridge passes children as an HTML string, so the handlers/anchor `ref` never
-> attach and the overlay never opens). They compile but are inert as thin
-> wrappers — deferred until upstream renders a real anchor wrapper. Full
-> analysis and proposed fix: [`docs/slotted-trigger-overlays.md`](docs/slotted-trigger-overlays.md).
->
-> `form-control` is blocked by the **same root cause** in a different form: the
-> bridge re-renders slotted children through `dangerouslySetInnerHTML`, so a
-> nested interactive control (the field it wraps) is re-parsed from an HTML
-> string and loses its live `value`/`checked` property and `on_change` listener.
-> Analysis and proposed fix: [`docs/slotted-interactive-children.md`](docs/slotted-interactive-children.md).
->
-> `date-picker` and `file-upload` are blocked because their `value`/`onChange`
-> traffic in **native JS objects** (`Date`, `File[]`) that have no JSON form the
-> component accepts: `date-picker` throws `getFullYear is not a function` the
-> moment a serialised value is supplied, and a `File` list can't be constructed
-> from data (browser security). Analysis and proposed fix:
-> [`docs/non-serializable-value-objects.md`](docs/non-serializable-value-objects.md).
-
-**Presentational / leaf — wrap first**
-- [x] badge · [x] button · [x] chip
-- [x] alert · [x] avatar · [x] banner · [x] blockquote · [x] box · [x] breadcrumbs
-- [x] card · [x] code · [x] divider · [x] flex · [x] grid · [x] heading · [x] image
-- [x] kbd · [x] link · [x] list · [x] meter · [x] progress · [x] skeleton · [x] spacer
-- [x] spinner · [x] stat · [x] text · ⛔ tooltip
-
-**Inputs / form (verify standalone; need value/event plumbing)**
-- [x] checkbox · [x] combobox · [x] input · [x] radio · [x] select · [x] slider
-- [x] stepper · [x] switch · [x] tabs · [x] textarea · ⛔ form-control
-- [x] color-picker · ⛔ date-picker · ⛔ file-upload · [x] multi-input
-- [x] number-input · [x] password-input · [x] radio-group · [x] search-input
-- [x] segmented-control · [x] value-scale-selector
-
-**Containers / overlays / navigation / structure**
-- [ ] accordion · [ ] aspect-ratio · [ ] avatar-stack · [ ] carousel · [ ] drawer
-- [ ] menu · [ ] modal · [ ] navbar · [ ] pagination · ⛔ popover · [ ] scroll-area
-- [ ] sidebar · [ ] table · [ ] timeline · [ ] toast · [ ] tree · [ ] visually-hidden
-- [ ] command-palette · [ ] confirm-dialog · ⛔ context-menu · ⛔ hover-card
-- [ ] empty-state
-
-**Data viz (need data props — lower priority)**
-- [ ] gauge · [ ] heatmap · [ ] legend · [ ] sparkline · [ ] area-chart · [ ] bar-chart
-- [ ] bullet-chart · [ ] cartesian-grid · [ ] chart-tooltip · [ ] donut-chart
-- [ ] funnel-chart · [ ] line-chart · [ ] radar-chart · [ ] responsive-container
-- [ ] scatter-plot
+_The previous version's component list was cleared. Run `cargo run -p xtask`,
+extract the registered element names, and list them here grouped by kind
+(presentational / inputs / containers / data-viz) to drive wrapping order._
 
 ---
 
